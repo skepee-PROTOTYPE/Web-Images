@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+@foreach (var file in System.IO.Directory.GetFiles("~/wwwroot/images"))
+{
+    var x = new System.IO.FileInfo(file);
+           
+    <img src="@Url.Content("~/images/a.jpg")" class="img-responsive" style="width:100px; height:100px">
+    <br />
+
+    <a href="~/images/a.jpg">view image</a>
+}
+
+
+
+
