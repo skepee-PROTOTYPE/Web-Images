@@ -1,22 +1,36 @@
-﻿@{
+﻿@model ContentModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
-
-@foreach (var file in System.IO.Directory.GetFiles("~/wwwroot/images"))
+@foreach (var file in Model.Files)
 {
-    var x = new System.IO.FileInfo(file);
-           
-    <img src="@Url.Content("~/images/a.jpg")" class="img-responsive" style="width:100px; height:100px">
-    <br />
+    <div style="display:inline-block">
+        <div style="float:left; width:400px">
+            <img src="@Url.Content(file.Path)" class="img-responsive" style="height:200px">
+        </div>
 
-    <a href="~/images/a.jpg">view image</a>
+        <div style="float:right; left:400px;">
+            <ul>
+                <li><strong>Title: </strong>@file.Title</li>
+                <li><strong>Name: </strong>@file.Name</li>
+                <li><strong>Url: </strong>@file.Url</li>
+                <li><strong>Extension: </strong>@file.Extension</li>
+                <li><strong>Length (KB): </strong>@file.LengthKb</li>
+                <li><strong>Length (MB): </strong>@file.LengthMb</li>
+                <li><a href="@file.Path">View</a></li>
+            </ul>
+        </div>
+    </div>
 }
 
+<br />
+<br />
+<span>Max Length (Kb): </span>@Html.TextBoxFor(x => x.MaxLen)
+<br />
+@*<a href="@Url.Action("GetList", "Home")">Json</a>*@
+@*<a href="@Url.Action("GetList", "Home", new {MaxLengthKB=Model.MaxLen})">Json</a>*@
+@*@Html.ActionLink("Json", "GetList", "Home", new { MaxLengthKB = 50 })*@
 
-
-
+<a asp-action="GetList" asp-controller="Home" asp-route-id="1000">Json</a>
