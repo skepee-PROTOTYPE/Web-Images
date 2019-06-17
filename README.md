@@ -12,5 +12,5 @@ The exposed image attributes are:
 * Length in MB
 * Url
 
-The Json resource can be used in different clients, a slider in a web page or an app.
+The Json resource can be used in different clients. A slider, a gallery or an app.
 
