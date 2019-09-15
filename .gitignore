@@ -3,3 +3,7 @@
 ################################################################################
 
 /WebImage/bin/Debug/netcoreapp2.2
+/WebImage/obj/Debug/netcoreapp2.2
+/WebImage/obj/Release/netcoreapp2.2
+/WebImage/obj
+/.vs

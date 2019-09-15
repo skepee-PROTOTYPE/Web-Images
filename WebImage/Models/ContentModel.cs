@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Hosting;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -10,9 +11,9 @@ namespace WebImage.Models
         
         public string MaxLen { get; set; }
 
-        public ContentModel(string host)
+        public ContentModel(string host, IHostingEnvironment env)
         {
-            string path= @"D:\imagefolder";
+            string path= Path.Combine(env.WebRootPath, "imagefolder");
 
             Files = new List<FileModel>();
             if (Directory.Exists(path))

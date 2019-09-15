@@ -27,7 +27,7 @@ namespace WebImage.Controllers
         //[ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client, NoStore = false)]
         public IActionResult Index()
         {
-            ContentModel files = new ContentModel(Host);
+            ContentModel files = new ContentModel(Host, hostingEnv);
 
             return View(files);
         }
@@ -43,13 +43,12 @@ namespace WebImage.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        //[HttpGet("/api/maxlen/{MaxLengthKB}")]
-        [HttpGet("/api")]
+        [HttpGet("/api/getmax/{MaxLengthKB}")]
         public JsonResult GetList(decimal MaxLengthKB)
         {
             DateTime StartDate = DateTime.Now;
 
-            ContentModel myfiles = new ContentModel(Host);
+            ContentModel myfiles = new ContentModel(Host, hostingEnv);
             List<FileModel> files = new List<FileModel>();
 
             if (MaxLengthKB > 0)
@@ -88,6 +87,49 @@ namespace WebImage.Controllers
         }
 
 
+
+        [HttpGet("/api/getselection")]
+        public JsonResult GetListSelection(decimal MaxLengthKB)
+        {
+            DateTime StartDate = DateTime.Now;
+
+            ContentModel myfiles = new ContentModel(Host, hostingEnv);
+            List<FileModel> files = new List<FileModel>();
+
+            if (MaxLengthKB > 0)
+            {
+                files = myfiles.Files.Where(x => x.LengthKb <= MaxLengthKB).ToList();
+            }
+            else
+            {
+                files = myfiles.Files;
+            }
+
+            var myjson = files.Select(
+                x => new JsonModel()
+                {
+                    Url = x.Url,
+                    Title = x.Title,
+                    LengthKb = x.LengthKb,
+                    LengthMb = x.LengthMb
+                }).ToList();
+
+
+            var c = new Statistics()
+            {
+                Count = files.Count(),
+                TotalLengthKb = files.Select(x => x.LengthKb).Sum(),
+                TotalLengthMb = files.Select(x => x.LengthMb).Sum(),
+                ElapsedTime = (DateTime.Now - StartDate).TotalDays
+
+            };
+
+            return Json(new JsonData()
+            {
+                MyJson = myjson,
+                Stat = c
+            });
+        }
 
 
 
