@@ -13,6 +13,7 @@ namespace WebImage.Controllers
     {
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IHostingEnvironment hostingEnv;
+
         private string Host { get; set; }
 
         public HomeController(IHostingEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor)
@@ -28,8 +29,19 @@ namespace WebImage.Controllers
         public IActionResult Index()
         {
             ContentModel files = new ContentModel(Host, hostingEnv);
-
+            files.GetFiles();
             return View(files);
+        }
+
+
+        public IActionResult AddToSelectionList(string filename, string selectedFiles)
+        {
+            ContentModel myFiles = new ContentModel(Host, hostingEnv);
+            myFiles.AddSelectedFile(filename);
+            myFiles.GetFiles();
+            //selectedFiles += filename + ";";
+            //TempData["selectedFiles"] += filename + ";";
+            return View("Index",myFiles);
         }
 
         public IActionResult Privacy()

@@ -2,20 +2,27 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace WebImage.Models
 {
     public class ContentModel
     {
         public List<FileModel> Files { get; set; }
-        
+        public List<FileModel> SelectedFiles { get; set; }
+        private static List<FileModel> FilesInDirectory;
+        public string SelectedListFiles { get; set; }
+
         public string MaxLen { get; set; }
 
         public ContentModel(string host, IHostingEnvironment env)
         {
-            string path= Path.Combine(env.WebRootPath, "imagefolder");
-
             Files = new List<FileModel>();
+            //SelectedFiles = new List<FileModel>();
+            FilesInDirectory = new List<FileModel>();
+
+            string path = Path.Combine(env.WebRootPath, "imagefolder");
+
             if (Directory.Exists(path))
             {
                 foreach (var file in Directory.GetFiles(path))
@@ -23,26 +30,58 @@ namespace WebImage.Models
                     FileInfo f = new FileInfo(file);
 
                     var sizekb = Math.Round(((decimal)f.Length) / 1024, 1);
-                    var sizeMb = Math.Round(((decimal)sizekb) / 1024, 2);                    
+                    var sizeMb = Math.Round(((decimal)sizekb) / 1024, 2);
 
-                    Files.Add(new FileModel()
+                    FilesInDirectory.Add(new FileModel()
                     {
                         Title = string.Empty,
                         Name = f.Name,
                         Extension = f.Extension,
-                        LengthKb =  sizekb,
+                        LengthKb = sizekb,
                         LengthMb = sizeMb,
                         Path = "/images/" + f.Name,
-                        Url = host +  "/images/" + f.Name
+                        Url = host + "/images/" + f.Name
                     });
                 }
             }
         }
+
+        public void AddSelectedFile(string MySelectedFile)
+        {
+            if (SelectedFiles == null)
+            {
+                SelectedFiles = new List<FileModel>();
+            }
+
+            var elem = FilesInDirectory.FirstOrDefault(x => x.Name.Equals(MySelectedFile, StringComparison.InvariantCultureIgnoreCase));
+            if (elem != null)
+            {
+                SelectedFiles.Add(elem);
+            }
+        }
+
+        public void GetFiles()
+        {
+            if (SelectedFiles!=null && SelectedFiles.Any())
+            {
+                this.Files = FilesInDirectory.Where(x => !SelectedFiles.Contains(x)).ToList();
+                this.SelectedFiles = SelectedFiles;
+            }
+            else
+            {
+                this.Files = FilesInDirectory.ToList();
+            }
+        }
+
+
+
     }
 
 
 
-    public class FileModel: JsonModel
+
+
+    public class FileModel : JsonModel
     {
         public string Name { get; set; }
         public string Extension { get; set; }

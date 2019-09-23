@@ -2,125 +2,145 @@
 
 @{
     ViewData["Title"] = "Home Page";
+    var SelectedFiles = TempData["selectedFiles"];
 }
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
 
 <style>
 
-    .info {
-        font-size:10px;
-        padding:0px;
-        margin:0px;
-        list-style-type:none;
-    }
-
-    .container {
-       background-color: #7C6D6A;
-    }
-
-
-    .rotated {
-        transform: rotate(15deg);
-    }
-
-    .unrotated {
-        transform: rotate(-15deg);
-        border: 2px solid #E3E44F;
-    }
-
     .box {
-        float: left;
-        width: 200px;
-        margin: 30px;
+        width: 100px;
+        margin: 20px;
+    }
+
+    .card-img-top {
+        position: relative;
+        border: 2px solid #F1F13A;
+    }
+
+    .selectedImages img {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .selectedbox {
+        /* border:10px solid red;*/
+        background-color: red;
     }
 </style>
 
 
 <script>
-    $(document).ready(function () {
-        //$(".info").hide();
-        $(".card-body").hide();
 
-        $(".unrotated img").click(function () {
-            $(this).toggleClass("rotated");
-        });
+function drag(event) {
+    event.dataTransfer.setData("text", event.target.id);
+};
 
-        $(".card-body").hover(function () {
-            $(this).toggle();
-        });
-
-        $(".unrotated img").hover(function () {
-            //$(".info").toggle();
-            $(this).next("div.card-body").toggle();
-            //$(".card-body").toggle();
-            //console.log($(this));
-        });
-
-
-
+function drop(event) {
+    event.preventDefault();
+    var widgetName2 = event.dataTransfer.getData("text");
+    event.target.appendChild(document.getElementById(widgetName2));
+    var selectedIds = [];
+    $("#dragtarget img.box.card-img-top").each(function () {
+        selectedIds.push(this.id);
     });
 
 
+    //$("#dragtarget").hover(function () {
+    //    $(this).addClass("selectedbox");
+    //});
 
+    $.ajax({
+        url: 'Home/AddToSelectionList',
+        data: {
+            filename: widgetName2,
+            selectedFiles: selectedIds.join()
+        }
+    }).done(function () {
+          //  alert("done");
+        });
+
+
+
+
+};
+
+function allowDrop(ev) {
+    ev.preventDefault();
+    var idDest = ev.target.id;
+};
+
+function removeDrop(event) {
+    event.preventDefault();
+    var idDest = event.target.id;
+};
+
+
+$( "#dragtarget" ).droppable({
+    hoverClass: "ui-state-active",
+    drop: function( event, ui ) {
+        $( this )
+            .addClass( "ui-state-highlight" )
+            .html( "Dropped!" );
+    }
+});
+
+$(document).ready(function (event) {
+    //$(".box.card-img-top").click(function () {
+    //console.log($(this).html());
+    //$(".selectedImages").append($(this).html());
+    //$(this.remove());
+    //});
+
+    //$(".selectedImages img").click(function () {
+
+
+    //});
+
+
+    /*  $("#dragtarget").hover(function () {
+
+          $(this).addClass("selectedbox");
+      });*/
+
+
+});
 </script>
 
-
-
-@foreach (var file in Model.Files)
-{
-<div style="display:inline-block">
-
-    <div class="box unrotated card" >
-        <img class="card-img-top" src="@Url.Content(file.Path)" alt="Card image cap">
-        <div class="card-body">
-            <h5 class="card-title">@file.Title</h5>
-            @*<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>*@
-            @*<a href="#" class="btn btn-primary">Go somewhere</a>*@
-            <ul class="info">
-                @*<li><strong>Title: </strong>@file.Title</li>*@
-                <li><strong>Name: </strong>@file.Name</li>
-                @*<li><strong>Url: </strong>@file.Url</li>*@
-                <li><strong>Extension: </strong>@file.Extension</li>
-                <li><strong>Length (KB): </strong>@file.LengthKb</li>
-                <li><strong>Length (MB): </strong>@file.LengthMb</li>
-                <li><a href="@file.Path">View</a></li>
-            </ul>
-
+<div class="container">
+    <div class="row">
+        <div class="col-10 d-flex flex-row border flex-wrap">
+            @foreach (var file in Model.Files)
+            {
+                <img class="box card-img-top" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name" draggable="true" ondragstart="drag(event)">
+            }
         </div>
+        <div class="col-2 border" ondrop="drop(event)" ondragover="allowDrop(event)" id="dragtarget" ondragleave="removeDrop(event)">
+            @*<div class="selectedImages" />*@
+            @if (Model.SelectedFiles != null)
+            {
+                @foreach (var file in Model.SelectedFiles)
+                {
+                    <img class="box card-img-top" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
+                }
+            }
+        </div>
+
+    </div>
+    <div class="row border d-flex p-2 bd-highlight">
+        <span>Max Length (Kb): </span>@Html.TextBoxFor(x => x.MaxLen)
+        <br />
+        @*<a href="@Url.Action("GetList", "Home")">Json</a>*@
+        @*<a href="@Url.Action("GetList", "Home", new {MaxLengthKB=Model.MaxLen})">Json</a>*@
+        @*@Html.ActionLink("Json", "GetList", "Home", new { MaxLengthKB = 50 })*@
+        <a asp-action="GetList" asp-controller="Home" asp-route-id="1000">Json up to....</a>
+        <a asp-action="GetListSelection" asp-controller="Home" asp-route-id="1000">Json with selected images</a>
     </div>
 
 
-    @*<div class="box rotated">
-        <img src="@Url.Content(file.Path)" class="img-responsive" style="height:200px">
-    </div>*@
-
-
-    @*<div class="info" style="float:right; left:400px;">
-            <ul>
-                <li><strong>Title: </strong>@file.Title</li>
-                <li><strong>Name: </strong>@file.Name</li>
-                <li><strong>Url: </strong>@file.Url</li>
-                <li><strong>Extension: </strong>@file.Extension</li>
-                <li><strong>Length (KB): </strong>@file.LengthKb</li>
-                <li><strong>Length (MB): </strong>@file.LengthMb</li>
-                <li><a href="@file.Path">View</a></li>
-            </ul>
-        </div>*@
-
 </div>
-}
-
 <br />
 <br />
 <br />
 <br />
-<span>Max Length (Kb): </span>@Html.TextBoxFor(x => x.MaxLen)
-<br />
-@*<a href="@Url.Action("GetList", "Home")">Json</a>*@
-@*<a href="@Url.Action("GetList", "Home", new {MaxLengthKB=Model.MaxLen})">Json</a>*@
-@*@Html.ActionLink("Json", "GetList", "Home", new { MaxLengthKB = 50 })*@
-
-<a asp-action="GetList" asp-controller="Home" asp-route-id="1000">Json up to....</a>
-
-<a asp-action="GetListSelection" asp-controller="Home" asp-route-id="1000">Json with selected images</a>
