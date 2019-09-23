@@ -7,6 +7,14 @@
 <script src="~/lib/jquery/dist/jquery.js"></script>
 
 <style>
+
+    body {
+    background-color:black;
+    opacity:0.7;
+    color:darkgray;
+    }
+
+
     .box {
         width: 100px;
         height: 100px;
@@ -15,7 +23,13 @@
 
     .card-img-top {
         position: relative;
-        border: 2px solid #F1F13A;
+        border: 3px solid #ff6703;
+        padding:5px;
+        /*background-color:dodgerblue;*/
+    }
+
+    .boxSelected {
+        border: 3px solid #F1F13A;
     }
 
     #dragtarget img {
@@ -24,12 +38,20 @@
     }
 
     .selectedbox {
-        background-color: #424313;
+        background-color: gainsboro;
         opacity: 0.4;
+        border:5px solid #ff6703;
     }
 
     .jdisplay {
         padding: 10px;
+    }
+
+
+    #JsonLink {
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        hyphens: auto;
     }
 
     .jdisplay ul {
@@ -47,18 +69,19 @@
     function drop(event) {
         event.preventDefault();
         var widgetName2 = event.dataTransfer.getData("text");
-        //console.log(document.getElementById(widgetName2));
-        console.log("#" +widgetName2);
-        //console.log($("'#" + widgetName2 + "'"));
+        var elem = document.getElementById(widgetName2);
+        elem.classList.remove("box");
+        elem.classList.add("boxSelected");
+        //elem.attributes.item("draggable").remove();
+        //elem.attributes.item("ondragstart").remove();
 
-        //console.log($("#IMG02297225926A.bmp"));
-        //console.log(widgetName2);
         event.target.appendChild(document.getElementById(widgetName2));
-        //event.target.appendChild($("#" + widgetName2));
         var selectedIds = [];
-        $("#dragtarget img.box.card-img-top").each(function () {
+        $("#dragtarget img").each(function () {
             selectedIds.push(this.id);
         });
+
+        var select = btoa(selectedIds.join());
 
         $.ajax({
             url: 'Home/AddToSelectionList',
@@ -69,7 +92,7 @@
         }).done(function () {
             $("#dragtarget").removeClass("selectedbox");
 
-            $.getJSON('/api/getselection/' + selectedIds.join(),
+            $.getJSON('/api/getselection/' + select,
                 function (result) {
 
                     var res = "";
@@ -92,12 +115,14 @@
                         res += "<li>count: " + result.stat.count + "</li>";
                         res += "<li>totalLengthKb: " + result.stat.totalLengthKb + "</li>";
                         res += "<li>totalLengthMb: " + result.stat.totalLengthMb + "</li>";
-                        res += "<li>elapsedTime: " + result.stat.elapsedTime + "</li>";
+                        res += "<li>elapsedTime: " + result.stat.elapsedTime.toFixed(10) + "s </li>";
                         res += "</ul>";
                     }
 
+                    $("#JsonLinkLabel").text("Generated link:");
+                    $("#JsonPreviewLabel").text("Generated Json content:");
                     $("#JsonPreview").html(res);
-                    $("#JsonLink").html(window.location.protocol + "//" + window.location.host + "/api/getselection/" + selectedIds.join());
+                    $("#JsonLink").html(window.location.protocol + "//" + window.location.host + "/api/getselection/" + select);
                     $("#JsonLink").show();
                     $("#JsonPreview").show();
                 });
@@ -115,7 +140,6 @@
         $("#dragtarget").removeClass("selectedbox");
     };
 
-
     $(document).ready(function () {
         $("#JsonLink").hide();
         $("#JsonPreview").hide();
@@ -123,6 +147,15 @@
 </script>
 
 <div class="container">
+    <div class="row">
+        <div class="col-10">
+            <p>Your images</p>
+        </div>
+        <div class="col-2">
+            <p>Your selection</p>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-10 d-flex flex-row border flex-wrap">
             @foreach (var file in Model.UnselectedFiles)
@@ -142,8 +175,12 @@
     </div>
     <br />
     <br />
+    <p id="JsonLinkLabel"></p>
     <div class="row border jdisplay" id="JsonLink"></div>
     <br />
     <br />
+    <br />
+    <br />
+    <p id="JsonPreviewLabel"></p>
     <div class="row border jdisplay" id="JsonPreview"></div>
 </div>

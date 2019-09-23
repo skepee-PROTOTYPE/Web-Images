@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -104,15 +105,19 @@ namespace WebImage.Controllers
         [HttpGet("/api/getselection/{selectedImages}")]
         public JsonResult GetListSelection(string selectedImages)
         {
+
+            byte[] data = Convert.FromBase64String(selectedImages);
+            string decodedString = Encoding.UTF8.GetString(data);
+
             DateTime StartDate = DateTime.Now;
 
             ContentModel myfiles = new ContentModel(Host, hostingEnv);
             myfiles.GetFiles();
             List<FileModel> files = new List<FileModel>();
 
-            if (!string.IsNullOrEmpty(selectedImages))
+            if (!string.IsNullOrEmpty(decodedString))
             {
-                files = myfiles.UnselectedFiles.Where(x => selectedImages.Split(",").Contains(x.Name)).ToList();
+                files = myfiles.UnselectedFiles.Where(x => decodedString.Split(",").Contains(x.Name)).ToList();
             }
             else
             {
