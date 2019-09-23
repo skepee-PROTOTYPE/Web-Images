@@ -28,19 +28,17 @@ namespace WebImage.Controllers
         //[ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client, NoStore = false)]
         public IActionResult Index()
         {
-            ContentModel files = new ContentModel(Host, hostingEnv);
-            files.GetFiles();
-            return View(files);
+            ContentModel myFiles = new ContentModel(Host, hostingEnv);
+            myFiles.GetFiles();
+            return View(myFiles);
         }
 
 
         public IActionResult AddToSelectionList(string filename, string selectedFiles)
         {
             ContentModel myFiles = new ContentModel(Host, hostingEnv);
-            myFiles.AddSelectedFile(filename);
+            myFiles.AddFileToSelection(selectedFiles);
             myFiles.GetFiles();
-            //selectedFiles += filename + ";";
-            //TempData["selectedFiles"] += filename + ";";
             return View("Index",myFiles);
         }
 
@@ -65,11 +63,11 @@ namespace WebImage.Controllers
 
             if (MaxLengthKB > 0)
             {
-                files = myfiles.Files.Where(x => x.LengthKb <= MaxLengthKB).ToList();
+                files = myfiles.UnselectedFiles.Where(x => x.LengthKb <= MaxLengthKB).ToList();
             }
             else
             {
-                files = myfiles.Files;
+                files = myfiles.UnselectedFiles;
             }
 
             var myjson = files.Select(
@@ -100,21 +98,25 @@ namespace WebImage.Controllers
 
 
 
-        [HttpGet("/api/getselection")]
-        public JsonResult GetListSelection(decimal MaxLengthKB)
+
+
+
+        [HttpGet("/api/getselection/{selectedImages}")]
+        public JsonResult GetListSelection(string selectedImages)
         {
             DateTime StartDate = DateTime.Now;
 
             ContentModel myfiles = new ContentModel(Host, hostingEnv);
+            myfiles.GetFiles();
             List<FileModel> files = new List<FileModel>();
 
-            if (MaxLengthKB > 0)
+            if (!string.IsNullOrEmpty(selectedImages))
             {
-                files = myfiles.Files.Where(x => x.LengthKb <= MaxLengthKB).ToList();
+                files = myfiles.UnselectedFiles.Where(x => selectedImages.Split(",").Contains(x.Name)).ToList();
             }
             else
             {
-                files = myfiles.Files;
+                files = myfiles.UnselectedFiles;
             }
 
             var myjson = files.Select(
