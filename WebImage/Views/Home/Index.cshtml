@@ -2,15 +2,14 @@
 
 @{
     ViewData["Title"] = "Home Page";
-    var SelectedFiles = TempData["selectedFiles"];
 }
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
 
 <style>
-
     .box {
         width: 100px;
+        height: 100px;
         margin: 20px;
     }
 
@@ -19,105 +18,119 @@
         border: 2px solid #F1F13A;
     }
 
-    .selectedImages img {
+    #dragtarget img {
         margin-top: 10px;
         margin-bottom: 10px;
     }
 
     .selectedbox {
-        /* border:10px solid red;*/
-        background-color: red;
+        background-color: #424313;
+        opacity: 0.4;
+    }
+
+    .jdisplay {
+        padding: 10px;
+    }
+
+    .jdisplay ul {
+        list-style-type: none;
     }
 </style>
 
 
 <script>
 
-function drag(event) {
-    event.dataTransfer.setData("text", event.target.id);
-};
+    function drag(event) {
+        event.dataTransfer.setData("text", event.target.id);
+    };
 
-function drop(event) {
-    event.preventDefault();
-    var widgetName2 = event.dataTransfer.getData("text");
-    event.target.appendChild(document.getElementById(widgetName2));
-    var selectedIds = [];
-    $("#dragtarget img.box.card-img-top").each(function () {
-        selectedIds.push(this.id);
-    });
+    function drop(event) {
+        event.preventDefault();
+        var widgetName2 = event.dataTransfer.getData("text");
+        //console.log(document.getElementById(widgetName2));
+        console.log("#" +widgetName2);
+        //console.log($("'#" + widgetName2 + "'"));
 
-
-    //$("#dragtarget").hover(function () {
-    //    $(this).addClass("selectedbox");
-    //});
-
-    $.ajax({
-        url: 'Home/AddToSelectionList',
-        data: {
-            filename: widgetName2,
-            selectedFiles: selectedIds.join()
-        }
-    }).done(function () {
-          //  alert("done");
+        //console.log($("#IMG02297225926A.bmp"));
+        //console.log(widgetName2);
+        event.target.appendChild(document.getElementById(widgetName2));
+        //event.target.appendChild($("#" + widgetName2));
+        var selectedIds = [];
+        $("#dragtarget img.box.card-img-top").each(function () {
+            selectedIds.push(this.id);
         });
 
+        $.ajax({
+            url: 'Home/AddToSelectionList',
+            data: {
+                filename: widgetName2,
+                selectedFiles: selectedIds.join()
+            }
+        }).done(function () {
+            $("#dragtarget").removeClass("selectedbox");
+
+            $.getJSON('/api/getselection/' + selectedIds.join(),
+                function (result) {
+
+                    var res = "";
+                    if (result != null) {
+                        if (result.myJson.length > 0) {
+                            res += "<ul><strong>myJson</strong>";
+                            $.each(result.myJson, function (i, item) {
+                                res += "<li><ul>";
+                                res += "<li>title: " + item.title + "</li>";
+                                res += "<li>lengthKb: " + item.lengthKb + "</li>";
+                                res += "<li>lengthMb: " + item.lengthMb + "</li>";
+                                res += "<li>url: " + item.url + "</li>";
+                                res += "</ul></li>";
+                                res += "<br/>";
+                            });
+                            res += "</ul>";
+                        }
+
+                        res += "<ul><strong>stat</strong>";
+                        res += "<li>count: " + result.stat.count + "</li>";
+                        res += "<li>totalLengthKb: " + result.stat.totalLengthKb + "</li>";
+                        res += "<li>totalLengthMb: " + result.stat.totalLengthMb + "</li>";
+                        res += "<li>elapsedTime: " + result.stat.elapsedTime + "</li>";
+                        res += "</ul>";
+                    }
+
+                    $("#JsonPreview").html(res);
+                    $("#JsonLink").html(window.location.protocol + "//" + window.location.host + "/api/getselection/" + selectedIds.join());
+                    $("#JsonLink").show();
+                    $("#JsonPreview").show();
+                });
+        });
+    };
+
+    function allowDrop(ev) {
+        ev.preventDefault();
+        $("#dragtarget").addClass("selectedbox");
+
+    };
+
+    function removeDrop(event) {
+        event.preventDefault();
+        $("#dragtarget").removeClass("selectedbox");
+    };
 
 
-
-};
-
-function allowDrop(ev) {
-    ev.preventDefault();
-    var idDest = ev.target.id;
-};
-
-function removeDrop(event) {
-    event.preventDefault();
-    var idDest = event.target.id;
-};
-
-
-$( "#dragtarget" ).droppable({
-    hoverClass: "ui-state-active",
-    drop: function( event, ui ) {
-        $( this )
-            .addClass( "ui-state-highlight" )
-            .html( "Dropped!" );
-    }
-});
-
-$(document).ready(function (event) {
-    //$(".box.card-img-top").click(function () {
-    //console.log($(this).html());
-    //$(".selectedImages").append($(this).html());
-    //$(this.remove());
-    //});
-
-    //$(".selectedImages img").click(function () {
-
-
-    //});
-
-
-    /*  $("#dragtarget").hover(function () {
-
-          $(this).addClass("selectedbox");
-      });*/
-
-
-});
+    $(document).ready(function () {
+        $("#JsonLink").hide();
+        $("#JsonPreview").hide();
+    });
 </script>
 
 <div class="container">
     <div class="row">
         <div class="col-10 d-flex flex-row border flex-wrap">
-            @foreach (var file in Model.Files)
+            @foreach (var file in Model.UnselectedFiles)
             {
                 <img class="box card-img-top" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name" draggable="true" ondragstart="drag(event)">
             }
         </div>
         <div class="col-2 border" ondrop="drop(event)" ondragover="allowDrop(event)" id="dragtarget" ondragleave="removeDrop(event)">
-            @*<div class="selectedImages" />*@
             @if (Model.SelectedFiles != null)
             {
                 @foreach (var file in Model.SelectedFiles)
@@ -126,21 +139,11 @@ $(document).ready(function (event) {
                 }
             }
         </div>
-
     </div>
-    <div class="row border d-flex p-2 bd-highlight">
-        <span>Max Length (Kb): </span>@Html.TextBoxFor(x => x.MaxLen)
-        <br />
-        @*<a href="@Url.Action("GetList", "Home")">Json</a>*@
-        @*<a href="@Url.Action("GetList", "Home", new {MaxLengthKB=Model.MaxLen})">Json</a>*@
-        @*@Html.ActionLink("Json", "GetList", "Home", new { MaxLengthKB = 50 })*@
-        <a asp-action="GetList" asp-controller="Home" asp-route-id="1000">Json up to....</a>
-        <a asp-action="GetListSelection" asp-controller="Home" asp-route-id="1000">Json with selected images</a>
-    </div>
-
-
+    <br />
+    <br />
+    <div class="row border jdisplay" id="JsonLink"></div>
+    <br />
+    <br />
+    <div class="row border jdisplay" id="JsonPreview"></div>
 </div>
-<br />
-<br />
-<br />
-<br />
