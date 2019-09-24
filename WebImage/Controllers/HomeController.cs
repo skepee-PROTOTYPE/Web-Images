@@ -27,23 +27,27 @@ namespace WebImage.Controllers
         }
 
         //[ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client, NoStore = false)]
-        public IActionResult Index()
+        public IActionResult GenerateJson()
         {
             ContentModel myFiles = new ContentModel(Host, hostingEnv);
             myFiles.GetFiles();
             return View(myFiles);
         }
 
+        public IActionResult Index()
+        {
+            return View();
+        }
 
         public IActionResult AddToSelectionList(string filename, string selectedFiles)
         {
             ContentModel myFiles = new ContentModel(Host, hostingEnv);
             myFiles.AddFileToSelection(selectedFiles);
             myFiles.GetFiles();
-            return View("Index",myFiles);
+            return View("GenerateJson",myFiles);
         }
 
-        public IActionResult Privacy()
+        public IActionResult Admin()
         {
             return View();
         }
@@ -98,10 +102,6 @@ namespace WebImage.Controllers
         }
 
 
-
-
-
-
         [HttpGet("/api/getselection/{selectedImages}")]
         public JsonResult GetListSelection(string selectedImages)
         {
@@ -149,8 +149,6 @@ namespace WebImage.Controllers
                 Stat = c
             });
         }
-
-
 
     }
 }
