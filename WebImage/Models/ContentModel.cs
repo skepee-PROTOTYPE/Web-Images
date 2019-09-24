@@ -33,8 +33,8 @@ namespace WebImage.Models
 
                     FilesInDirectory.Add(new FileModel()
                     {
-                        Title = string.Empty,
-                        Name = f.Name,
+                        Title = f.Name.Replace("@","").Replace(".",""),
+                        Name = f.Name.Replace("@", "").Replace(".", ""),
                         Extension = f.Extension,
                         LengthKb = sizekb,
                         LengthMb = sizeMb,
