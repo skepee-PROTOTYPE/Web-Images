@@ -1,16 +1,16 @@
-# Web Images
+# Images Json Portal
 
-Web Images is a Web Api for image hosting service. It is like flickr (https://www.flickr.com/) where you can find free pics on line.
-Web images exposes your list of images with a list of attributes in Json format.
+Images Json Portal is a Web Api tool for images. As a hosting service you can freely upload your images and photos and it produces the API. After that you can use the API to show in your client. You can use them to create a gallery or a slider component for example.
 
-The project is in early stage where the images are read for now from a local directory.
+Like [flickr](https://www.flickr.com/) you can find free pics on line but this app can expose in Json format a list of images of your choice and select what attributes you like to use.
 
-The exposed image attributes are:
+The project is slowing proceeding and at the moment the images are stored in local directory.
+[Click here](https://imagejsonportal.azurewebsites.net/)
+
+The image attributes used up to now are:
 
 * Title
 * Length in KB
 * Length in MB
 * Url
-
-The Json resource can be used in different clients. A slider, a gallery or an app.
 
