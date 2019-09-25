@@ -67,12 +67,15 @@ namespace WebImage.Models
 
         public void AddFileToSelection(string MySelectedFiles)
         {
-            foreach (string fileName in MySelectedFiles.Split(','))
+            if (!string.IsNullOrEmpty(MySelectedFiles))
             {
-                var elem = FilesInDirectory.FirstOrDefault(x => x.Name.Equals(fileName, StringComparison.InvariantCultureIgnoreCase));
-                if (elem != null)
+                foreach (string fileName in MySelectedFiles.Split(','))
                 {
-                    SelectedFiles.Add(elem);
+                    var elem = FilesInDirectory.FirstOrDefault(x => x.Name.Equals(fileName, StringComparison.InvariantCultureIgnoreCase));
+                    if (elem != null)
+                    {
+                        SelectedFiles.Add(elem);
+                    }
                 }
             }
         }
