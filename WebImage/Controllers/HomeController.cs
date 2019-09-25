@@ -39,7 +39,7 @@ namespace WebImage.Controllers
             return View();
         }
 
-        public IActionResult AddToSelectionList(string filename, string selectedFiles)
+        public IActionResult AddToSelectionList(string selectedFiles)
         {
             ContentModel myFiles = new ContentModel(Host, hostingEnv);
             myFiles.AddFileToSelection(selectedFiles);
