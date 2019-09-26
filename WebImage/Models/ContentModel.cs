@@ -9,15 +9,14 @@ namespace WebImage.Models
     public class ContentModel
     {
         private static List<FileModel> FilesInDirectory;
-        public List<FileModel> UnselectedFiles { get; set; }
-        public List<FileModel> SelectedFiles { get; set; }
+        public List<FileModel> MyFiles { get; set; }
+
+        public string ApiGetUrl { get; set; }
 
         public string MaxLen { get; set; }
 
         public ContentModel(string host, IHostingEnvironment env)
         {
-            UnselectedFiles = new List<FileModel>();
-            SelectedFiles = new List<FileModel>();
             FilesInDirectory = new List<FileModel>();
 
             string path = Path.Combine(env.WebRootPath, "imagefolder");
@@ -43,54 +42,49 @@ namespace WebImage.Models
                     });
                 }
             }
+            MyFiles = FilesInDirectory;
         }
 
 
-        private JsonData GetJsonSelection()
-        {
-            var myjson = this.SelectedFiles.Select(
-                x => new JsonModel()
-                {
-                    Url = x.Url,
-                    Title = x.Title,
-                    LengthKb = x.LengthKb,
-                    LengthMb = x.LengthMb
-                }).ToList();
+        //private JsonData GetJsonSelection()
+        //{
+        //    var myjson = this.SelectedFiles.Select(
+        //        x => new JsonModel()
+        //        {
+        //            Url = x.Url,
+        //            Title = x.Title,
+        //            LengthKb = x.LengthKb,
+        //            LengthMb = x.LengthMb
+        //        }).ToList();
 
-            return new JsonData()
-            {
-                MyJson = myjson
-            };
+        //    return new JsonData()
+        //    {
+        //        MyJson = myjson
+        //    };
+        //}
 
-
-        }
-
-        public void AddFileToSelection(string MySelectedFiles)
+        public void AddToSelection(string MySelectedFiles)
         {
             if (!string.IsNullOrEmpty(MySelectedFiles))
             {
                 foreach (string fileName in MySelectedFiles.Split(','))
                 {
-                    var elem = FilesInDirectory.FirstOrDefault(x => x.Name.Equals(fileName, StringComparison.InvariantCultureIgnoreCase));
-                    if (elem != null)
-                    {
-                        SelectedFiles.Add(elem);
-                    }
+                    MyFiles.FirstOrDefault(x => x.Name.Equals(fileName, StringComparison.InvariantCultureIgnoreCase)).IsSelected=true;
                 }
             }
         }
 
-        public void GetFiles()
-        {
-            if (SelectedFiles.Any())
-            {
-                this.UnselectedFiles = FilesInDirectory.Where(x => !SelectedFiles.Contains(x)).ToList();
-            }
-            else
-            {
-                this.UnselectedFiles = FilesInDirectory.ToList();
-            }
-        }
+        //public void GetFiles()
+        //{
+        //    if (SelectedFiles.Any())
+        //    {
+        //        this.MyFiles = FilesInDirectory.Where(x => !SelectedFiles.Contains(x)).ToList();
+        //    }
+        //    else
+        //    {
+        //        this.MyFiles = FilesInDirectory.ToList();
+        //    }
+        //}
     }
 
 
@@ -100,6 +94,7 @@ namespace WebImage.Models
         public string Name { get; set; }
         public string Extension { get; set; }
         public string Path { get; set; }
+        public bool IsSelected { get; set; }
     }
 
     public class JsonModel
@@ -119,8 +114,6 @@ namespace WebImage.Models
         {
             MyJson = new List<JsonModel>();
         }
-
-
     }
 
     public class Statistics
@@ -130,6 +123,4 @@ namespace WebImage.Models
         public decimal TotalLengthMb { get; set; }
         public double ElapsedTime { get; set; }
     }
-
-
 }
