@@ -2,6 +2,10 @@
 
 @{
     ViewData["Title"] = "Generate Json";
+
+    var selectedImageList = Model.MyFiles.Where(x => x.IsSelected == true).ToList();
+    var unSelectedImageList = Model.MyFiles.Where(x => x.IsSelected == false).ToList();
+
 }
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -13,7 +17,7 @@
         opacity: 1;
     }
 
-    body {
+    abody {
         background-color: black;
         opacity: 0.7;
         color: darkgray;
@@ -57,101 +61,25 @@
     }
 </style>
 
-
 <script>
 
-    function generateJson() {
+    function fileSelected() {
 
-        var selectedIds = [];
+        var getIds = [];
         $("#dragtarget img").each(function () {
-            selectedIds.push(this.id);
+            getIds.push(this.id);
         });
 
-        var select = btoa(selectedIds.join());
+        return btoa(getIds.join());
+    }
 
 
-
-
-
-
-        $.ajax({
-            url: 'AddToSelectionList',
-            data: {
-                selectedFiles: selectedIds.join()
-            }
-        })
-        /*.done(function () {
-        $("#dragtarget").removeClass("selectedbox");
-
-        $.getJSON('/api/getselection/' + select,
-            function (result) {
-
-                var res = "";
-                if (result != null) {
-                    if (result.myJson.length > 0) {
-                        res += "<ul><strong>myJson</strong>";
-                        $.each(result.myJson, function (i, item) {
-                            res += "<li><ul>";
-                            res += "<li>title: " + item.title + "</li>";
-                            res += "<li>lengthKb: " + item.lengthKb + "</li>";
-                            res += "<li>lengthMb: " + item.lengthMb + "</li>";
-                            res += "<li>url: " + item.url + "</li>";
-                            res += "</ul></li>";
-                            res += "<br/>";
-                        });
-                        res += "</ul>";
-                    }
-
-                    res += "<ul><strong>stat</strong>";
-                    res += "<li>count: " + result.stat.count + "</li>";
-                    res += "<li>totalLengthKb: " + result.stat.totalLengthKb + "</li>";
-                    res += "<li>totalLengthMb: " + result.stat.totalLengthMb + "</li>";
-                    res += "<li>elapsedTime: " + result.stat.elapsedTime.toFixed(10) + "s </li>";
-                    res += "</ul>";
-                }
-
-                $("#JsonLinkLabel").text("Generated link:");
-                $("#JsonPreviewLabel").text("Generated Json content:");
-                $("#JsonPreview").html(res);
-                $("#JsonLink").html(window.location.protocol + "//" + window.location.host + "/api/getselection/" + select);
-                $("#JsonLink").show();
-                $("#JsonPreview").show();
-            });
-        });*/
+    function generateJson() {
+        location.href = '@Url.Action("AddToSelectionList", "Home")?selectedFiles=' + fileSelected();
     };
 
-
-
-    function drag(event) {
-        event.dataTransfer.setData("text", event.target.id);
-    };
-
-    function drop(event) {
-        event.preventDefault();
-        var selelement = event.dataTransfer.getData("text");
-        var elem = $("#" + selelement)[0];
-        $(elem).addClass("lighter");
-        $(elem).attr("draggable", false);
-        $(elem).removeAttr("ondragstart");
-        event.target.appendChild(elem);
-
-        generateJson();
-    };
-
-    function allowDrop(ev) {
-        ev.preventDefault();
-        $("#dragtarget").addClass("selectedbox");
-    };
-
-    function removeDrop(event) {
-        event.preventDefault();
-        $("#dragtarget").removeClass("selectedbox");
-    };
 
     $(document).ready(function () {
-        //$("#JsonLink").hide();
-        //$("#JsonPreview").hide();
-
         $("img.border-danger").click(function () {
 
             if ($(this).parent().attr("id") != "dragtarget") {
@@ -179,24 +107,20 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-12 d-flex flex-row border flex-wrap" ondrop="drop(event)" ondragover="allowDrop(event)" id="dragtarget" ondragleave="removeDrop(event)">
-            @foreach (var file in Model.SelectedFiles)
-            {
-                <div>
+        <div class="col-12 d-flex flex-row border flex-wrap" id="dragtarget">
+            @foreach (var file in selectedImageList)
+                {
                     <img class="box rounded border border-warning" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
-                    <span>title</span>
-                </div>
-
-                @*<ul>
-                <li>title:  @file.Title</li>
-                <li>lengthKb: @file.LengthKb</li>
-                <li>lengthMb: @file.LengthMb</li>
-                <li>url: @file.Url </li>
-            </ul>*@
-
-            }
+                    <ul>
+                        <li>title:  @file.Title</li>
+                        <li>lengthKb: @file.LengthKb</li>
+                        <li>lengthMb: @file.LengthMb</li>
+                        <li>url: @file.Url </li>
+                    </ul>
+                }
         </div>
     </div>
+
     <div class="row">
         <div class="col-12">
             Your images
@@ -204,16 +128,18 @@
     </div>
     <div class="row">
         <div class="col-12 d-flex flex-row border flex-wrap" id="dragsource">
-            @foreach (var file in Model.UnselectedFiles)
+            @foreach (var file in unSelectedImageList)
             {
-                <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name" draggable="true" ondragstart="drag(event)">
+                <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
             }
         </div>
     </div>
     <br />
     <br />
     <p id="JsonLinkLabel"></p>
-    <div class="row border jdisplay" id="JsonLink"></div>
+    <div class="row border jdisplay" id="JsonLink">
+        @Model.ApiGetUrl
+    </div>
     <br />
     <br />
     <br />
@@ -221,21 +147,21 @@
     <p id="JsonPreviewLabel"></p>
     <div class="row border jdisplay" id="JsonPreview">
     </div>
-    @foreach (var file in Model.SelectedFiles)
-    {
-    <p>ciao</p>
-        <p>@file.Title.ToString()</p>
-        @*<ul>
-                <strong>myJson</strong>
-                <li>
-                    <ul>
-                        <li>title:  @file.Title</li>
-                        <li>lengthKb: @file.LengthKb</li>
-                        <li>lengthMb: @file.LengthMb</li>
-                        <li>url: @file.Url </li>
-                    </ul>
-                </li>
-                <br />
-            </ul>*@
+    @{ foreach (var file in selectedImageList)
+        {
+            <p>@file.Title</p>
+            <ul>
+                    <strong>myJson</strong>
+                    <li>
+                        <ul>
+                            <li>title:  @file.Title</li>
+                            <li>lengthKb: @file.LengthKb</li>
+                            <li>lengthMb: @file.LengthMb</li>
+                            <li>url: @file.Url </li>
+                        </ul>
+                    </li>
+                    <br />
+                </ul>
+        }
     }
 </div>
