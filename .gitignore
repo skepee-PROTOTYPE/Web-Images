@@ -8,3 +8,9 @@
 /WebImage/obj
 /.vs
 /WebImage/wwwroot/imagefolder
+*.[Pp]ublish.xml
+*.azurePubxml
+*.pubxml
+*.publishproj
+*.pubxml.user
+/WebImage - Copy
