@@ -5,7 +5,6 @@
 
     var selectedImageList = Model.MyFiles.Where(x => x.IsSelected == true).ToList();
     var unSelectedImageList = Model.MyFiles.Where(x => x.IsSelected == false).ToList();
-
 }
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -15,12 +14,7 @@
     .lighter {
         filter: brightness(150%);
         opacity: 1;
-    }
-
-    .infoimg {
-        background-color: black;
-        opacity: 0.7;
-        color: darkgray;
+        background-color: #1171D0;
     }
 
     .box {
@@ -47,125 +41,161 @@
         min-height: 100px;
     }
 
-    #JsonPreview div.card {
-        margin:10px;
-        width: 30px;
+    .card {
+        margin: 10px;
+        flex-direction: row;
+        padding: 10px;
     }
 
+    .card-body {
+        padding: 0px;
+        padding-left: 10px;
+    }
+
+        .card-body a {
+            padding-bottom: 10px;
+            height: 20px;
+            display: inline-table;
+        }
+
+    .card-img-top {
+        width: 100px;
+        height: 100px;
+    }
+
+    .card-title {
+        font-size: 12px;
+    }
+
+    .card-text {
+        font-size: 10px;
+    }
+
+    #geturl .card {
+        flex-direction: column;
+    }
+
+
+    #urltext {
+        border-width: 0px;
+    }
 </style>
 
 <script>
 
-function fileSelected() {
+    function fileSelected() {
+        var getIds = [];
+        $("#dragtarget img").each(function () {
+            getIds.push(this.id);
+        });
 
-    var getIds = [];
-    $("#dragtarget img").each(function () {
-        getIds.push(this.id);
-    });
+        return btoa(getIds.join());
+    }
 
-    return btoa(getIds.join());
-}
+    function selectionList() {
+        location.href = '@Url.Action("AddToSelectionList", "Home")?selectedFiles=' + fileSelected();
+    };
 
+    function copylink() {
+        $("#urltext").val($("#geturl div").text());
+        var copyText = $("#urltext");
+        copyText.select();
+        //copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+        document.execCommand("copy");
+        $("#copybutton").text("Copied!");
+        $("#copybutton").prop("disabled", true);
+    }
 
-function generateJson() {
-    location.href = '@Url.Action("AddToSelectionList", "Home")?selectedFiles=' + fileSelected();
-};
 
 
 $(document).ready(function () {
-    $(".infoimg").hide();
     $("img.border-danger").click(function () {
 
-        if ($(this).parent().attr("id") != "dragtarget") {
+        if ($(this).parent().attr("id") != "dragtarget")
+        {
             $(this).hide().appendTo("#dragtarget").show('slow');
         }
-        else {
+        else
+        {
             $(this).hide().appendTo("#dragsource").show('slow');
         }
 
-        generateJson();
+        selectionList();
     });
-
-    //$("#dragtarget img").hover(function () {
-    //    $(this).next(".infoimg").toggle();
-    //});
 
 
     $("img").hover(function () {
         $(this).toggleClass("lighter");
     });
 
+    });
+</script>
 
-});
-    </script>
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                Your selection
-            </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 alert alert-warning" role="alert">
+            Available images: click on to add to your list
         </div>
-        <div class="row">
-            <div class="col-12 d-flex flex-row border flex-wrap" id="dragtarget">
-                @foreach (var file in selectedImageList)
-                {
-                    <img class="box rounded border border-warning" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
-                    @*<div class="infoimg">
-                            <p>@file.Title</p>
-                            <p>size: @file.LengthKb (KB) - @file.LengthMb (MB)</p>
-                            <p>url: @file.Url </p>
-                        </div>*@
-                }
-            </div>
+    </div>
+    <div class="row">
+        <div class="col-12 d-flex flex-row border flex-wrap" id="dragsource">
+            @foreach (var file in unSelectedImageList)
+            {
+                <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
+            }
         </div>
-
-        <div class="row">
-            <div class="col-12">
-                Your images
-            </div>
+    </div>
+    <br />
+    <br />
+    <div class="row">
+        <div class="col-12 alert alert-warning" role="alert">
+            Your selection
         </div>
-        <div class="row">
-            <div class="col-12 d-flex flex-row border flex-wrap" id="dragsource">
-                @foreach (var file in unSelectedImageList)
-                {
-                    <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
-                }
-            </div>
+    </div>
+    <div class="row">
+        <div class="col-12 d-flex flex-row border flex-wrap" id="dragtarget">
+            @foreach (var file in selectedImageList)
+            {
+                <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
+            }
         </div>
-        <br />
-        <br />
-        @*<div class="alert alert-info" role="alert">
-                <h4 class="alert-heading">Web API [Get]</h4>
-                <p>This is the GET for your API.</p>
-                <hr>
-                <p class="mb-0">@Model.ApiGetUrl</p>
-            </div>*@
-
-        <p>
+    </div>
+    <br />
+    <br />
+    @if (selectedImageList.Any())
+    {
+        <div class="row">
             <a class="btn btn-info" data-toggle="collapse" href="#geturl" role="button" aria-expanded="false" aria-controls="geturl">
-                Show your generated url
+                Show me the url
             </a>
-        </p>
-        <div class="collapse" id="geturl">
-            <div class="card card-body">
-                @Model.ApiGetUrl
-            </div>
         </div>
         <br />
         <br />
-        <p id="JsonPreviewLabel"></p>
-        <div class="row alert alert-info" role="alert" id="JsonPreview">
+        <div class="row">
+            <div class="collapse" id="geturl">
+                <button class="btn btn-outline-secondary" onclick="copylink()" id="copybutton">Copy me</button>
+                <div class="card card-body">
+                    @Model.ApiGetUrl
+                </div>
+                <input type="text" readonly="readonly" id="urltext" hidden="hidden" />
+            </div>
+        </div>
+    }
+    <br />
+    <br />
+    @*<p id="JsonPreviewLabel"></p>
+        <div class="row alert alert-info" role="alert">
             @{ foreach (var file in selectedImageList)
                 {
-                    <div class="card" style="width: 18rem;">
-                        <img src="@file.Path" class="card-img-top" alt="...">
+                    <div class="card border border-info">
+                        <img src="@file.Path" class="card-img-top" alt="@file.Title">
                         <div class="card-body">
                             <h5 class="card-title">@file.Title</h5>
                             <p class="card-text">size: @file.LengthKb (KB) - @file.LengthMb (MB)</p>
-                            <a href="http://@file.Url" class="btn btn-info">Click</a>
+                            <a href="" class="btn btn-info">Click</a>
                         </div>
                     </div>
                 }
             }
-        </div>
-    </div>
+        </div>*@
+</div>
