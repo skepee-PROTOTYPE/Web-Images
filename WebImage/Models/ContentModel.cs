@@ -69,22 +69,13 @@ namespace WebImage.Models
             {
                 foreach (string fileName in MySelectedFiles.Split(','))
                 {
-                    MyFiles.FirstOrDefault(x => x.Name.Equals(fileName, StringComparison.InvariantCultureIgnoreCase)).IsSelected=true;
+                    if (!string.IsNullOrEmpty(fileName))
+                    {
+                        MyFiles.FirstOrDefault(x => x.Name.Equals(fileName, StringComparison.InvariantCultureIgnoreCase)).IsSelected = true;
+                    }
                 }
             }
         }
-
-        //public void GetFiles()
-        //{
-        //    if (SelectedFiles.Any())
-        //    {
-        //        this.MyFiles = FilesInDirectory.Where(x => !SelectedFiles.Contains(x)).ToList();
-        //    }
-        //    else
-        //    {
-        //        this.MyFiles = FilesInDirectory.ToList();
-        //    }
-        //}
     }
 
 
