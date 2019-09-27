@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\IFormFile.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\imagefolder\IMG02297225055A.bmp" />
     <None Include="wwwroot\imagefolder\IMG02297225343A.bmp" />
     <None Include="wwwroot\imagefolder\IMG02297225343A.jpg" />
