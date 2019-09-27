@@ -30,7 +30,6 @@ namespace WebImage.Controllers
         public IActionResult GenerateJson()
         {
             ContentModel myFiles = new ContentModel(Host, hostingEnv);
-            //myFiles.GetFiles();
             return View(myFiles);
         }
 
@@ -39,14 +38,19 @@ namespace WebImage.Controllers
             return View();
         }
 
-        //[HttpPost]
+
+        
+
+
         public IActionResult AddToSelectionList(string selectedFiles)
         {
-            string decSelectedFiles = Decode(selectedFiles);
             ContentModel myFiles = new ContentModel(Host, hostingEnv);
-            myFiles.AddToSelection(decSelectedFiles);
-            myFiles.ApiGetUrl = Request.Scheme + "://" + Request.Host + "/api/getselection/" + selectedFiles;
-
+            if (!string.IsNullOrEmpty(selectedFiles))
+            {
+                string decSelectedFiles = Decode(selectedFiles);
+                myFiles.AddToSelection(decSelectedFiles);
+                myFiles.ApiGetUrl = Request.Scheme + "://" + Request.Host + "/api/getselection/" + selectedFiles;
+            }
             return View("GenerateJson", myFiles);
         }
 
@@ -119,42 +123,36 @@ namespace WebImage.Controllers
             DateTime StartDate = DateTime.Now;
 
             ContentModel myfiles = new ContentModel(Host, hostingEnv);
-            //myfiles.GetFiles();
             List<FileModel> files = new List<FileModel>();
 
             if (!string.IsNullOrEmpty(decodedString))
             {
                 files = myfiles.MyFiles.Where(x => decodedString.Split(",").Contains(x.Name)).ToList();
+
+                return Json(new JsonData()
+                {
+                    MyJson = files.Select(
+                    x => new JsonModel()
+                    {
+                        Url = x.Url,
+                        Title = x.Title,
+                        LengthKb = x.LengthKb,
+                        LengthMb = x.LengthMb
+                    }).ToList(),
+
+                    Stat = new Statistics()
+                    {
+                        Count = files.Count(),
+                        TotalLengthKb = files.Select(x => x.LengthKb).Sum(),
+                        TotalLengthMb = files.Select(x => x.LengthMb).Sum(),
+                        ElapsedTime = (DateTime.Now - StartDate).TotalDays
+                    }
+                });
             }
             else
             {
-                files = myfiles.MyFiles;
+                return Json(null);
             }
-
-            var myjson = files.Select(
-                x => new JsonModel()
-                {
-                    Url = x.Url,
-                    Title = x.Title,
-                    LengthKb = x.LengthKb,
-                    LengthMb = x.LengthMb
-                }).ToList();
-
-
-            var c = new Statistics()
-            {
-                Count = files.Count(),
-                TotalLengthKb = files.Select(x => x.LengthKb).Sum(),
-                TotalLengthMb = files.Select(x => x.LengthMb).Sum(),
-                ElapsedTime = (DateTime.Now - StartDate).TotalDays
-
-            };
-
-            return Json(new JsonData()
-            {
-                MyJson = myjson,
-                Stat = c
-            });
         }
 
         private static string Decode(string selectedImages)
