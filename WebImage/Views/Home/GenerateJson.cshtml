@@ -14,7 +14,7 @@
     .lighter {
         filter: brightness(150%);
         opacity: 1;
-        background-color: #1171D0;
+        background-color: #2C7FD2;
     }
 
     .box {
@@ -37,26 +37,26 @@
     }
 
 
-    div.col-12.d-flex {
-        min-height: 100px;
-    }
+    /*div.col-12.d-flex {
+            min-height: 100px;
+        }*/
 
-    .card {
-        margin: 10px;
-        flex-direction: row;
-        padding: 10px;
-    }
-
-    .card-body {
-        padding: 0px;
-        padding-left: 10px;
-    }
-
-        .card-body a {
-            padding-bottom: 10px;
-            height: 20px;
-            display: inline-table;
+    /*.card {
+            margin: 10px;
+            flex-direction: row;
+            padding: 10px;
         }
+
+        .card-body {
+            padding: 0px;
+            padding-left: 10px;
+        }*/
+
+    /*.card-body a {
+                padding-bottom: 10px;
+                height: 20px;
+                display: inline-table;
+            }*/
 
     .card-img-top {
         width: 100px;
@@ -71,12 +71,26 @@
         font-size: 10px;
     }
 
-    #geturl .card {
-        flex-direction: column;
+    #geturl div {
+        /*display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;*/
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        -ms-word-break: break-all;
+        /* This is the dangerous one in WebKit, as it breaks things wherever */
+        word-break: break-all;
+        /* Instead use this non-standard one: */
+        word-break: break-word;
+        /* Adds a hyphen where the word breaks, if supported (No Blink) */
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
     }
 
-
     #urltext {
+        height: 0px;
         border-width: 0px;
     }
 </style>
@@ -97,7 +111,7 @@
     };
 
     function copylink() {
-        $("#urltext").val($("#geturl div").text());
+        $("#urltext").val($("#geturl div").text().trim());
         var copyText = $("#urltext");
         copyText.select();
         //copyText.setSelectionRange(0, 99999); /*For mobile devices*/
@@ -124,6 +138,10 @@ $(document).ready(function () {
     });
 
 
+    $("#go").click(function () {
+            window.open('@Model.ApiGetUrl','_blank');
+    });
+
     $("img").hover(function () {
         $(this).toggleClass("lighter");
     });
@@ -133,7 +151,7 @@ $(document).ready(function () {
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-12 alert alert-warning" role="alert">
+        <div class="col-12 alert alert-info" role="alert">
             Available images: click on to add to your list
         </div>
     </div>
@@ -148,7 +166,7 @@ $(document).ready(function () {
     <br />
     <br />
     <div class="row">
-        <div class="col-12 alert alert-warning" role="alert">
+        <div class="col-12 alert alert-info" role="alert">
             Your selection
         </div>
     </div>
@@ -162,22 +180,26 @@ $(document).ready(function () {
     </div>
     <br />
     <br />
+    <br />
+    <br />
     @if (selectedImageList.Any())
     {
         <div class="row">
-            <a class="btn btn-info" data-toggle="collapse" href="#geturl" role="button" aria-expanded="false" aria-controls="geturl">
+            <a class="col-12 btn btn-info" data-toggle="collapse" href="#geturl" role="button" aria-expanded="false" aria-controls="geturl">
                 Show me the url
             </a>
         </div>
         <br />
-        <br />
         <div class="row">
             <div class="collapse" id="geturl">
-                <button class="btn btn-outline-secondary" onclick="copylink()" id="copybutton">Copy me</button>
-                <div class="card card-body">
+                @*<button class="btn btn-outline-secondary" onclick="copylink()" id="copybutton">Copy me</button>*@
+                @*<button class="btn btn-outline-secondary" id="go">Go!</button>*@
+                @*<br /><br />*@
+                <div class="alert alert-info" role="alert">
                     @Model.ApiGetUrl
                 </div>
-                <input type="text" readonly="readonly" id="urltext" hidden="hidden" />
+                <button class="col-12 btn btn-outline-secondary" id="go">Go!</button>
+                <input type="text" readonly="readonly" id="urltext" />
             </div>
         </div>
     }
