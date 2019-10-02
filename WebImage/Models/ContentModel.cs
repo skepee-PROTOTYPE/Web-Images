@@ -28,11 +28,11 @@ namespace WebImage.Models
                     FileInfo f = new FileInfo(file);
 
                     var sizekb = Math.Round(((decimal)f.Length) / 1024, 1);
-                    var sizeMb = Math.Round(((decimal)sizekb) / 1024, 2);
+                    var sizeMb = Math.Round(sizekb / 1024, 2);
 
                     FilesInDirectory.Add(new FileModel()
                     {
-                        Title = f.Name.Replace("@","").Replace(".",""),
+                        Title = f.Name.Replace("@", "").Replace(".", ""),
                         Name = f.Name.Replace("@", "").Replace(".", ""),
                         Extension = f.Extension,
                         LengthKb = sizekb,
@@ -86,6 +86,8 @@ namespace WebImage.Models
         public string Extension { get; set; }
         public string Path { get; set; }
         public bool IsSelected { get; set; }
+        public bool IsPrivate { get; set; }
+        public string Category { get; set; }
     }
 
     public class JsonModel
@@ -98,10 +100,22 @@ namespace WebImage.Models
 
     public class JsonData
     {
-        public List<JsonModel> MyJson { get; set; }
+        public List<MyData> MyData { get; set; }
         public Statistics Stat { get; set; }
 
         public JsonData()
+        {
+            MyData = new List<MyData>();
+        }
+    }
+
+
+    public class MyData
+    {
+        public List<JsonModel> MyJson { get; set; }
+        public string Profile { get; set; }
+
+        public MyData()
         {
             MyJson = new List<JsonModel>();
         }
