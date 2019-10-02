@@ -152,12 +152,17 @@ $(document).ready(function () {
 <div class="container-fluid">
     <div class="row">
         <div class="col-12 alert alert-info" role="alert">
-            Available images: click on to add to your list
+            Click on to add to your list
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 alert alert-info" role="alert">
+            Public
         </div>
     </div>
     <div class="row">
         <div class="col-12 d-flex flex-row border flex-wrap" id="dragsource">
-            @foreach (var file in unSelectedImageList)
+            @foreach (var file in unSelectedImageList.Where(x=>!x.IsPrivate))
             {
                 <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
             }
@@ -167,7 +172,30 @@ $(document).ready(function () {
     <br />
     <div class="row">
         <div class="col-12 alert alert-info" role="alert">
-            Your selection
+            Private
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 d-flex flex-row border flex-wrap" id="dragsource">
+            @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
+            {
+                <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
+            }
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="row">
+        <div class="col-12 alert alert-info" role="alert">
+            Your selection: click on to remove from the list.
+        </div>
+    </div>
+    <div class="row">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Profile: </span>
+            </div>
+            <input type="text" class="form-control" placeholder="give a name to identify your image group" aria-label="Username" aria-describedby="basic-addon1">
         </div>
     </div>
     <div class="row">
