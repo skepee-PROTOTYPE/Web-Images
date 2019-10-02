@@ -39,7 +39,7 @@ namespace WebImage.Controllers
         }
 
 
-        
+
 
 
         public IActionResult AddToSelectionList(string selectedFiles)
@@ -71,48 +71,56 @@ namespace WebImage.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        [HttpGet("/api/getmax/{MaxLengthKB}")]
-        public JsonResult GetList(decimal MaxLengthKB)
-        {
-            DateTime StartDate = DateTime.Now;
+        //[HttpGet("/api/getmax/{MaxLengthKB}")]
+        //public JsonResult GetList(decimal MaxLengthKB)
+        //{
+        //    DateTime StartDate = DateTime.Now;
 
-            ContentModel myfiles = new ContentModel(Host, hostingEnv);
-            List<FileModel> files = new List<FileModel>();
+        //    ContentModel myfiles = new ContentModel(Host, hostingEnv);
+        //    List<FileModel> files = new List<FileModel>();
 
-            if (MaxLengthKB > 0)
-            {
-                files = myfiles.MyFiles.Where(x => x.LengthKb <= MaxLengthKB).ToList();
-            }
-            else
-            {
-                files = myfiles.MyFiles;
-            }
+        //    if (MaxLengthKB > 0)
+        //    {
+        //        files = myfiles.MyFiles.Where(x => x.LengthKb <= MaxLengthKB).ToList();
+        //    }
+        //    else
+        //    {
+        //        files = myfiles.MyFiles;
+        //    }
 
-            var myjson = files.Select(
-                x => new JsonModel()
-                {
-                    Url = x.Url,
-                    Title = x.Title,
-                    LengthKb = x.LengthKb,
-                    LengthMb = x.LengthMb
-                }).ToList();
+        //    var mydata = new MyData()
+        //    {
+        //        MyJson = files.Select(
+        //        x => new JsonModel()
+        //        {
+        //            Url = x.Url,
+        //            Title = x.Title,
+        //            LengthKb = x.LengthKb,
+        //            LengthMb = x.LengthMb
+        //        }).ToList(),
 
+        //        Profile = "test"
+        //    };
 
-            var c = new Statistics()
-            {
-                Count = files.Count(),
-                TotalLengthKb = files.Select(x => x.LengthKb).Sum(),
-                TotalLengthMb = files.Select(x => x.LengthMb).Sum(),
-                ElapsedTime = (DateTime.Now - StartDate).TotalDays
+        //    var c = new Statistics()
+        //    {
+        //        Count = files.Count(),
+        //        TotalLengthKb = files.Select(x => x.LengthKb).Sum(),
+        //        TotalLengthMb = files.Select(x => x.LengthMb).Sum(),
+        //        ElapsedTime = (DateTime.Now - StartDate).TotalDays
 
-            };
+        //    };
 
-            return Json(new JsonData()
-            {
-                MyJson = myjson,
-                Stat = c
-            });
-        }
+        //    return Json(new JsonData()
+        //    {
+        //        MyData = new List<MyData>()
+        //        {
+        //            mydata
+        //        },
+
+        //        Stat = c
+        //    });
+        //}
 
 
         [HttpGet("/api/getselection/{selectedImages}")]
@@ -129,7 +137,7 @@ namespace WebImage.Controllers
             {
                 files = myfiles.MyFiles.Where(x => decodedString.Split(",").Contains(x.Name)).ToList();
 
-                return Json(new JsonData()
+                var mydata = new MyData()
                 {
                     MyJson = files.Select(
                     x => new JsonModel()
@@ -139,6 +147,16 @@ namespace WebImage.Controllers
                         LengthKb = x.LengthKb,
                         LengthMb = x.LengthMb
                     }).ToList(),
+
+                    Profile = "ssss"
+                };
+
+                return Json(new JsonData()
+                {
+                    MyData = new List<MyData>()
+                    {
+                        mydata
+                    },
 
                     Stat = new Statistics()
                     {
