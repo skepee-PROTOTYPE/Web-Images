@@ -93,6 +93,10 @@
         height: 0px;
         border-width: 0px;
     }
+
+    #dragsource {
+        margin-top: 10px;
+    }
 </style>
 
 <script>
@@ -137,6 +141,18 @@ $(document).ready(function () {
         selectionList();
     });
 
+    $("#btnPublic").click(function () {
+        $("#collapsePrivate").removeClass("show");
+        $(this).toggleClass("btn-secondary").toggleClass("btn-warning");
+        $("#btnPrivate").addClass("btn-secondary").removeClass("btn-warning");
+    });
+
+    $("#btnPrivate").click(function () {
+        $("#collapsePublic").removeClass("show");
+        $(this).toggleClass("btn-secondary").toggleClass("btn-warning");
+        $("#btnPublic").addClass("btn-secondary").removeClass("btn-warning");
+    });
+
 
     $("#go").click(function () {
             window.open('@Model.ApiGetUrl','_blank');
@@ -150,39 +166,97 @@ $(document).ready(function () {
 </script>
 
 <div class="container-fluid">
+    @*<div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>*@
+
+    @*<div class="row">
+            <div class="input-group flex-nowrap">
+                <div class="input-group-prepend">
+                    <div class="alert alert-info" role="alert">
+                        Click on to add to your list
+                    </div>
+                </div>
+                <div class="btn-group" role="group" aria-label="image buttons">
+                    <button type="button" id="btnPublic" class="btn btn-secondary" data-toggle="collapse" data-target="#collapsePublic" aria-expanded="false" aria-controls="collapsePublic">Public</button>
+                    <button type="button" id="btnPrivate" class="btn btn-secondary" data-toggle="collapse" data-target="#collapsePrivate" aria-expanded="false" aria-controls="collapsePrivate">Private</button>
+                </div>
+            </div>
+        </div>*@
+
+    @*<div class="row">
+            <div class="col-12 alert alert-info" role="alert">
+                Click on to add to your list
+            </div>
+        </div>*@
     <div class="row">
-        <div class="col-12 alert alert-info" role="alert">
-            Click on to add to your list
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12 alert alert-info" role="alert">
-            Public
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12 d-flex flex-row border flex-wrap" id="dragsource">
-            @foreach (var file in unSelectedImageList.Where(x=>!x.IsPrivate))
-            {
-                <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
-            }
+        <div class=" btn-group" role="group" aria-label="image buttons">
+            @*<div class="col-9 card">
+                <div class="card-body">
+                    Select public or private photos
+                </div>
+            </div>*@
+            <button type="button" id="btnPublic" class="btn btn-secondary" data-toggle="collapse" data-target="#collapsePublic" aria-expanded="false" aria-controls="collapsePublic">Public</button>
+            <button type="button" id="btnPrivate" class="btn btn-secondary" data-toggle="collapse" data-target="#collapsePrivate" aria-expanded="false" aria-controls="collapsePrivate">Private</button>
+            <div class="card">
+                <div class="card-body">
+                    Click on to add to your list
+                </div>
+            </div>
         </div>
     </div>
     <br />
     <br />
     <div class="row">
-        <div class="col-12 alert alert-info" role="alert">
-            Private
+        <div class="collapse" id="collapsePublic">
+            <div class="col-12 d-flex flex-row border flex-wrap" id="sourcePublic">
+                @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
+                {
+                    <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
+                }
+            </div>
+        </div>
+        <div class="collapse" id="collapsePrivate">
+            <div class="col-12 d-flex flex-row border flex-wrap" id="sourcePrivate">
+                @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
+                {
+                    <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
+                }
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-12 d-flex flex-row border flex-wrap" id="dragsource">
-            @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
-            {
-                <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
-            }
+
+
+    @*<div class="row">
+                <div class="col-12 alert alert-info" role="alert">
+                    Public
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 d-flex flex-row border flex-wrap" id="dragsource">
+                    @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
+                    {
+                        <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
+                    }
+                </div>
+            </div>
+        <br />
+        <br />
+        <div class="row">
+            <div class="col-12 alert alert-info" role="alert">
+                Private
+            </div>
         </div>
-    </div>
+        <div class="row">
+            <div class="col-12 d-flex flex-row border flex-wrap" id="dragsource">
+                @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
+                {
+                    <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
+                }
+            </div>
+        </div>*@
     <br />
     <br />
     <div class="row">
