@@ -17,9 +17,14 @@ namespace WebImage.Models
 
         public ContentModel(string host, IHostingEnvironment env)
         {
-            FilesInDirectory = new List<FileModel>();
+            FilesInDirectory = GetFromDirectory(host, Path.Combine(env.WebRootPath, "imagefolder", "public"),false);
+            FilesInDirectory.AddRange(GetFromDirectory(host, Path.Combine(env.WebRootPath, "imagefolder","private"),true));
+            MyFiles = FilesInDirectory;
+        }
 
-            string path = Path.Combine(env.WebRootPath, "imagefolder");
+        private List<FileModel> GetFromDirectory(string host, string path, bool isPrivate)
+        {
+            var myFiles = new List<FileModel>();
 
             if (Directory.Exists(path))
             {
@@ -30,19 +35,20 @@ namespace WebImage.Models
                     var sizekb = Math.Round(((decimal)f.Length) / 1024, 1);
                     var sizeMb = Math.Round(sizekb / 1024, 2);
 
-                    FilesInDirectory.Add(new FileModel()
+                    myFiles.Add(new FileModel()
                     {
                         Title = f.Name.Replace("@", "").Replace(".", ""),
                         Name = f.Name.Replace("@", "").Replace(".", ""),
                         Extension = f.Extension,
                         LengthKb = sizekb,
                         LengthMb = sizeMb,
-                        Path = "/images/" + f.Name,
-                        Url = host + "/images/" + f.Name
+                        Path = "/images/"+ ((isPrivate)?"private/":"public/") + f.Name,
+                        Url = host + "/images/" + ((isPrivate) ? "private/" : "public/") + f.Name,
+                        IsPrivate= isPrivate
                     });
                 }
             }
-            MyFiles = FilesInDirectory;
+            return myFiles;
         }
 
 
