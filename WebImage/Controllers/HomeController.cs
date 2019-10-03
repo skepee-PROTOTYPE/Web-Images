@@ -38,10 +38,6 @@ namespace WebImage.Controllers
             return View();
         }
 
-
-
-
-
         public IActionResult AddToSelectionList(string selectedFiles)
         {
             ContentModel myFiles = new ContentModel(Host, hostingEnv);
@@ -148,7 +144,7 @@ namespace WebImage.Controllers
                         LengthMb = x.LengthMb
                     }).ToList(),
 
-                    Profile = "ssss"
+                    Profile = "xxxx"
                 };
 
                 return Json(new JsonData()
