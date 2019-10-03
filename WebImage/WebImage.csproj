@@ -11,16 +11,7 @@
 
   <ItemGroup>
     <Content Remove="Views\FileUpload\Index.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\imagefolder\IMG02297225055A.bmp" />
-    <None Include="wwwroot\imagefolder\IMG02297225343A.bmp" />
-    <None Include="wwwroot\imagefolder\IMG02297225343A.jpg" />
-    <None Include="wwwroot\imagefolder\IMG02297225529A.bmp" />
-    <None Include="wwwroot\imagefolder\IMG02297225823A.jpg" />
-    <None Include="wwwroot\imagefolder\IMG02297225926A.bmp" />
-    <None Include="wwwroot\imagefolder\IMG02297225926A.jpg" />
+    <Content Remove="wwwroot\imagefolder\IMG02297225055A - Copy - Copy.bmp" />
   </ItemGroup>
 
 

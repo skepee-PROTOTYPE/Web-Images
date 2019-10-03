@@ -7,10 +7,10 @@
 /WebImage/obj/Release/netcoreapp2.2
 /WebImage/obj
 /.vs
-/WebImage/wwwroot/imagefolder
 *.[Pp]ublish.xml
 *.azurePubxml
 *.pubxml
 *.publishproj
 *.pubxml.user
-/WebImage - Copy
+/WebImage/wwwroot/imagefolder
+/WebImage/bin

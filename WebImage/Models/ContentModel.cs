@@ -10,10 +10,9 @@ namespace WebImage.Models
     {
         private static List<FileModel> FilesInDirectory;
         public List<FileModel> MyFiles { get; set; }
-
         public string ApiGetUrl { get; set; }
-
-        public string MaxLen { get; set; }
+        public string TypeSelected { get; set; }
+        public string Profile { get; set; }
 
         public ContentModel(string host, IHostingEnvironment env)
         {
@@ -50,24 +49,6 @@ namespace WebImage.Models
             }
             return myFiles;
         }
-
-
-        //private JsonData GetJsonSelection()
-        //{
-        //    var myjson = this.SelectedFiles.Select(
-        //        x => new JsonModel()
-        //        {
-        //            Url = x.Url,
-        //            Title = x.Title,
-        //            LengthKb = x.LengthKb,
-        //            LengthMb = x.LengthMb
-        //        }).ToList();
-
-        //    return new JsonData()
-        //    {
-        //        MyJson = myjson
-        //    };
-        //}
 
         public void AddToSelection(string MySelectedFiles)
         {

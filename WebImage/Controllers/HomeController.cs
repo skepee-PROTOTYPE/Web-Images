@@ -38,14 +38,19 @@ namespace WebImage.Controllers
             return View();
         }
 
-        public IActionResult AddToSelectionList(string selectedFiles)
+        public IActionResult AddToSelectionList(string pars)
         {
             ContentModel myFiles = new ContentModel(Host, hostingEnv);
-            if (!string.IsNullOrEmpty(selectedFiles))
+            if (!string.IsNullOrEmpty(pars))
             {
-                string decSelectedFiles = Decode(selectedFiles);
+                string decpars = Decode(pars);
+
+                string decSelectedFiles = decpars.Split("|")[0];
+                myFiles.TypeSelected= decpars.Split("|")[1];
+                myFiles.Profile = decpars.Split("|")[2];
+
                 myFiles.AddToSelection(decSelectedFiles);
-                myFiles.ApiGetUrl = Request.Scheme + "://" + Request.Host + "/api/getselection/" + selectedFiles;
+                myFiles.ApiGetUrl = Request.Scheme + "://" + Request.Host + "/api/getselection/" + pars;
             }
             return View("GenerateJson", myFiles);
         }
@@ -119,10 +124,10 @@ namespace WebImage.Controllers
         //}
 
 
-        [HttpGet("/api/getselection/{selectedImages}")]
-        public JsonResult GetListSelection(string selectedImages)
+        [HttpGet("/api/getselection/{pars}")]
+        public JsonResult GetListSelection(string pars)
         {
-            string decodedString = Decode(selectedImages);
+            string decodedString = Decode(pars);
 
             DateTime StartDate = DateTime.Now;
 
@@ -131,7 +136,11 @@ namespace WebImage.Controllers
 
             if (!string.IsNullOrEmpty(decodedString))
             {
-                files = myfiles.MyFiles.Where(x => decodedString.Split(",").Contains(x.Name)).ToList();
+                string decSelectedFiles = decodedString.Split("|")[0];
+                //string TypeSelected = decodedString.Split("|")[1];
+                string Profile = decodedString.Split("|")[2];
+
+                files = myfiles.MyFiles.Where(x => decSelectedFiles.Split(",").Contains(x.Name)).ToList();
 
                 var mydata = new MyData()
                 {
@@ -141,10 +150,10 @@ namespace WebImage.Controllers
                         Url = x.Url,
                         Title = x.Title,
                         LengthKb = x.LengthKb,
-                        LengthMb = x.LengthMb
+                        LengthMb = x.LengthMb                        
                     }).ToList(),
 
-                    Profile = "xxxx"
+                    Profile = Profile
                 };
 
                 return Json(new JsonData()

@@ -36,28 +36,6 @@
         border: 5px solid #ff6703;
     }
 
-
-    /*div.col-12.d-flex {
-            min-height: 100px;
-        }*/
-
-    /*.card {
-            margin: 10px;
-            flex-direction: row;
-            padding: 10px;
-        }
-
-        .card-body {
-            padding: 0px;
-            padding-left: 10px;
-        }*/
-
-    /*.card-body a {
-                padding-bottom: 10px;
-                height: 20px;
-                display: inline-table;
-            }*/
-
     .card-img-top {
         width: 100px;
         height: 100px;
@@ -72,9 +50,6 @@
     }
 
     #geturl div {
-        /*display: flex;
-            flex-direction: column;
-            flex-wrap: nowrap;*/
         overflow-wrap: break-word;
         word-wrap: break-word;
         -ms-word-break: break-all;
@@ -107,11 +82,24 @@
             getIds.push(this.id);
         });
 
-        return btoa(getIds.join());
+        //return btoa(getIds.join());
+        return getIds.join();
     }
 
+    function params()
+    {
+        var pupr = $("div.btn-group button.btn-warning").text();
+        var pro = $("#profile").val();
+        var par = fileSelected() + "|" + pupr + "|" + pro;
+
+        return btoa(par);
+        //return par;
+    }
+
+
+
     function selectionList() {
-        location.href = '@Url.Action("AddToSelectionList", "Home")?selectedFiles=' + fileSelected();
+        location.href = '@Url.Action("AddToSelectionList", "Home")?pars=' + params();
     };
 
     function copylink() {
@@ -124,32 +112,36 @@
         $("#copybutton").prop("disabled", true);
     }
 
+    $(document).ready(function () {
 
-
-$(document).ready(function () {
     $("img.border-danger").click(function () {
-
         if ($(this).parent().attr("id") != "dragtarget")
         {
             $(this).hide().appendTo("#dragtarget").show('slow');
         }
         else
         {
-            $(this).hide().appendTo("#dragsource").show('slow');
+            if ($(this).hasClass("private")) {
+                $(this).hide().appendTo("#sourcePrivate").show('slow');
+            }
+            if ($(this).hasClass("public"))  {
+                $(this).hide().appendTo("#sourcePublic").show('slow');
+            }
         }
-
         selectionList();
     });
 
     $("#btnPublic").click(function () {
         $("#collapsePrivate").removeClass("show");
         $(this).toggleClass("btn-secondary").toggleClass("btn-warning");
+        //$("#collapsePublic").addClass("show");
         $("#btnPrivate").addClass("btn-secondary").removeClass("btn-warning");
     });
 
     $("#btnPrivate").click(function () {
         $("#collapsePublic").removeClass("show");
-        $(this).toggleClass("btn-secondary").toggleClass("btn-warning");
+        $(this).toggleClass("btn-secondary").toggleClass("btn-warning").addClass("show");
+        //$("#collapsePrivate").addClass("show");
         $("#btnPublic").addClass("btn-secondary").removeClass("btn-warning");
     });
 
@@ -171,35 +163,22 @@ $(document).ready(function () {
                 <span class="sr-only">Loading...</span>
             </div>
         </div>*@
-
-    @*<div class="row">
-            <div class="input-group flex-nowrap">
-                <div class="input-group-prepend">
-                    <div class="alert alert-info" role="alert">
-                        Click on to add to your list
-                    </div>
-                </div>
-                <div class="btn-group" role="group" aria-label="image buttons">
-                    <button type="button" id="btnPublic" class="btn btn-secondary" data-toggle="collapse" data-target="#collapsePublic" aria-expanded="false" aria-controls="collapsePublic">Public</button>
-                    <button type="button" id="btnPrivate" class="btn btn-secondary" data-toggle="collapse" data-target="#collapsePrivate" aria-expanded="false" aria-controls="collapsePrivate">Private</button>
-                </div>
+    <div class="row">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Profile: </span>
             </div>
-        </div>*@
-
-    @*<div class="row">
-            <div class="col-12 alert alert-info" role="alert">
-                Click on to add to your list
-            </div>
-        </div>*@
+            <input type="text" id="profile" value="@Model.Profile" class="form-control" placeholder="give a name to identify your image group" aria-label="Username" aria-describedby="basic-addon1">
+        </div>
+    </div>
     <div class="row">
         <div class=" btn-group" role="group" aria-label="image buttons">
-            @*<div class="col-9 card">
-                <div class="card-body">
-                    Select public or private photos
-                </div>
-            </div>*@
-            <button type="button" id="btnPublic" class="btn btn-secondary" data-toggle="collapse" data-target="#collapsePublic" aria-expanded="false" aria-controls="collapsePublic">Public</button>
-            <button type="button" id="btnPrivate" class="btn btn-secondary" data-toggle="collapse" data-target="#collapsePrivate" aria-expanded="false" aria-controls="collapsePrivate">Private</button>
+            @{
+                string PublicSelected = (Model.TypeSelected == "Public") ? "btn-warning" : "btn-secondary";
+                string PrivateSelected = (Model.TypeSelected == "Private") ? "btn-warning" : "btn-secondary";
+            }
+            <button type="button" id="btnPublic" class="btn @PublicSelected" data-toggle="collapse" data-target="#collapsePublic" aria-expanded="false" aria-controls="collapsePublic">Public</button>
+            <button type="button" id="btnPrivate" class="btn @PrivateSelected" data-toggle="collapse" data-target="#collapsePrivate" aria-expanded="false" aria-controls="collapsePrivate">Private</button>
             <div class="card">
                 <div class="card-body">
                     Click on to add to your list
@@ -210,68 +189,42 @@ $(document).ready(function () {
     <br />
     <br />
     <div class="row">
-        <div class="collapse" id="collapsePublic">
+        @{
+            string ShowPublic = "";
+            string ShowPrivate = "";
+            if (!string.IsNullOrEmpty(Model.TypeSelected)) 
+            {
+                ShowPublic = (Model.TypeSelected == "Public") ? "show" : "";
+                ShowPrivate = (Model.TypeSelected == "Private") ? "show" : "";
+            }
+        }
+        <div class="collapse @(ShowPublic)" id="collapsePublic">
             <div class="col-12 d-flex flex-row border flex-wrap" id="sourcePublic">
                 @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
                 {
-                    <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
+                    <img class="box rounded border border-danger public" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
                 }
             </div>
         </div>
-        <div class="collapse" id="collapsePrivate">
+        <div class="collapse @(ShowPrivate)" id="collapsePrivate">
             <div class="col-12 d-flex flex-row border flex-wrap" id="sourcePrivate">
                 @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
                 {
-                    <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
+                    <img class="box rounded border border-danger private" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
                 }
             </div>
         </div>
     </div>
-
-
-    @*<div class="row">
-                <div class="col-12 alert alert-info" role="alert">
-                    Public
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 d-flex flex-row border flex-wrap" id="dragsource">
-                    @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
-                    {
-                        <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
-                    }
-                </div>
-            </div>
-        <br />
-        <br />
+    <br />
+    <br />
+    @if (selectedImageList.Any())
+    {
         <div class="row">
             <div class="col-12 alert alert-info" role="alert">
-                Private
+                Your selection: click on to remove from the list.
             </div>
         </div>
-        <div class="row">
-            <div class="col-12 d-flex flex-row border flex-wrap" id="dragsource">
-                @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
-                {
-                    <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
-                }
-            </div>
-        </div>*@
-    <br />
-    <br />
-    <div class="row">
-        <div class="col-12 alert alert-info" role="alert">
-            Your selection: click on to remove from the list.
-        </div>
-    </div>
-    <div class="row">
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1">Profile: </span>
-            </div>
-            <input type="text" class="form-control" placeholder="give a name to identify your image group" aria-label="Username" aria-describedby="basic-addon1">
-        </div>
-    </div>
+    }
     <div class="row">
         <div class="col-12 d-flex flex-row border flex-wrap" id="dragtarget">
             @foreach (var file in selectedImageList)
@@ -282,10 +235,10 @@ $(document).ready(function () {
     </div>
     <br />
     <br />
-    <br />
-    <br />
     @if (selectedImageList.Any())
     {
+        <br />
+        <br />
         <div class="row">
             <a class="col-12 btn btn-info" data-toggle="collapse" href="#geturl" role="button" aria-expanded="false" aria-controls="geturl">
                 Show me the url
