@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Views\FileUpload\Index.cshtml" />
     <Content Remove="wwwroot\imagefolder\IMG02297225055A - Copy - Copy.bmp" />
   </ItemGroup>
 
@@ -18,12 +17,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="Views\FileUpload\" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
   </ItemGroup>
 
 </Project>
