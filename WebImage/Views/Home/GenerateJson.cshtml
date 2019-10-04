@@ -192,7 +192,7 @@
         @{
             string ShowPublic = "";
             string ShowPrivate = "";
-            if (!string.IsNullOrEmpty(Model.TypeSelected)) 
+            if (!string.IsNullOrEmpty(Model.TypeSelected))
             {
                 ShowPublic = (Model.TypeSelected == "Public") ? "show" : "";
                 ShowPrivate = (Model.TypeSelected == "Private") ? "show" : "";
@@ -257,22 +257,27 @@
                 <input type="text" readonly="readonly" id="urltext" />
             </div>
         </div>
+
+        @*<input type="button" onclick="window.location.href('@Url.Action("Home","ClientCarousel")')" value="click"/>*@
+
+        @Html.ActionLink("click", "ClientCarousel", new { @target = "_blank" })
+
     }
-    <br />
-    <br />
-    @*<p id="JsonPreviewLabel"></p>
-        <div class="row alert alert-info" role="alert">
-            @{ foreach (var file in selectedImageList)
-                {
-                    <div class="card border border-info">
-                        <img src="@file.Path" class="card-img-top" alt="@file.Title">
-                        <div class="card-body">
-                            <h5 class="card-title">@file.Title</h5>
-                            <p class="card-text">size: @file.LengthKb (KB) - @file.LengthMb (MB)</p>
-                            <a href="" class="btn btn-info">Click</a>
+    @* <br />
+        <br />
+        <p id="JsonPreviewLabel"></p>
+            <div class="row alert alert-info" role="alert">
+                @{ foreach (var file in selectedImageList)
+                    {
+                        <div class="card border border-info">
+                            <img src="@file.Path" class="card-img-top" alt="@file.Title">
+                            <div class="card-body">
+                                <h5 class="card-title">@file.Title</h5>
+                                <p class="card-text">size: @file.LengthKb (KB) - @file.LengthMb (MB)</p>
+                                <a href="" class="btn btn-info">Click</a>
+                            </div>
                         </div>
-                    </div>
+                    }
                 }
-            }
-        </div>*@
+            </div>*@
 </div>
