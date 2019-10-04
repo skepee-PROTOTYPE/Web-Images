@@ -33,6 +33,11 @@ namespace WebImage.Controllers
             return View(myFiles);
         }
 
+        public IActionResult ClientCarousel()
+        {
+            return View("ClientCarousel");
+        }
+
         public IActionResult Index()
         {
             return View();
