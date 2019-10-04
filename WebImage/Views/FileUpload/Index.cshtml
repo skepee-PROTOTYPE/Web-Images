@@ -2,19 +2,70 @@
     ViewData["Title"] = "Index";
 }
 
+<script src="~/lib/jquery/dist/jquery.js"></script>
 
-<form method="post" enctype="multipart/form-data" asp-controller="FileUpload" asp-action="Index2">
+@{
+    <script>
+
+        $(document).ready(function () {
+
+            //$("#btnSubmit").click(function () {
+            $("form").submit(function (e) {
+
+                //console.log($("#radioPublic").prop("checked") || $("#radioPrivate").prop("checked"));
+
+                e.preventDefault();
+                if ($("#files").prop("files").length > 0 && ($("#radioPublic").prop("checked") || $("#radioPrivate").prop("checked"))) {
+                    //var form = $("form");
+
+                    // form.submit();
+
+                    $.ajax({
+                        type: 'POST',
+                        url: "<%= Url.Action("Upload","FileUpload")%>",
+                        //data: formData,
+                        data:
+                        {
+                            files: $("#files").prop("files"),
+                            typeFolder: ($("#radioPublic").prop("checked") ? "public" : "private")
+                        },
+                        success: function () {
+                            console.log("ok");
+                        }
+                    });
+                }
+
+            });
+        });
+
+    </script>
+}
+
+
+
+<form method="post" enctype="multipart/form-data" asp-controller="FileUpload" asp-action="Upload">
     <div class="form-group">
-        <div class="col-md-10">
-            <p>Upload one or more files using this form:</p>
-            <input type="file" name="files" multiple />
+        <div class="row">
+            <div class="col-12">
+                <p>Upload one or more files using this form:</p>
+                <input type="file" name="files" multiple id="files" />
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-12">
+                <label class="radio-inline"> <input type="radio" name="typeFolder" id="radioPublic" value="Public"> Public </label>
+                <label class="radio-inline"> <input type="radio" name="typeFolder" id="radioPrivate" value="Private"> Private </label>
+            </div>
         </div>
     </div>
     <div class="form-group">
-        <div class="col-md-10">
-            <input type="submit" value="Upload" />
+        <div class="row">
+            <div class="col-12">
+                <input type="submit" value="Upload" />
+                @*<input type="button" value="Upload" id="btnSubmit" />*@
+            </div>
         </div>
     </div>
 </form>
-
 
