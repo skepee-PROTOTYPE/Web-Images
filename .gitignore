@@ -2,10 +2,7 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/WebImage/bin/Release/netcoreapp2.2
-/WebImage/bin/Debug/netcoreapp2.2
-/WebImage/obj/Debug/netcoreapp2.2
-/WebImage/obj/Release/netcoreapp2.2
+/WebImage/bin
 /WebImage/obj
 /.vs
 *.[Pp]ublish.xml
@@ -15,3 +12,44 @@
 *.pubxml.user
 /WebImage/wwwroot/imagefolder
 /WebImage/bin
+appsettings.json
+
+
+# User-specific files
+#*.suo
+#*.user
+#*.userosscache
+#*.sln.docstates
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+# User-specific files (MonoDevelop/Xamarin Studio)
+*.userprefs
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# NuGet Packages
+*.nupkg
+# The packages folder can be ignored because of Package Restore
+**/packages/*
+# except build/, which is used as an MSBuild target.
+!**/packages/build/
+# Uncomment if necessary however generally it will be regenerated when needed
+#!**/packages/repositories.config
+
+# SQL Server files
+*.mdf
+*.ldf
+
+# Windows thumbnail cache files
+Thumbs.db

@@ -12,16 +12,17 @@ namespace WebImage.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IjpContext ijpContext;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IHostingEnvironment hostingEnv;
 
         private string Host { get; set; }
 
-        public HomeController(IHostingEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor)
+        public HomeController(IHostingEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext _ijpContext)
         {
             hostingEnv = _hostingEnv;
             httpContextAccessor = _httpContextAccessor;
-
+            ijpContext = _ijpContext;
             var request = httpContextAccessor.HttpContext.Request;
             Host = request.Host.ToString();
         }
@@ -29,7 +30,8 @@ namespace WebImage.Controllers
         //[ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client, NoStore = false)]
         public IActionResult GenerateJson()
         {
-            ContentModel myFiles = new ContentModel(Host, hostingEnv);
+            //var x = ijpContext.FileContent.ToList();
+            ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
             return View(myFiles);
         }
 
@@ -45,7 +47,7 @@ namespace WebImage.Controllers
 
         public IActionResult AddToSelectionList(string pars)
         {
-            ContentModel myFiles = new ContentModel(Host, hostingEnv);
+            ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
             if (!string.IsNullOrEmpty(pars))
             {
                 string decpars = Decode(pars);
@@ -136,7 +138,7 @@ namespace WebImage.Controllers
 
             DateTime StartDate = DateTime.Now;
 
-            ContentModel myfiles = new ContentModel(Host, hostingEnv);
+            ContentModel myfiles = new ContentModel(Host, hostingEnv, ijpContext);
             List<FileModel> files = new List<FileModel>();
 
             if (!string.IsNullOrEmpty(decodedString))

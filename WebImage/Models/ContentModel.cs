@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,14 +10,17 @@ namespace WebImage.Models
 {
     public class ContentModel
     {
+        private readonly IjpContext _IjpContext;
         private static List<FileModel> FilesInDirectory;
         public List<FileModel> MyFiles { get; set; }
         public string ApiGetUrl { get; set; }
         public string TypeSelected { get; set; }
         public string Profile { get; set; }
 
-        public ContentModel(string host, IHostingEnvironment env)
+        public ContentModel(string host, IHostingEnvironment env, IjpContext IjpContext)
         {
+            _IjpContext = IjpContext;
+            _IjpContext.Database.EnsureCreated();
             FilesInDirectory = GetFromDirectory(host, Path.Combine(env.WebRootPath, "imagefolder", "public"),false);
             FilesInDirectory.AddRange(GetFromDirectory(host, Path.Combine(env.WebRootPath, "imagefolder","private"),true));
             MyFiles = FilesInDirectory;
@@ -24,6 +29,18 @@ namespace WebImage.Models
         private List<FileModel> GetFromDirectory(string host, string path, bool isPrivate)
         {
             var myFiles = new List<FileModel>();
+
+            var x = _IjpContext.FileContent.ToList();
+
+
+
+
+
+
+
+
+
+
 
             if (Directory.Exists(path))
             {

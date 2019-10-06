@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace WebImage.Context
 {
-    public class IjpFile
+    [Table("FileContent")]
+    public class FileContent
     {
+        [Key]
         public int FileId { get; set; }
         public string Name { get; set; }
         public string Title { get; set; }
@@ -15,6 +19,6 @@ namespace WebImage.Context
         public float LengthMB { get; set; }
         public string Url { get; set; }
         public string Category { get; set; }
-        public string File { get; set; }
+        public byte[] Content { get; set; }
     }
 }

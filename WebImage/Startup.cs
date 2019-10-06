@@ -34,11 +34,11 @@ namespace WebImage
             });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddDbContext<IjpContext>(options => options.UseSqlServer(connString));
             services.AddMemoryCache();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2); 
             services.AddEntityFrameworkSqlServer();
-    }
+            services.AddDbContext<IjpContext>(options => options.UseSqlServer(connString));
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
