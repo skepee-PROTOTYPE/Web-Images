@@ -5,13 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using WebImage.Context;
 
 namespace WebImage.Models
 {
     public class ContentModel
     {
         private readonly IjpContext _IjpContext;
-        private static List<FileModel> FilesInDirectory;
+        //private static List<FileModel> FilesInDirectory;
         public List<FileModel> MyFiles { get; set; }
         public string ApiGetUrl { get; set; }
         public string TypeSelected { get; set; }
@@ -20,51 +21,38 @@ namespace WebImage.Models
         public ContentModel(string host, IHostingEnvironment env, IjpContext IjpContext)
         {
             _IjpContext = IjpContext;
-            _IjpContext.Database.EnsureCreated();
-            FilesInDirectory = GetFromDirectory(host, Path.Combine(env.WebRootPath, "imagefolder", "public"),false);
-            FilesInDirectory.AddRange(GetFromDirectory(host, Path.Combine(env.WebRootPath, "imagefolder","private"),true));
-            MyFiles = FilesInDirectory;
-        }
+            MyFiles = new List<FileModel>();
 
-        private List<FileModel> GetFromDirectory(string host, string path, bool isPrivate)
-        {
-            var myFiles = new List<FileModel>();
-
-            var x = _IjpContext.FileContent.ToList();
-
-
-
-
-
-
-
-
-
-
-
-            if (Directory.Exists(path))
+            foreach (var x in _IjpContext.FileContent)
             {
-                foreach (var file in Directory.GetFiles(path))
+                MyFiles.Add(new FileModel()
                 {
-                    FileInfo f = new FileInfo(file);
-
-                    var sizekb = Math.Round(((decimal)f.Length) / 1024, 1);
-                    var sizeMb = Math.Round(sizekb / 1024, 2);
-
-                    myFiles.Add(new FileModel()
-                    {
-                        Title = f.Name.Replace("@", "").Replace(".", ""),
-                        Name = f.Name.Replace("@", "").Replace(".", ""),
-                        Extension = f.Extension,
-                        LengthKb = sizekb,
-                        LengthMb = sizeMb,
-                        Path = "/images/"+ ((isPrivate)?"private/":"public/") + f.Name,
-                        Url = host + "/images/" + ((isPrivate) ? "private/" : "public/") + f.Name,
-                        IsPrivate= isPrivate
-                    });
-                }
+                    Category = x.Category,
+                    Extension = x.Extension,
+                    IsPrivate = false,
+                    IsSelected = false,
+                    LengthKB = x.LengthKB,
+                    LengthMB = x.LengthMB,
+                    Name = x.Name,
+                    Title = x.Title,
+                    Url = x.Url
+                });
             }
-            return myFiles;
+
+
+            //_IjpContext.FileContent.ForEachAsync(x => MyFiles.Add(new FileModel()
+            //{
+            //    Category = x.Category,
+            //    Extension = x.Extension,
+            //    IsPrivate = false,
+            //    IsSelected = false,
+            //    LengthKB = x.LengthKB,
+            //    LengthMB = x.LengthMB,
+            //    Name = x.Name,
+            //    Title = x.Title,
+            //    Url = x.Url
+            //}));
+
         }
 
         public void AddToSelection(string MySelectedFiles)
@@ -83,24 +71,30 @@ namespace WebImage.Models
     }
 
 
-
-    public class FileModel : JsonModel
+    public class FileModel : FileContent
     {
-        public string Name { get; set; }
-        public string Extension { get; set; }
-        public string Path { get; set; }
+        //public string Path { get; set; }
         public bool IsSelected { get; set; }
         public bool IsPrivate { get; set; }
-        public string Category { get; set; }
     }
 
-    public class JsonModel
-    {
-        public string Title { get; set; }
-        public decimal LengthKb { get; set; }
-        public decimal LengthMb { get; set; }
-        public string Url { get; set; }
-    }
+    //public class FileModel : JsonModel
+    //{
+    //    public string Name { get; set; }
+    //    public string Extension { get; set; }
+    //    public string Path { get; set; }
+    //    public bool IsSelected { get; set; }
+    //    public bool IsPrivate { get; set; }
+    //    public string Category { get; set; }
+    //}
+
+    //public class JsonModel
+    //{
+    //    public string Title { get; set; }
+    //    public double LengthKb { get; set; }
+    //    public double LengthMb { get; set; }
+    //    public string Url { get; set; }
+    //}
 
     public class JsonData
     {
@@ -116,20 +110,20 @@ namespace WebImage.Models
 
     public class MyData
     {
-        public List<JsonModel> MyJson { get; set; }
+        public List<FileContent> MyJson { get; set; }
         public string Profile { get; set; }
 
         public MyData()
         {
-            MyJson = new List<JsonModel>();
+            MyJson = new List<FileContent>();
         }
     }
 
     public class Statistics
     {
         public int Count { get; set; }
-        public decimal TotalLengthKb { get; set; }
-        public decimal TotalLengthMb { get; set; }
+        public double TotalLengthKb { get; set; }
+        public double TotalLengthMb { get; set; }
         public double ElapsedTime { get; set; }
     }
 }
