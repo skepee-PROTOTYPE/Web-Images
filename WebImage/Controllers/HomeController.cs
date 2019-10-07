@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebImage.Context;
 using WebImage.Models;
 
 namespace WebImage.Controllers
@@ -23,6 +24,11 @@ namespace WebImage.Controllers
             hostingEnv = _hostingEnv;
             httpContextAccessor = _httpContextAccessor;
             ijpContext = _ijpContext;
+
+            //TestData d = new TestData(hostingEnv, httpContextAccessor, ijpContext);
+            //d.AddFromDirectory();
+            //d.DownloadImages();
+
             var request = httpContextAccessor.HttpContext.Request;
             Host = request.Host.ToString();
         }
@@ -30,7 +36,6 @@ namespace WebImage.Controllers
         //[ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client, NoStore = false)]
         public IActionResult GenerateJson()
         {
-            //var x = ijpContext.FileContent.ToList();
             ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
             return View(myFiles);
         }
@@ -50,7 +55,7 @@ namespace WebImage.Controllers
             ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
             if (!string.IsNullOrEmpty(pars))
             {
-                string decpars = Decode(pars);
+                string decpars = Helper.Decode(pars);
 
                 string decSelectedFiles = decpars.Split("|")[0];
                 myFiles.TypeSelected= decpars.Split("|")[1];
@@ -60,12 +65,6 @@ namespace WebImage.Controllers
                 myFiles.ApiGetUrl = Request.Scheme + "://" + Request.Host + "/api/getselection/" + pars;
             }
             return View("GenerateJson", myFiles);
-        }
-
-        private static void Encode(string selectedFiles)
-        {
-            byte[] byt = System.Text.Encoding.ASCII.GetBytes(selectedFiles);
-            string selection = Convert.ToBase64String(byt);
         }
 
         public IActionResult Admin()
@@ -134,7 +133,7 @@ namespace WebImage.Controllers
         [HttpGet("/api/getselection/{pars}")]
         public JsonResult GetListSelection(string pars)
         {
-            string decodedString = Decode(pars);
+            string decodedString =  Helper.Decode(pars);
 
             DateTime StartDate = DateTime.Now;
 
@@ -152,12 +151,12 @@ namespace WebImage.Controllers
                 var mydata = new MyData()
                 {
                     MyJson = files.Select(
-                    x => new JsonModel()
+                    x => new FileContent()
                     {
                         Url = x.Url,
                         Title = x.Title,
-                        LengthKb = x.LengthKb,
-                        LengthMb = x.LengthMb                        
+                        LengthKB = x.LengthKB,
+                        LengthMB = x.LengthMB                        
                     }).ToList(),
 
                     Profile = Profile
@@ -173,8 +172,8 @@ namespace WebImage.Controllers
                     Stat = new Statistics()
                     {
                         Count = files.Count(),
-                        TotalLengthKb = files.Select(x => x.LengthKb).Sum(),
-                        TotalLengthMb = files.Select(x => x.LengthMb).Sum(),
+                        TotalLengthKb = files.Select(x => x.LengthKB).Sum(),
+                        TotalLengthMb = files.Select(x => x.LengthMB).Sum(),
                         ElapsedTime = (DateTime.Now - StartDate).TotalDays
                     }
                 });
@@ -183,13 +182,6 @@ namespace WebImage.Controllers
             {
                 return Json(null);
             }
-        }
-
-        private static string Decode(string selectedImages)
-        {
-            byte[] data = Convert.FromBase64String(selectedImages);
-            string decodedString = Encoding.UTF8.GetString(data);
-            return decodedString;
         }
     }
 }
