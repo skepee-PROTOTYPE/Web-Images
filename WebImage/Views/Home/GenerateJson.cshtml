@@ -202,7 +202,7 @@
             <div class="col-12 d-flex flex-row border flex-wrap" id="sourcePublic">
                 @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
                 {
-                    <img class="box rounded border border-danger public" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
+                    <img class="box rounded border border-danger public" src="@Url.Content(file.Url)" alt="@file.Name" id="@file.Name">
                 }
             </div>
         </div>
@@ -210,7 +210,7 @@
             <div class="col-12 d-flex flex-row border flex-wrap" id="sourcePrivate">
                 @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
                 {
-                    <img class="box rounded border border-danger private" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
+                    <img class="box rounded border border-danger private" src="@Url.Content(file.Url)" alt="@file.Name" id="@file.Name">
                 }
             </div>
         </div>
@@ -229,7 +229,7 @@
         <div class="col-12 d-flex flex-row border flex-wrap" id="dragtarget">
             @foreach (var file in selectedImageList)
             {
-                <img class="box rounded border border-danger" src="@Url.Content(file.Path)" alt="@file.Name" id="@file.Name">
+                <img class="box rounded border border-danger" src="@Url.Content(file.Url)" alt="@file.Name" id="@file.Name">
             }
         </div>
     </div>
