@@ -42,5 +42,14 @@ namespace WebImage
             string selection = Convert.ToBase64String(byt);
         }
 
+
+        public static string DecodeImage(byte[] file)
+        {
+            var base64 = Convert.ToBase64String(file);
+            var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+
+            return imgSrc;
+        }
+
     }
 }

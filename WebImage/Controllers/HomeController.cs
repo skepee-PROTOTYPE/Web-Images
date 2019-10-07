@@ -50,6 +50,25 @@ namespace WebImage.Controllers
             return View();
         }
 
+
+        public IActionResult RemoveFromSelectionList(string pars)
+        {
+            ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
+            if (!string.IsNullOrEmpty(pars))
+            {
+                string decpars = Helper.Decode(pars);
+
+                string decSelectedFiles = decpars.Split("|")[0];
+                myFiles.TypeSelected = decpars.Split("|")[1];
+                myFiles.Profile = decpars.Split("|")[2];
+
+                myFiles.RemoveFromSelection(decSelectedFiles);
+                myFiles.ApiGetUrl = Request.Scheme + "://" + Request.Host + "/api/getselection/" + pars;
+            }
+            return View("GenerateJson", myFiles);
+        }
+
+
         public IActionResult AddToSelectionList(string pars)
         {
             ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);

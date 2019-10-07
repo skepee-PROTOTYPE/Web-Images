@@ -93,12 +93,24 @@
         var par = fileSelected() + "|" + pupr + "|" + pro;
 
         return btoa(par);
-        //return par;
+    }
+
+    function paramsRemoveFile(id)
+    {
+        var pupr = $("div.btn-group button.btn-warning").text();
+        var pro = $("#profile").val();
+        var par = id + "|" + pupr + "|" + pro;
+
+        return btoa(par);
     }
 
 
+    function removeFromSelectionList(id) {
+        location.href = '@Url.Action("RemoveFromSelectionList", "Home")?pars=' + paramsRemoveFile(id);
+    };
 
-    function selectionList() {
+
+    function addToSelectionList() {
         location.href = '@Url.Action("AddToSelectionList", "Home")?pars=' + params();
     };
 
@@ -118,6 +130,7 @@
         if ($(this).parent().attr("id") != "dragtarget")
         {
             $(this).hide().appendTo("#dragtarget").show('slow');
+            addToSelectionList();
         }
         else
         {
@@ -127,21 +140,19 @@
             if ($(this).hasClass("public"))  {
                 $(this).hide().appendTo("#sourcePublic").show('slow');
             }
+            removeFromSelectionList($(this).attr("id"));
         }
-        selectionList();
     });
 
     $("#btnPublic").click(function () {
         $("#collapsePrivate").removeClass("show");
         $(this).toggleClass("btn-secondary").toggleClass("btn-warning");
-        //$("#collapsePublic").addClass("show");
         $("#btnPrivate").addClass("btn-secondary").removeClass("btn-warning");
     });
 
     $("#btnPrivate").click(function () {
         $("#collapsePublic").removeClass("show");
         $(this).toggleClass("btn-secondary").toggleClass("btn-warning").addClass("show");
-        //$("#collapsePrivate").addClass("show");
         $("#btnPublic").addClass("btn-secondary").removeClass("btn-warning");
     });
 
@@ -202,7 +213,7 @@
             <div class="col-12 d-flex flex-row border flex-wrap" id="sourcePublic">
                 @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
                 {
-                    <img class="box rounded border border-danger public" src="@Url.Content(file.Url)" alt="@file.Name" id="@file.Name">
+                    <img class="box rounded border border-danger public" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
                 }
             </div>
         </div>
@@ -210,7 +221,7 @@
             <div class="col-12 d-flex flex-row border flex-wrap" id="sourcePrivate">
                 @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
                 {
-                    <img class="box rounded border border-danger private" src="@Url.Content(file.Url)" alt="@file.Name" id="@file.Name">
+                    <img class="box rounded border border-danger private" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
                 }
             </div>
         </div>
@@ -229,7 +240,7 @@
         <div class="col-12 d-flex flex-row border flex-wrap" id="dragtarget">
             @foreach (var file in selectedImageList)
             {
-                <img class="box rounded border border-danger" src="@Url.Content(file.Url)" alt="@file.Name" id="@file.Name">
+                <img class="box rounded border border-danger" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
             }
         </div>
     </div>

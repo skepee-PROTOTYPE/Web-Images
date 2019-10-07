@@ -35,7 +35,8 @@ namespace WebImage.Models
                     LengthMB = x.LengthMB,
                     Name = x.Name,
                     Title = x.Title,
-                    Url = x.Url
+                    Url = x.Url,
+                    Content=x.Content
                 });
             }
 
@@ -68,6 +69,21 @@ namespace WebImage.Models
                 }
             }
         }
+
+        public void RemoveFromSelection(string MySelectedFiles)
+        {
+            if (!string.IsNullOrEmpty(MySelectedFiles))
+            {
+                foreach (string fileName in MySelectedFiles.Split(','))
+                {
+                    if (!string.IsNullOrEmpty(fileName))
+                    {
+                        MyFiles.FirstOrDefault(x => x.Name.Equals(fileName, StringComparison.InvariantCultureIgnoreCase)).IsSelected = false;
+                    }
+                }
+            }
+        }
+
     }
 
 
