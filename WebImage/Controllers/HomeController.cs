@@ -58,16 +58,21 @@ namespace WebImage.Controllers
             {
                 string decpars = Helper.Decode(pars);
 
-                string decSelectedFiles = decpars.Split("|")[0];
-                myFiles.TypeSelected = decpars.Split("|")[1];
-                myFiles.Profile = decpars.Split("|")[2];
+                string SelectedFiles = decpars.Split("|")[0];
+                string decSelectedFiles = decpars.Split("|")[1];
+                myFiles.TypeSelected = decpars.Split("|")[2];
+                myFiles.Profile = decpars.Split("|")[3];
 
+                myFiles.AddToSelection(SelectedFiles);
                 myFiles.RemoveFromSelection(decSelectedFiles);
-                myFiles.ApiGetUrl = Request.Scheme + "://" + Request.Host + "/api/getselection/" + pars;
+
+                var sel2 = string.Join(",",SelectedFiles.Split(',').Where(x => (!x.Equals(decSelectedFiles))));
+                var pars2 = Helper.Encode(sel2 + "|" + myFiles.TypeSelected + "|" + myFiles.Profile);
+                               
+                myFiles.ApiGetUrl = Request.Scheme + "://" + Request.Host + "/api/getselection/" + pars2;
             }
             return View("GenerateJson", myFiles);
         }
-
 
         public IActionResult AddToSelectionList(string pars)
         {

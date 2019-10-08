@@ -36,10 +36,12 @@ namespace WebImage
             return decodedString;
         }
 
-        public static void Encode(string selectedFiles)
+        public static string Encode(string selectedFiles)
         {
             byte[] byt = System.Text.Encoding.ASCII.GetBytes(selectedFiles);
             string selection = Convert.ToBase64String(byt);
+
+            return selection;
         }
 
 

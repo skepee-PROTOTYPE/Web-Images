@@ -12,7 +12,7 @@
 *.pubxml.user
 /WebImage/wwwroot/imagefolder
 /WebImage/bin
-appsettings.json
+/WebImage/appsettings.json
 
 
 # User-specific files

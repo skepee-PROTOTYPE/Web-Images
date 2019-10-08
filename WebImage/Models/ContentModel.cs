@@ -74,13 +74,7 @@ namespace WebImage.Models
         {
             if (!string.IsNullOrEmpty(MySelectedFiles))
             {
-                foreach (string fileName in MySelectedFiles.Split(','))
-                {
-                    if (!string.IsNullOrEmpty(fileName))
-                    {
-                        MyFiles.FirstOrDefault(x => x.Name.Equals(fileName, StringComparison.InvariantCultureIgnoreCase)).IsSelected = false;
-                    }
-                }
+                MyFiles.FirstOrDefault(x => x.Name.Equals(MySelectedFiles, StringComparison.InvariantCultureIgnoreCase)).IsSelected = false;
             }
         }
 

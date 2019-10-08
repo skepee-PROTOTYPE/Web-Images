@@ -99,7 +99,7 @@
     {
         var pupr = $("div.btn-group button.btn-warning").text();
         var pro = $("#profile").val();
-        var par = id + "|" + pupr + "|" + pro;
+        var par = fileSelected() + "|" + id + "|" + pupr + "|" + pro;
 
         return btoa(par);
     }
@@ -118,14 +118,13 @@
         $("#urltext").val($("#geturl div").text().trim());
         var copyText = $("#urltext");
         copyText.select();
-        //copyText.setSelectionRange(0, 99999); /*For mobile devices*/
         document.execCommand("copy");
         $("#copybutton").text("Copied!");
         $("#copybutton").prop("disabled", true);
     }
 
     $(document).ready(function () {
-
+        
     $("img.border-danger").click(function () {
         if ($(this).parent().attr("id") != "dragtarget")
         {
@@ -156,9 +155,8 @@
         $("#btnPublic").addClass("btn-secondary").removeClass("btn-warning");
     });
 
-
     $("#go").click(function () {
-            window.open('@Model.ApiGetUrl','_blank');
+        window.open('@Model.ApiGetUrl','_blank');
     });
 
     $("img").hover(function () {
@@ -168,39 +166,35 @@
     });
 </script>
 
-<div class="container-fluid">
-    @*<div class="text-center">
-            <div class="spinner-border" role="status">
-                <span class="sr-only">Loading...</span>
+<form asp-controller="Home" asp-action="Register" method="post">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">Profile: </span>
+                </div>
+                <input type="text" id="profile" value="@Model.Profile" class="form-control" placeholder="give a name to identify your image group" aria-label="Username" aria-describedby="basic-addon1">
             </div>
-        </div>*@
-    <div class="row">
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1">Profile: </span>
-            </div>
-            <input type="text" id="profile" value="@Model.Profile" class="form-control" placeholder="give a name to identify your image group" aria-label="Username" aria-describedby="basic-addon1">
         </div>
-    </div>
-    <div class="row">
-        <div class=" btn-group" role="group" aria-label="image buttons">
-            @{
+        <div class="row">
+            <div class=" btn-group" role="group" aria-label="image buttons">
+                @{
                 string PublicSelected = (Model.TypeSelected == "Public") ? "btn-warning" : "btn-secondary";
                 string PrivateSelected = (Model.TypeSelected == "Private") ? "btn-warning" : "btn-secondary";
-            }
-            <button type="button" id="btnPublic" class="btn @PublicSelected" data-toggle="collapse" data-target="#collapsePublic" aria-expanded="false" aria-controls="collapsePublic">Public</button>
-            <button type="button" id="btnPrivate" class="btn @PrivateSelected" data-toggle="collapse" data-target="#collapsePrivate" aria-expanded="false" aria-controls="collapsePrivate">Private</button>
-            <div class="card">
-                <div class="card-body">
-                    Click on to add to your list
+                }
+                <button type="button" id="btnPublic" class="btn @PublicSelected" data-toggle="collapse" data-target="#collapsePublic" aria-expanded="false" aria-controls="collapsePublic">Public</button>
+                <button type="button" id="btnPrivate" class="btn @PrivateSelected" data-toggle="collapse" data-target="#collapsePrivate" aria-expanded="false" aria-controls="collapsePrivate">Private</button>
+                <div class="card">
+                    <div class="card-body">
+                        Click on to add to your list
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <br />
-    <br />
-    <div class="row">
-        @{
+        <br />
+        <br />
+        <div class="row">
+            @{
             string ShowPublic = "";
             string ShowPrivate = "";
             if (!string.IsNullOrEmpty(Model.TypeSelected))
@@ -208,27 +202,27 @@
                 ShowPublic = (Model.TypeSelected == "Public") ? "show" : "";
                 ShowPrivate = (Model.TypeSelected == "Private") ? "show" : "";
             }
-        }
-        <div class="collapse @(ShowPublic)" id="collapsePublic">
-            <div class="col-12 d-flex flex-row border flex-wrap" id="sourcePublic">
-                @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
+            }
+            <div class="collapse @(ShowPublic)" id="collapsePublic">
+                <div class="col-12 d-flex flex-row border flex-wrap" id="sourcePublic">
+                    @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
                 {
                     <img class="box rounded border border-danger public" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
                 }
+                </div>
             </div>
-        </div>
-        <div class="collapse @(ShowPrivate)" id="collapsePrivate">
-            <div class="col-12 d-flex flex-row border flex-wrap" id="sourcePrivate">
-                @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
+            <div class="collapse @(ShowPrivate)" id="collapsePrivate">
+                <div class="col-12 d-flex flex-row border flex-wrap" id="sourcePrivate">
+                    @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
                 {
                     <img class="box rounded border border-danger private" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
                 }
+                </div>
             </div>
         </div>
-    </div>
-    <br />
-    <br />
-    @if (selectedImageList.Any())
+        <br />
+        <br />
+        @if (selectedImageList.Any())
     {
         <div class="row">
             <div class="col-12 alert alert-info" role="alert">
@@ -236,17 +230,17 @@
             </div>
         </div>
     }
-    <div class="row">
-        <div class="col-12 d-flex flex-row border flex-wrap" id="dragtarget">
-            @foreach (var file in selectedImageList)
+        <div class="row">
+            <div class="col-12 d-flex flex-row border flex-wrap" id="dragtarget">
+                @foreach (var file in selectedImageList)
             {
                 <img class="box rounded border border-danger" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
             }
+            </div>
         </div>
-    </div>
-    <br />
-    <br />
-    @if (selectedImageList.Any())
+        <br />
+        <br />
+        @if (selectedImageList.Any())
     {
         <br />
         <br />
@@ -258,9 +252,6 @@
         <br />
         <div class="row">
             <div class="col-12 collapse" id="geturl">
-                @*<button class="btn btn-outline-secondary" onclick="copylink()" id="copybutton">Copy me</button>*@
-                @*<button class="btn btn-outline-secondary" id="go">Go!</button>*@
-                @*<br /><br />*@
                 <div class="alert alert-info" role="alert">
                     @Model.ApiGetUrl
                 </div>
@@ -268,27 +259,7 @@
                 <input type="text" readonly="readonly" id="urltext" />
             </div>
         </div>
-
-        @*<input type="button" onclick="window.location.href('@Url.Action("Home","ClientCarousel")')" value="click"/>*@
-
         @Html.ActionLink("click", "ClientCarousel", new { @target = "_blank" })
-
     }
-    @* <br />
-        <br />
-        <p id="JsonPreviewLabel"></p>
-            <div class="row alert alert-info" role="alert">
-                @{ foreach (var file in selectedImageList)
-                    {
-                        <div class="card border border-info">
-                            <img src="@file.Path" class="card-img-top" alt="@file.Title">
-                            <div class="card-body">
-                                <h5 class="card-title">@file.Title</h5>
-                                <p class="card-text">size: @file.LengthKb (KB) - @file.LengthMb (MB)</p>
-                                <a href="" class="btn btn-info">Click</a>
-                            </div>
-                        </div>
-                    }
-                }
-            </div>*@
-</div>
+    </div>
+</form>
