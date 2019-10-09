@@ -23,9 +23,26 @@ namespace WebImage
         }
 
 
-        public static void DownloadFile(byte[] file,string name)
+        public static double KB(this long length)
         {
-            using (var fs = new FileStream(@"D:\images\" + name , FileMode.Create, FileAccess.Write))
+            var sizekb = Math.Round(((double)length) / 1024, 1);
+            return sizekb;
+        }
+
+        public static double MB(this long length)
+        {
+            var sizeMb = Math.Round(length.KB() / 1024, 2);
+            return sizeMb;
+        }
+
+        public static string CleanName(this string name)
+        {
+            return name.Replace("@", "").Replace(".", "");
+        }
+
+        public static void DownloadFile(byte[] file, string name)
+        {
+            using (var fs = new FileStream(@"D:\images\" + name, FileMode.Create, FileAccess.Write))
                 fs.Write(file, 0, file.Length);
         }
 
