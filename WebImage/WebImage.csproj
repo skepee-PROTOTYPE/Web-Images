@@ -9,10 +9,6 @@
     <Compile Remove="Models\IFormFile.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Remove="wwwroot\imagefolder\IMG02297225055A - Copy - Copy.bmp" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
