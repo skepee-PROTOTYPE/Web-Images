@@ -175,7 +175,7 @@ namespace WebImage.Controllers
                 var mydata = new MyData()
                 {
                     MyJson = files.Select(
-                    x => new FileContent()
+                    x => new IjpFile()
                     {
                         Url = x.Url,
                         Title = x.Title,

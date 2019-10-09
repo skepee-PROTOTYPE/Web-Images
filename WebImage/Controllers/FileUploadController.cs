@@ -33,7 +33,7 @@ namespace WebImage.Controllers
 
 
         [HttpPost("FileUpload")]
-        public async Task<IActionResult> Upload(List<IFormFile> files, string typeFolder)
+        public async Task<IActionResult> Upload(List<IFormFile> files, bool isPrivate)
         {
             long size = files.Sum(f => f.Length);
 
@@ -42,9 +42,12 @@ namespace WebImage.Controllers
             {
                 if (formFile.Length > 0)
                 {
-                   // var f= System.IO.File.(formFile)
+                    var filePath = Path.Combine(hostingEnv.WebRootPath, "imagefolder", formFile.FileName);
 
-                    
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        formFile.CopyTo(stream);
+                    }
 
                     var x = new Context.IjpFile
                     {
@@ -54,22 +57,18 @@ namespace WebImage.Controllers
                         LengthMB = formFile.Length.MB(),
                         Name = formFile.Name.CleanName(),
                         Title = formFile.Name.CleanName(),
-                        Content = Helper.byteFile(formFile.FileName),
-                        Url = host + "/images/" + formFile.FileName
-                        //IsPrivate = isPrivate
+                        Content = Helper.byteFile(filePath),
+                        Url = host + "/images/" + formFile.FileName,
+                        IsPrivate = isPrivate
                     };
 
-
                     ijpContext.File.Add(x) ;
-
                     ijpContext.SaveChanges();
 
-                    //var path = Path.Combine(hostingEnv.WebRootPath, "imagefolder", typeFolder, formFile.FileName);
-
-                    //using (var stream = new FileStream(path, FileMode.Create))
-                    //{
-                    //    await formFile.CopyToAsync(stream);
-                    //}
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
                 }
             }
 

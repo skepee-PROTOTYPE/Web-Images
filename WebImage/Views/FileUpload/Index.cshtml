@@ -8,29 +8,19 @@
     <script>
 
         $(document).ready(function () {
-
-            //$("#btnSubmit").click(function () {
             $("form").submit(function (e) {
-
-                //console.log($("#radioPublic").prop("checked") || $("#radioPrivate").prop("checked"));
-
                 e.preventDefault();
                 if ($("#files").prop("files").length > 0 && ($("#radioPublic").prop("checked") || $("#radioPrivate").prop("checked"))) {
-                    //var form = $("form");
-
-                    // form.submit();
-
                     $.ajax({
                         type: 'POST',
                         url: "<%= Url.Action("Upload","FileUpload")%>",
-                        //data: formData,
                         data:
                         {
                             files: $("#files").prop("files"),
-                            typeFolder: ($("#radioPublic").prop("checked") ? "public" : "private")
+                            isPrivate: ($("#radioPublic").prop("checked") ? false : true)
                         },
                         success: function () {
-                            console.log("ok");
+                            //console.log("ok");
                         }
                     });
                 }

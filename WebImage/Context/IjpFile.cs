@@ -20,5 +20,6 @@ namespace WebImage.Context
         public string Url { get; set; }
         public string Category { get; set; }
         public byte[] Content { get; set; }
+        public bool IsPrivate { get; set; }
     }
 }

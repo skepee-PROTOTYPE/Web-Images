@@ -16,7 +16,7 @@ namespace WebImage.Context
         private readonly IHostingEnvironment hostingEnv;
         private static string host;
 
-        public List<FileContent> files { get; set; }
+        public List<IjpContext> files { get; set; }
 
         public TestData(IHostingEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext ijpContext)
         {
@@ -39,7 +39,7 @@ namespace WebImage.Context
                     var sizekb = Math.Round(((double)f.Length) / 1024, 1);
                     var sizeMb = Math.Round(sizekb / 1024, 2);
 
-                    _IjpContext.FileContent.Add(new FileContent()
+                    _IjpContext.File.Add(new IjpFile()
                     {
                         Title = f.Name.Replace("@", "").Replace(".", ""),
                         Name = f.Name.Replace("@", "").Replace(".", ""),
@@ -59,7 +59,7 @@ namespace WebImage.Context
 
         public void DownloadImages()
         {
-            var list = _IjpContext.FileContent.ToList();
+            var list = _IjpContext.File.ToList();
 
             foreach (var file in list)
             {
