@@ -13,11 +13,17 @@ namespace WebImage.Controllers
     {
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IHostingEnvironment hostingEnv;
+        private readonly IjpContext ijpContext;
+        private static string host;
 
-        public FileUploadController(IHostingEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor)
+        public FileUploadController(IHostingEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext _ijpContext)
         {
             hostingEnv = _hostingEnv;
             httpContextAccessor = _httpContextAccessor;
+            ijpContext = _ijpContext;
+            var request = httpContextAccessor.HttpContext.Request;
+            host = request.Host.ToString();
+
         }
 
         public IActionResult Index()
@@ -36,12 +42,34 @@ namespace WebImage.Controllers
             {
                 if (formFile.Length > 0)
                 {
-                    var path = Path.Combine(hostingEnv.WebRootPath, "imagefolder", typeFolder, formFile.FileName);
+                   // var f= System.IO.File.(formFile)
 
-                    using (var stream = new FileStream(path, FileMode.Create))
+                    
+
+                    var x = new Context.IjpFile
                     {
-                        await formFile.CopyToAsync(stream);
-                    }
+                        Category = "",
+                        Extension = Path.GetExtension(formFile.FileName),
+                        LengthKB = formFile.Length.KB(),
+                        LengthMB = formFile.Length.MB(),
+                        Name = formFile.Name.CleanName(),
+                        Title = formFile.Name.CleanName(),
+                        Content = Helper.byteFile(formFile.FileName),
+                        Url = host + "/images/" + formFile.FileName
+                        //IsPrivate = isPrivate
+                    };
+
+
+                    ijpContext.File.Add(x) ;
+
+                    ijpContext.SaveChanges();
+
+                    //var path = Path.Combine(hostingEnv.WebRootPath, "imagefolder", typeFolder, formFile.FileName);
+
+                    //using (var stream = new FileStream(path, FileMode.Create))
+                    //{
+                    //    await formFile.CopyToAsync(stream);
+                    //}
                 }
             }
 
