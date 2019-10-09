@@ -10,7 +10,7 @@ namespace WebImage
         {
         }
 
-        public DbSet<FileContent> FileContent { get; set; }
+        public DbSet<IjpFile> File { get; set; }
 
 
 
@@ -18,8 +18,8 @@ namespace WebImage
         {
            // modelbuilder.con
 
-            modelbuilder.Entity<FileContent>().ToTable("FileContent");
-            modelbuilder.Entity<FileContent>().HasKey(x => x.FileId);
+            modelbuilder.Entity<IjpFile>().ToTable("FileContent");
+            modelbuilder.Entity<IjpFile>().HasKey(x => x.FileId);
 
 
             base.OnModelCreating(modelbuilder);
