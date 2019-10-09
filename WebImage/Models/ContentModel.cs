@@ -23,7 +23,7 @@ namespace WebImage.Models
             _IjpContext = IjpContext;
             MyFiles = new List<FileModel>();
 
-            foreach (var x in _IjpContext.FileContent)
+            foreach (var x in _IjpContext.File)
             {
                 MyFiles.Add(new FileModel()
                 {
@@ -81,7 +81,7 @@ namespace WebImage.Models
     }
 
 
-    public class FileModel : FileContent
+    public class FileModel : IjpFile
     {
         //public string Path { get; set; }
         public bool IsSelected { get; set; }
@@ -120,12 +120,12 @@ namespace WebImage.Models
 
     public class MyData
     {
-        public List<FileContent> MyJson { get; set; }
+        public List<IjpFile> MyJson { get; set; }
         public string Profile { get; set; }
 
         public MyData()
         {
-            MyJson = new List<FileContent>();
+            MyJson = new List<IjpFile>();
         }
     }
 
