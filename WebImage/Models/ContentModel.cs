@@ -85,7 +85,7 @@ namespace WebImage.Models
     {
         //public string Path { get; set; }
         public bool IsSelected { get; set; }
-        public bool IsPrivate { get; set; }
+        //public bool IsPrivate { get; set; }
     }
 
     //public class FileModel : JsonModel
