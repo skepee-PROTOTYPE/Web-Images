@@ -40,9 +40,27 @@ namespace WebImage.Controllers
             return View(myFiles);
         }
 
-        public IActionResult ClientCarousel()
+        public IActionResult ClientCarousel(string pars)
         {
-            return View("ClientCarousel");
+            ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
+
+            var mydata = FilterMyFiles(pars);
+            mydata.MyJson.ForEach(x => myFiles.MyFiles.Add(
+                 new FileModel
+                 {
+                     Category = x.Category,
+                     Content = x.Content,
+                     Extension = x.Extension,
+                     IsPrivate = x.IsPrivate,
+                     IsSelected = true,
+                     LengthKB = x.LengthKB,
+                     LengthMB = x.LengthMB,
+                     Name = x.Name,
+                     Title = x.Title,
+                     Url = x.Url
+                 })
+            );
+            return View("ClientCarousel", myFiles);
         }
 
         public IActionResult Index()
@@ -66,9 +84,9 @@ namespace WebImage.Controllers
                 myFiles.AddToSelection(SelectedFiles);
                 myFiles.RemoveFromSelection(decSelectedFiles);
 
-                var sel2 = string.Join(",",SelectedFiles.Split(',').Where(x => (!x.Equals(decSelectedFiles))));
+                var sel2 = string.Join(",", SelectedFiles.Split(',').Where(x => (!x.Equals(decSelectedFiles))));
                 var pars2 = Helper.Encode(sel2 + "|" + myFiles.TypeSelected + "|" + myFiles.Profile);
-                               
+
                 myFiles.ApiGetUrl = Request.Scheme + "://" + Request.Host + "/api/getselection/" + pars2;
             }
             return View("GenerateJson", myFiles);
@@ -82,7 +100,7 @@ namespace WebImage.Controllers
                 string decpars = Helper.Decode(pars);
 
                 string decSelectedFiles = decpars.Split("|")[0];
-                myFiles.TypeSelected= decpars.Split("|")[1];
+                myFiles.TypeSelected = decpars.Split("|")[1];
                 myFiles.Profile = decpars.Split("|")[2];
 
                 myFiles.AddToSelection(decSelectedFiles);
@@ -102,67 +120,12 @@ namespace WebImage.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        //[HttpGet("/api/getmax/{MaxLengthKB}")]
-        //public JsonResult GetList(decimal MaxLengthKB)
-        //{
-        //    DateTime StartDate = DateTime.Now;
 
-        //    ContentModel myfiles = new ContentModel(Host, hostingEnv);
-        //    List<FileModel> files = new List<FileModel>();
-
-        //    if (MaxLengthKB > 0)
-        //    {
-        //        files = myfiles.MyFiles.Where(x => x.LengthKb <= MaxLengthKB).ToList();
-        //    }
-        //    else
-        //    {
-        //        files = myfiles.MyFiles;
-        //    }
-
-        //    var mydata = new MyData()
-        //    {
-        //        MyJson = files.Select(
-        //        x => new JsonModel()
-        //        {
-        //            Url = x.Url,
-        //            Title = x.Title,
-        //            LengthKb = x.LengthKb,
-        //            LengthMb = x.LengthMb
-        //        }).ToList(),
-
-        //        Profile = "test"
-        //    };
-
-        //    var c = new Statistics()
-        //    {
-        //        Count = files.Count(),
-        //        TotalLengthKb = files.Select(x => x.LengthKb).Sum(),
-        //        TotalLengthMb = files.Select(x => x.LengthMb).Sum(),
-        //        ElapsedTime = (DateTime.Now - StartDate).TotalDays
-
-        //    };
-
-        //    return Json(new JsonData()
-        //    {
-        //        MyData = new List<MyData>()
-        //        {
-        //            mydata
-        //        },
-
-        //        Stat = c
-        //    });
-        //}
-
-
-        [HttpGet("/api/getselection/{pars}")]
-        public JsonResult GetListSelection(string pars)
+        private MyData FilterMyFiles(string pars)
         {
-            string decodedString =  Helper.Decode(pars);
-
-            DateTime StartDate = DateTime.Now;
-
-            ContentModel myfiles = new ContentModel(Host, hostingEnv, ijpContext);
             List<FileModel> files = new List<FileModel>();
+            string decodedString = Helper.Decode(pars);
+            ContentModel myfiles = new ContentModel(Host, hostingEnv, ijpContext);
 
             if (!string.IsNullOrEmpty(decodedString))
             {
@@ -172,7 +135,7 @@ namespace WebImage.Controllers
 
                 files = myfiles.MyFiles.Where(x => decSelectedFiles.Split(",").Contains(x.Name)).ToList();
 
-                var mydata = new MyData()
+                return new MyData()
                 {
                     MyJson = files.Select(
                     x => new IjpFile()
@@ -180,32 +143,47 @@ namespace WebImage.Controllers
                         Url = x.Url,
                         Title = x.Title,
                         LengthKB = x.LengthKB,
-                        LengthMB = x.LengthMB                        
+                        LengthMB = x.LengthMB,
+                        Category=x.Category,
+                        Content=x.Content,
+                        Extension=x.Extension,
+                        IsPrivate=x.IsPrivate,
+                        Name=x.Name
                     }).ToList(),
 
                     Profile = Profile
                 };
+            }
+            else
+            {
+                return null;
+            }
+        }
 
-                return Json(new JsonData()
-                {
-                    MyData = new List<MyData>()
+
+        [HttpGet("/api/getselection/{pars}")]
+        public JsonResult GetListSelection(string pars)
+        {
+            DateTime StartDate = DateTime.Now;
+
+            var mydata = FilterMyFiles(pars);
+
+            return Json(new JsonData()
+            {
+                MyData = new List<MyData>()
                     {
                         mydata
                     },
 
-                    Stat = new Statistics()
-                    {
-                        Count = files.Count(),
-                        TotalLengthKb = files.Select(x => x.LengthKB).Sum(),
-                        TotalLengthMb = files.Select(x => x.LengthMB).Sum(),
-                        ElapsedTime = (DateTime.Now - StartDate).TotalDays
-                    }
-                });
-            }
-            else
-            {
-                return Json(null);
-            }
+                Stat = new Statistics()
+                {
+                    Count = mydata.MyJson.Count(),
+                    TotalLengthKb = mydata.MyJson.Select(x => x.LengthKB).Sum(),
+                    TotalLengthMb = mydata.MyJson.Select(x => x.LengthMB).Sum(),
+                    ElapsedTime = (DateTime.Now - StartDate).TotalDays
+                }
+            });
         }
+
     }
 }
