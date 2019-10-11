@@ -37,8 +37,9 @@
     }
 
     .card-img-top {
-        width: 100px;
+        /*width: 100px;
         height: 100px;
+        max-height:200px;*/
     }
 
     .card-title {
@@ -240,8 +241,46 @@
         </div>
         <br />
         <br />
+        <br />
+        <br />
+        <br />
+        <br />
         @if (selectedImageList.Any())
         {
+            string pars = Model.ApiGetUrl.Split("/")[Model.ApiGetUrl.Split("/").Length - 1];
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="~/img/logocarousel.jfif" alt="MVC action carousel">
+                        <div class="card-body">
+                            <h5 class="card-title">MVC Action Carousel</h5>
+                            <p class="card-text">Test your selection with this carousel through MVC action</p>
+                            @Html.ActionLink("Go", "ClientCarousel", new { @pars = pars }, new { @class = "btn btn-primary" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="~/img/logojson.jpg" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Json carousel</h5>
+                            <p class="card-text">Test your selection by directly invoking the generated json.</p>
+                            <a href="#" class="btn btn-primary disabled">Go</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="~/img/wip.jpg" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <a href="#" class="btn btn-primary disabled">Go</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <br />
             <br />
             <div class="row">
@@ -255,14 +294,10 @@
                     <div class="alert alert-info" role="alert">
                         @Model.ApiGetUrl
                     </div>
-                    @{
-                        string pars= Model.ApiGetUrl.Split("/")[Model.ApiGetUrl.Split("/").Length - 1];
-                    }
                     <button class="col-12 btn btn-outline-secondary" id="go">Go!</button>
                     <input type="text" readonly="readonly" id="urltext" />
                 </div>
             </div>
-            @Html.ActionLink("click", "ClientCarousel", new { @pars = pars })
         }
     </div>
 </form>
