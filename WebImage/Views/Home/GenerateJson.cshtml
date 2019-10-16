@@ -82,8 +82,6 @@
         $("#dragtarget img").each(function () {
             getIds.push(this.id);
         });
-
-        //return btoa(getIds.join());
         return getIds.join();
     }
 
@@ -91,10 +89,22 @@
     {
         var pupr = $("div.btn-group button.btn-warning").text();
         var pro = $("#profile").val();
+
         var par = fileSelected() + "|" + pupr + "|" + pro;
 
-        return btoa(par);
+        return par;
     }
+
+
+    function optionList()
+    {
+        var optionlist = '';
+        optionlist += $("#imageUrl").prop("checked") + ",";
+        optionlist += $("#imageEmbed").prop("checked");
+
+        return optionlist;
+    }
+
 
     function paramsRemoveFile(id)
     {
@@ -112,7 +122,7 @@
 
 
     function addToSelectionList() {
-        location.href = '@Url.Action("AddToSelectionList", "Home")?pars=' + params();
+        location.href = '@Url.Action("AddToSelectionList", "Home")?pars=' + btoa(params());
     };
 
     function copylink() {
@@ -157,7 +167,11 @@
     });
 
     $("#go").click(function () {
-        window.open('@Model.ApiGetUrl','_blank');
+        var arrurl = "@Model.ApiGetUrl".split("/");
+        var pars = arrurl[arrurl.length - 1];
+        console.log(optionList());
+        var url2 = arrurl.slice(0, arrurl.length - 1).join("/") + "/" + btoa(atob(pars) + "|" + optionList());
+        window.open(url2, '_blank');
     });
 
     $("img").hover(function () {
@@ -226,7 +240,7 @@
         @if (selectedImageList.Any())
         {
             <div class="row">
-                <div class="col-12 alert alert-info" role="alert">
+                <div class="col-12 alert alert-primary" role="alert">
                     Your selection: click on to remove from the list.
                 </div>
             </div>
@@ -249,6 +263,17 @@
         {
             string pars = Model.ApiGetUrl.Split("/")[Model.ApiGetUrl.Split("/").Length - 1];
 
+            <div class="row alert alert-primary" role="alert">
+                Insert image as:&nbsp;&nbsp;&nbsp;
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="imageUrl" value="url" checked>
+                    <label class="form-check-label" for="imageUrl">Url</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="imageEmbed" value="embed" checked>
+                    <label class="form-check-label" for="imageBase64">Embed</label>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-4">
                     <div class="card" style="width: 18rem;">
