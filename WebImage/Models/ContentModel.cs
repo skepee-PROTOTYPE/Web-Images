@@ -17,6 +17,7 @@ namespace WebImage.Models
         public string ApiGetUrl { get; set; }
         public string TypeSelected { get; set; }
         public string Profile { get; set; }
+        public string OptionList { get; set; }
 
         public ContentModel(string host, IHostingEnvironment env, IjpContext IjpContext)
         {
