@@ -17,6 +17,10 @@
         background-color: #2C7FD2;
     }
 
+    #jsonData {
+        border: 1px solid #ff6703;
+    }
+
     .box {
         width: 100px;
         height: 100px;
@@ -89,7 +93,6 @@
     {
         var pupr = $("div.btn-group button.btn-warning").text();
         var pro = $("#profile").val();
-
         var par = fileSelected() + "|" + pupr + "|" + pro;
 
         return par;
@@ -134,6 +137,89 @@
         $("#copybutton").prop("disabled", true);
     }
 
+
+    function jsonContent(myData)
+    {
+        var content = "";
+
+        $.each(myData, function (index) {
+            content += "<ul>";
+            content += "<li>name: " + $(this)[0].name  + "</li>";
+            content += "<li>title: " + $(this)[0].title  + "</li>";
+            content += "<li>extension: " + $(this)[0].extension  + "</li>";
+            content += "<li>KB: " + $(this)[0].lengthKB  + "</li>";
+            content += "<li>MB: " + $(this)[0].lengthMB  + "</li>";
+            content += "<li>category: " + $(this)[0].category  + "</li>";
+            content += "</ul>";
+        });
+
+        return content;
+    }
+
+
+    function jsonContent2(myData)
+    {
+        var content = "";
+        content+= '<div class="bd-example">';
+        content+= '<div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">';
+        content += '<ol class="carousel-indicators">';
+
+        $.each(myData, function (index) {
+            //content += '<li data-target="#carouselExampleCaptions" data-slide-to="' + index + '"' + (index==0)? 'class="active"':'' +'></li>';
+            content += '<li data-target="#carouselExampleCaptions" data-slide-to="' + index + '"></li>';
+        });
+
+        content+= '</ol>';
+        content+= '<div class="carousel-inner">';
+
+        $.each(myData, function (index) {
+            //content += '<div class="carousel-item' + (index == 0) ? 'active' : '' + '">';
+                        console.log($(this));
+
+            content += '<div class="carousel-item">';
+            //content += '<img src="https://' + $(this)[0].url + '" class="d-block w-100" alt="' + $(this)[0].name + '">';
+
+            content += '<img src="data:image/png;base64,' + $(this)[0].content +'">';
+            content += '<div class="carousel-caption d-none d-md-block">';
+            content += '<h5>' +  $(this)[0].name +'</h5>';
+            content += '<p>' + $(this)[0].title  +'</p>';
+            content += '</div>';
+            content += '</div>';
+            });
+
+        content += '<a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">';
+        content+='<span class="carousel-control-prev-icon" aria-hidden="true"></span>';
+        content+='<span class="sr-only">Previous</span>';
+        content+='</a>';
+        content+='<a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">';
+        content+='<span class="carousel-control-next-icon" aria-hidden="true"></span>';
+        content+='<span class="sr-only">Next</span>';
+        content+='</a>';
+        content += "</div>";
+        content += "</div>";
+
+        return content;
+    }
+
+
+    function AjaxJsonImages() {
+        var arrurl = "@Model.ApiGetUrl".split("/");
+        var urlnoparams = arrurl[arrurl.length - 1];
+        var pars = btoa(atob(urlnoparams) + "|" + optionList());
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "/api/getselection",
+            dataType: "json",
+            data: JSON.stringify(pars),
+            success: function (response) {
+                $("#jsonData").html(jsonContent(response.myData[0].myJson));
+                console.log(response.myData[0].myJson);
+            }
+        });
+    }
+
     $(document).ready(function () {
 
     $("img.border-danger").click(function () {
@@ -167,12 +253,12 @@
     });
 
     $("#go").click(function () {
-        var arrurl = "@Model.ApiGetUrl".split("/");
-        var pars = arrurl[arrurl.length - 1];
-        console.log(optionList());
-        var url2 = arrurl.slice(0, arrurl.length - 1).join("/") + "/" + btoa(atob(pars) + "|" + optionList());
-        window.open(url2, '_blank');
+        AjaxJsonImages();
     });
+
+    $("#goJson").click(function () {
+        AjaxJsonImages();
+    });      
 
     $("img").hover(function () {
         $(this).toggleClass("lighter");
@@ -181,148 +267,155 @@
     });
 </script>
 
-<form asp-controller="Home" asp-action="Register" method="post">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">Profile: </span>
-                </div>
-                <input type="text" id="profile" value="@Model.Profile" class="form-control" placeholder="give a name to identify your image group" aria-label="Username" aria-describedby="basic-addon1">
+@*<form asp-controller="Home" asp-action="Register" method="post">*@
+<div class="container-fluid">
+    <div class="row">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Profile: </span>
             </div>
+            <input type="text" id="profile" value="@Model.Profile" class="form-control" placeholder="give a name to identify your image group" aria-label="Username" aria-describedby="basic-addon1">
         </div>
-        <div class="row">
-            <div class=" btn-group" role="group" aria-label="image buttons">
-                @{
-                    string PublicSelected = (Model.TypeSelected == "Public") ? "btn-warning" : "btn-secondary";
-                    string PrivateSelected = (Model.TypeSelected == "Private") ? "btn-warning" : "btn-secondary";
-                }
-                <button type="button" id="btnPublic" class="btn @PublicSelected" data-toggle="collapse" data-target="#collapsePublic" aria-expanded="false" aria-controls="collapsePublic">Public</button>
-                <button type="button" id="btnPrivate" class="btn @PrivateSelected" data-toggle="collapse" data-target="#collapsePrivate" aria-expanded="false" aria-controls="collapsePrivate">Private</button>
-                <div class="card">
-                    <div class="card-body">
-                        Click on to add to your list
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br />
-        <br />
-        <div class="row">
-            @{
-                string ShowPublic = "";
-                string ShowPrivate = "";
-                if (!string.IsNullOrEmpty(Model.TypeSelected))
-                {
-                    ShowPublic = (Model.TypeSelected == "Public") ? "show" : "";
-                    ShowPrivate = (Model.TypeSelected == "Private") ? "show" : "";
-                }
-            }
-            <div class="collapse @(ShowPublic)" id="collapsePublic">
-                <div class="col-12 d-flex flex-row border flex-wrap" id="sourcePublic">
-                    @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
-                    {
-                        <img class="box rounded border border-danger public" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
-                    }
-                </div>
-            </div>
-            <div class="collapse @(ShowPrivate)" id="collapsePrivate">
-                <div class="col-12 d-flex flex-row border flex-wrap" id="sourcePrivate">
-                    @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
-                    {
-                        <img class="box rounded border border-danger private" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
-                    }
-                </div>
-            </div>
-        </div>
-        <br />
-        <br />
-        @if (selectedImageList.Any())
-        {
-            <div class="row">
-                <div class="col-12 alert alert-primary" role="alert">
-                    Your selection: click on to remove from the list.
-                </div>
-            </div>
-        }
-        <div class="row">
-            <div class="col-12 d-flex flex-row border flex-wrap" id="dragtarget">
-                @foreach (var file in selectedImageList)
-                {
-                    <img class="box rounded border border-danger" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
-                }
-            </div>
-        </div>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        @if (selectedImageList.Any())
-        {
-            string pars = Model.ApiGetUrl.Split("/")[Model.ApiGetUrl.Split("/").Length - 1];
-
-            <div class="row alert alert-primary" role="alert">
-                Insert image as:&nbsp;&nbsp;&nbsp;
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="imageUrl" value="url" checked>
-                    <label class="form-check-label" for="imageUrl">Url</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="imageEmbed" value="embed" checked>
-                    <label class="form-check-label" for="imageBase64">Embed</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card" style="width: 18rem;">
-                        <img class="card-img-top" src="~/img/logocarousel.jfif" alt="MVC action carousel">
-                        <div class="card-body">
-                            <h5 class="card-title">MVC Action Carousel</h5>
-                            <p class="card-text">Test your selection with this carousel through MVC action</p>
-                            @Html.ActionLink("Go", "ClientCarousel", new { @pars = pars }, new { @class = "btn btn-primary" })
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card" style="width: 18rem;">
-                        <img class="card-img-top" src="~/img/logojson.jpg" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Json carousel</h5>
-                            <p class="card-text">Test your selection by directly invoking the generated json.</p>
-                            <a href="#" class="btn btn-primary disabled">Go</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card" style="width: 18rem;">
-                        <img class="card-img-top" src="~/img/wip.jpg" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            <a href="#" class="btn btn-primary disabled">Go</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br />
-            <br />
-            <div class="row">
-                <a class="col-12 btn btn-info" data-toggle="collapse" href="#geturl" role="button" aria-expanded="false" aria-controls="geturl">
-                    Show me the url
-                </a>
-            </div>
-            <br />
-            <div class="row">
-                <div class="col-12 collapse" id="geturl">
-                    <div class="alert alert-info" role="alert">
-                        @Model.ApiGetUrl
-                    </div>
-                    <button class="col-12 btn btn-outline-secondary" id="go">Go!</button>
-                    <input type="text" readonly="readonly" id="urltext" />
-                </div>
-            </div>
-        }
     </div>
-</form>
+    <div class="row">
+        <div class=" btn-group" role="group" aria-label="image buttons">
+            @{
+                string PublicSelected = (Model.TypeSelected == "Public") ? "btn-warning" : "btn-secondary";
+                string PrivateSelected = (Model.TypeSelected == "Private") ? "btn-warning" : "btn-secondary";
+            }
+            <button type="button" id="btnPublic" class="btn @PublicSelected" data-toggle="collapse" data-target="#collapsePublic" aria-expanded="false" aria-controls="collapsePublic">Public</button>
+            <button type="button" id="btnPrivate" class="btn @PrivateSelected" data-toggle="collapse" data-target="#collapsePrivate" aria-expanded="false" aria-controls="collapsePrivate">Private</button>
+            <div class="card">
+                <div class="card-body">
+                    Click on to add to your list
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="row">
+        @{
+            string ShowPublic = "";
+            string ShowPrivate = "";
+            if (!string.IsNullOrEmpty(Model.TypeSelected))
+            {
+                ShowPublic = (Model.TypeSelected == "Public") ? "show" : "";
+                ShowPrivate = (Model.TypeSelected == "Private") ? "show" : "";
+            }
+        }
+        <div class="collapse @(ShowPublic)" id="collapsePublic">
+            <div class="col-12 d-flex flex-row border flex-wrap" id="sourcePublic">
+                @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
+                {
+                    <img class="box rounded border border-danger public" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
+                }
+            </div>
+        </div>
+        <div class="collapse @(ShowPrivate)" id="collapsePrivate">
+            <div class="col-12 d-flex flex-row border flex-wrap" id="sourcePrivate">
+                @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
+                {
+                    <img class="box rounded border border-danger private" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
+                }
+            </div>
+        </div>
+    </div>
+    <br />
+    <br />
+    @if (selectedImageList.Any())
+    {
+        <div class="row">
+            <div class="col-12 alert alert-primary" role="alert">
+                Your selection: click on to remove from the list.
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-12 d-flex flex-row border flex-wrap" id="dragtarget">
+            @foreach (var file in selectedImageList)
+            {
+                <img class="box rounded border border-danger" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
+            }
+        </div>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    @if (selectedImageList.Any())
+    {
+        //string pars = Model.ApiGetUrl.Split("/")[Model.ApiGetUrl.Split("/").Length - 1];
+
+        <br />
+        <br />
+        <div class="row">
+            <a class="col-12 btn btn-info" data-toggle="collapse" href="#geturl" role="button" aria-expanded="false" aria-controls="geturl">
+                Show me the url
+            </a>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-12 collapse" id="geturl">
+                <div class="alert alert-info" role="alert">
+                    @Model.ApiGetUrl
+                </div>
+                <button class="col-12 btn btn-outline-secondary" id="go">Go!</button>
+                <input type="text" readonly="readonly" id="urltext" />
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div id="jsonData"></div>
+        </div>
+        <br />
+        <div class="row alert alert-primary" role="alert">
+            Insert image as:&nbsp;&nbsp;&nbsp;
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="imageUrl" value="url" checked>
+                <label class="form-check-label" for="imageUrl">Url</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="imageEmbed" value="embed" checked>
+                <label class="form-check-label" for="imageBase64">Embed</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top img-responsive" src="~/img/logocarousel.jfif" alt="MVC action carousel">
+                    <div class="card-body">
+                        <h5 class="card-title">MVC Action Carousel</h5>
+                        <p class="card-text">Test your selection with this carousel through MVC action</p>
+                        @*@Html.ActionLink("Go", "ClientCarousel", new { @pars = pars }, new { @class = "btn btn-primary" })*@
+                        <a href="#" id="goJson" class="btn btn-primary">Go</a>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top img-responsive" src="~/img/logojson.jpg" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Json carousel</h5>
+                        <p class="card-text">Test your selection by directly invoking the generated json.</p>
+                        <a href="#" class="btn btn-primary disabled">Go</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top img-responsive" src="~/img/wip.jpg" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a href="#" class="btn btn-primary disabled">Go</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@*</form>*@
