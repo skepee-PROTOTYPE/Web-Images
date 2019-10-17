@@ -165,8 +165,8 @@ namespace WebImage.Controllers
         }
 
         
-        [HttpGet("/api/getselection/{pars}")]
-        public JsonResult GetListSelection(string pars)
+        [HttpPost("/api/getselection")]
+        public JsonResult GetListSelection([FromBody] string pars)
         {
             DateTime StartDate = DateTime.Now;
 
@@ -175,16 +175,16 @@ namespace WebImage.Controllers
             return Json(new JsonData()
             {
                 MyData = new List<MyData>()
-                    {
-                        mydata
-                    },
+                {
+                    mydata
+                },
 
                 Stat = new Statistics()
                 {
                     Count = mydata.MyJson.Count(),
                     TotalLengthKb = mydata.MyJson.Select(x => x.LengthKB).Sum(),
                     TotalLengthMb = mydata.MyJson.Select(x => x.LengthMB).Sum(),
-                    ElapsedTime = (DateTime.Now - StartDate).TotalDays
+                    ElapsedTime = (DateTime.Now - StartDate).TotalSeconds
                 }
             });
         }
