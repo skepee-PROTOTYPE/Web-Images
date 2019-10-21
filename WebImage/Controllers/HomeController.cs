@@ -68,6 +68,11 @@ namespace WebImage.Controllers
             return View();
         }
 
+        public IActionResult ImageLayout()
+        {
+            return View();
+        }
+
 
         public IActionResult RemoveFromSelectionList(string pars)
         {
@@ -133,7 +138,7 @@ namespace WebImage.Controllers
                 //string TypeSelected = decodedString.Split("|")[1];
                 string Profile = decodedString.Split("|")[2];
 
-                string optionList= decodedString.Split("|")[3];
+                string optionList = decodedString.Split("|")[3];
                 bool addUrl = Convert.ToBoolean(optionList.Split(",")[0]);
                 bool addEmbed = Convert.ToBoolean(optionList.Split(",")[1]);
 
@@ -144,15 +149,15 @@ namespace WebImage.Controllers
                     MyJson = files.Select(
                     x => new IjpFile()
                     {
-                        Url = (addUrl)?x.Url:"",
+                        Url = (addUrl) ? x.Url : "",
                         Title = x.Title,
                         LengthKB = x.LengthKB,
                         LengthMB = x.LengthMB,
-                        Category=x.Category,
-                        Content=(addEmbed)?x.Content:null,
-                        Extension=x.Extension,
-                        IsPrivate=x.IsPrivate,
-                        Name=x.Name
+                        Category = x.Category,
+                        Content = (addEmbed) ? x.Content : null,
+                        Extension = x.Extension,
+                        IsPrivate = x.IsPrivate,
+                        Name = x.Name
                     }).ToList(),
 
                     Profile = Profile
@@ -164,7 +169,7 @@ namespace WebImage.Controllers
             }
         }
 
-        
+
         [HttpPost("/api/getselection")]
         public JsonResult GetListSelection([FromBody] string pars)
         {
