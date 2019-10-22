@@ -148,7 +148,8 @@
         content += '<div class="list-group" id="list-tab" role="tablist">';
 
         $.each(myData, function (index) {
-            content += '<a class="list-group-item list-group-item-action " id="list-' + $(this)[0].name + '-list" data-toggle="list" href="#list-' + $(this)[0].name + '" role="tab" aria-controls="' + $(this)[0].name + '">' + $(this)[0].name + '</a>';
+            //console.log('<a class="list-group-item list-group-item-action '+ (index==0)?'active ': ' '  +'" id="list-' + $(this)[0].name + '-list" data-toggle="list" href="#list-' + $(this)[0].name + '" role="tab" aria-controls="' + $(this)[0].name + '">' + $(this)[0].name + '</a>');
+            content +=  '<a class="list-group-item list-group-item-action id="list-' + $(this)[0].name + '-list" data-toggle="list" href="#list-' + $(this)[0].name + '" role="tab" aria-controls="' + $(this)[0].name + '">' + $(this)[0].name + '</a>';
         });
 
         content += '</div>';
@@ -194,11 +195,11 @@
         $.ajax({
             type: "POST",
             contentType: "application/json; charset=utf-8",
-            url: "/api/getselection",
+            url: "/api/gallery",
             dataType: "json",
             data: JSON.stringify(pars),
             success: function (response) {
-                $("#jsonData").html(jsonContent(response.myData[0].myJson));
+                $("#jsonData").html(jsonContent(response.myData.myJson));
             }
         });
     }
@@ -300,9 +301,9 @@
     <br />
     @if (selectedImageList.Any())
     {
-        <div class="row alert alert-primary" role="alert">
+        @*<div class="row alert alert-primary" role="alert">
             Your selection: click on to remove from the list.
-        </div>
+        </div>*@
         <div class="row alert alert-primary" role="alert">
             Insert image as:&nbsp;&nbsp;&nbsp;
             <div class="form-check form-check-inline">
@@ -319,7 +320,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1">Profile: </span>
                 </div>
-                <input type="text" id="profile" value="@Model.Profile" class="form-control" placeholder="give a name to identify your images list" aria-label="Username" aria-describedby="basic-addon1">
+                <input type="text" id="profile" value="" class="form-control" placeholder="name to identify your images list" aria-label="profile" aria-describedby="basic-addon1">
             </div>
         </div>
     }
@@ -351,11 +352,11 @@
         </div>
         <div id="jsonData"></div>
         <br />
-        <div class="col-12 row btn btn-info">
-            <a class="col-12 btn btn-info" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="imagelayout">
+        <div class="row alert alert-primary">
+            @*<a class="col-12 btn btn-info" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="imagelayout">
                 ccc
-            </a>
-            @Html.ActionLink("Check here your image list", "ImageLayout", "Home")
+            </a>*@
+            @Html.ActionLink("Check your list", "ImageLayout", "Home")
         </div>
     }
 </div>

@@ -12,14 +12,13 @@ namespace WebImage.Models
     public class ContentModel
     {
         private readonly IjpContext _IjpContext;
-        //private static List<FileModel> FilesInDirectory;
         public List<FileModel> MyFiles { get; set; }
         public string ApiGetUrl { get; set; }
         public string TypeSelected { get; set; }
-        public string Profile { get; set; }
+        //public string Profile { get; set; }
         public string OptionList { get; set; }
 
-        public ContentModel(string host, IHostingEnvironment env, IjpContext IjpContext)
+        public ContentModel(string Host, IHostingEnvironment Env, IjpContext IjpContext)
         {
             _IjpContext = IjpContext;
             MyFiles = new List<FileModel>();
@@ -37,24 +36,10 @@ namespace WebImage.Models
                     Name = x.Name,
                     Title = x.Title,
                     Url = x.Url,
-                    Content=x.Content
+                    Content = x.Content
                 });
             }
-
-
-            //_IjpContext.FileContent.ForEachAsync(x => MyFiles.Add(new FileModel()
-            //{
-            //    Category = x.Category,
-            //    Extension = x.Extension,
-            //    IsPrivate = false,
-            //    IsSelected = false,
-            //    LengthKB = x.LengthKB,
-            //    LengthMB = x.LengthMB,
-            //    Name = x.Name,
-            //    Title = x.Title,
-            //    Url = x.Url
-            //}));
-
+            
         }
 
         public void AddToSelection(string MySelectedFiles)
@@ -84,38 +69,14 @@ namespace WebImage.Models
 
     public class FileModel : IjpFile
     {
-        //public string Path { get; set; }
         public bool IsSelected { get; set; }
-        //public bool IsPrivate { get; set; }
     }
 
-    //public class FileModel : JsonModel
-    //{
-    //    public string Name { get; set; }
-    //    public string Extension { get; set; }
-    //    public string Path { get; set; }
-    //    public bool IsSelected { get; set; }
-    //    public bool IsPrivate { get; set; }
-    //    public string Category { get; set; }
-    //}
-
-    //public class JsonModel
-    //{
-    //    public string Title { get; set; }
-    //    public double LengthKb { get; set; }
-    //    public double LengthMb { get; set; }
-    //    public string Url { get; set; }
-    //}
 
     public class JsonData
     {
-        public List<MyData> MyData { get; set; }
+        public MyData MyData { get; set; }
         public Statistics Stat { get; set; }
-
-        public JsonData()
-        {
-            MyData = new List<MyData>();
-        }
     }
 
 

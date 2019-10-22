@@ -84,15 +84,15 @@ namespace WebImage.Controllers
                 string SelectedFiles = decpars.Split("|")[0];
                 string decSelectedFiles = decpars.Split("|")[1];
                 myFiles.TypeSelected = decpars.Split("|")[2];
-                myFiles.Profile = decpars.Split("|")[3];
+                //myFiles.Profile = decpars.Split("|")[3];
 
                 myFiles.AddToSelection(SelectedFiles);
                 myFiles.RemoveFromSelection(decSelectedFiles);
 
                 var sel2 = string.Join(",", SelectedFiles.Split(',').Where(x => (!x.Equals(decSelectedFiles))));
-                var pars2 = Helper.Encode(sel2 + "|" + myFiles.TypeSelected + "|" + myFiles.Profile);
+                var pars2 = Helper.Encode(sel2 + "|" + myFiles.TypeSelected);
 
-                myFiles.ApiGetUrl = Request.Scheme + "://" + Request.Host + "/api/getselection/" + pars2;
+                myFiles.ApiGetUrl = Request.Scheme + "://" + Request.Host + "/api/gallery/" + pars2;
             }
             return View("GenerateJson", myFiles);
         }
@@ -106,10 +106,10 @@ namespace WebImage.Controllers
 
                 string decSelectedFiles = decpars.Split("|")[0];
                 myFiles.TypeSelected = decpars.Split("|")[1];
-                myFiles.Profile = decpars.Split("|")[2];
+                //myFiles.Profile = decpars.Split("|")[2];
 
                 myFiles.AddToSelection(decSelectedFiles);
-                myFiles.ApiGetUrl = Request.Scheme + "://" + Request.Host + "/api/getselection/" + pars;
+                myFiles.ApiGetUrl = Request.Scheme + "://" + Request.Host + "/api/gallery/" + pars;
             }
             return View("GenerateJson", myFiles);
         }
@@ -170,7 +170,7 @@ namespace WebImage.Controllers
         }
 
 
-        [HttpPost("/api/getselection")]
+        [HttpPost("/api/gallery")]
         public JsonResult GetListSelection([FromBody] string pars)
         {
             DateTime StartDate = DateTime.Now;
@@ -179,10 +179,7 @@ namespace WebImage.Controllers
 
             return Json(new JsonData()
             {
-                MyData = new List<MyData>()
-                {
-                    mydata
-                },
+                MyData = mydata,
 
                 Stat = new Statistics()
                 {
