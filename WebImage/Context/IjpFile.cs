@@ -18,7 +18,7 @@ namespace WebImage.Context
         public double LengthKB { get; set; }
         public double LengthMB { get; set; }
         public string Url { get; set; }
-        public string Category { get; set; }
+        public int CategoryId { get; set; }
         public byte[] Content { get; set; }
         public bool IsPrivate { get; set; }
     }

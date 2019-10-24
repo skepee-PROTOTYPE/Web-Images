@@ -148,7 +148,6 @@
         content += '<div class="list-group" id="list-tab" role="tablist">';
 
         $.each(myData, function (index) {
-            //console.log('<a class="list-group-item list-group-item-action '+ (index==0)?'active ': ' '  +'" id="list-' + $(this)[0].name + '-list" data-toggle="list" href="#list-' + $(this)[0].name + '" role="tab" aria-controls="' + $(this)[0].name + '">' + $(this)[0].name + '</a>');
             content +=  '<a class="list-group-item list-group-item-action id="list-' + $(this)[0].name + '-list" data-toggle="list" href="#list-' + $(this)[0].name + '" role="tab" aria-controls="' + $(this)[0].name + '">' + $(this)[0].name + '</a>';
         });
 
@@ -261,9 +260,15 @@
             }
             <button type="button" id="btnPublic" class="btn @PublicSelected" data-toggle="collapse" data-target="#collapsePublic" aria-expanded="false" aria-controls="collapsePublic">Public</button>
             <button type="button" id="btnPrivate" class="btn @PrivateSelected" data-toggle="collapse" data-target="#collapsePrivate" aria-expanded="false" aria-controls="collapsePrivate">Private</button>
-            <div class="card">
-                <div class="card-body">
-                    Click on to add to your list
+
+            <input type="text" class="form-control" aria-label="Text input with dropdown button">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Category</button>
+                <div class="dropdown-menu">
+                    @foreach (var item in Model.Category)
+                    { 
+                    <a class="dropdown-item" href="#">@item.Name</a>                    
+                    }
                 </div>
             </div>
         </div>

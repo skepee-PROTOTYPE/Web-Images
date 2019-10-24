@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using WebImage.Context;
@@ -17,6 +18,8 @@ namespace WebImage.Models
         public string TypeSelected { get; set; }
         //public string Profile { get; set; }
         public string OptionList { get; set; }
+        public List<IjpCategory> Category { get; set; }
+
 
         public ContentModel(string Host, IHostingEnvironment Env, IjpContext IjpContext)
         {
@@ -27,7 +30,7 @@ namespace WebImage.Models
             {
                 MyFiles.Add(new FileModel()
                 {
-                    Category = x.Category,
+                    CategoryId = x.CategoryId,
                     Extension = x.Extension,
                     IsPrivate = false,
                     IsSelected = false,
@@ -39,6 +42,10 @@ namespace WebImage.Models
                     Content = x.Content
                 });
             }
+
+            Category = new List<IjpCategory>();
+            Category.AddRange(IjpContext.Category);
+
             
         }
 

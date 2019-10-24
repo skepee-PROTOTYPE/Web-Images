@@ -46,7 +46,7 @@ namespace WebImage.Context
                         Extension = f.Extension,
                         LengthKB = sizekb,
                         LengthMB = sizeMb,
-                        Category = "Phantasy",
+                        CategoryId = 1,
                         Content = Helper.byteFile(path + "/" + f.Name),
                         //Path = "/images/" + ((isPrivate) ? "private/" : "public/") + f.Name,
                         Url = host + "/images/" + f.Name

@@ -51,7 +51,7 @@ namespace WebImage.Controllers
 
                     var x = new Context.IjpFile
                     {
-                        Category = "",
+                        CategoryId = 1,
                         Extension = Path.GetExtension(formFile.FileName),
                         LengthKB = formFile.Length.KB(),
                         LengthMB = formFile.Length.MB(),

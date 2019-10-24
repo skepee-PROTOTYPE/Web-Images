@@ -48,7 +48,7 @@ namespace WebImage.Controllers
             mydata.MyJson.ForEach(x => myFiles.MyFiles.Add(
                  new FileModel
                  {
-                     Category = x.Category,
+                     CategoryId = x.CategoryId,
                      Content = x.Content,
                      Extension = x.Extension,
                      IsPrivate = x.IsPrivate,
@@ -153,7 +153,7 @@ namespace WebImage.Controllers
                         Title = x.Title,
                         LengthKB = x.LengthKB,
                         LengthMB = x.LengthMB,
-                        Category = x.Category,
+                        CategoryId = x.CategoryId,
                         Content = (addEmbed) ? x.Content : null,
                         Extension = x.Extension,
                         IsPrivate = x.IsPrivate,
