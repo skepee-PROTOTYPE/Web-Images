@@ -41,8 +41,8 @@ namespace WebImage.Context
 
                     _IjpContext.File.Add(new IjpFile()
                     {
-                        Title = f.Name.Replace("@", "").Replace(".", ""),
-                        Name = f.Name.Replace("@", "").Replace(".", ""),
+                        Title = f.Name.CleanName(),
+                        Name = f.Name.CleanName(),
                         Extension = f.Extension,
                         LengthKB = sizekb,
                         LengthMB = sizeMb,
