@@ -17,7 +17,6 @@ namespace WebImage.Models
         public List<IjpCategory> Category { get; set; }
         public IjpUser User { get; set; }
 
-
         public ContentModel(string Host, IHostingEnvironment Env, IjpContext IjpContext)
         {
             _IjpContext = IjpContext;

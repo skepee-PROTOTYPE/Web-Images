@@ -92,7 +92,8 @@ namespace WebImage.Controllers
             if (user != null)
             {
                 ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
-                myFiles.User = user;
+                TempData["user"] = user.Username;
+                myFiles.User= user;
                 return View("Index", myFiles);
             }
 

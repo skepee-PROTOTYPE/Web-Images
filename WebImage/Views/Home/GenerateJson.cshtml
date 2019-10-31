@@ -2,13 +2,13 @@
 
 @{
     ViewData["Title"] = "Generate Json";
+    var user=TempData["user"];
 
     var selectedImageList = Model.MyFiles.Where(x => x.IsSelected).ToList();
     var unSelectedImageList = Model.MyFiles.Where(x => !x.IsSelected).ToList();
 }
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
-@*<link href="~/css/home.css" rel="stylesheet" />*@
 
 <style>
     .list-group-item.active {
