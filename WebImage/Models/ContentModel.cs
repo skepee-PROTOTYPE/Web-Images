@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
 using WebImage.Context;
 
@@ -19,6 +15,7 @@ namespace WebImage.Models
         //public string Profile { get; set; }
         public string OptionList { get; set; }
         public List<IjpCategory> Category { get; set; }
+        public IjpUser User { get; set; }
 
 
         public ContentModel(string Host, IHostingEnvironment Env, IjpContext IjpContext)

@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@model ContentModel
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -33,31 +35,45 @@
                         <li class="nav-item">
                             <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="GenerateJson">Json</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="ImageLayout">Layout</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-warning" asp-area="" asp-controller="FileUpload" asp-action="Index">Upload</a>
-                        </li>
-                        @*<li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Admin">Admin</a>
-                        </li>*@
-                        <li class="nav-item">
-                            <a class="nav-link text-warning" asp-area="" asp-controller="FileUpload" asp-action="Index"><i class="fas fa-user" title="Login"></i></a>
-                        </li>
+                        @if (Model != null)
+                        {
+                            @if (Model.User != null)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="GenerateJson">Json</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="ImageLayout">Layout</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-warning" asp-area="" asp-controller="FileUpload" asp-action="Index"><i class="fas fa-cloud-upload-alt" title="Upload"></i></a>
+                                </li>
+                            }
+                        }
                     </ul>
                 </div>
+
+                @if (Model == null)
+                {
+                    <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="SignUp"><i class="fas fa-user-plus" title="Sign up"></i></a>
+                    <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="LogInForm"><i class="fas fa-user" title="Login"></i></a>
+                }
+                else
+                {
+                    @if (Model.User != null)
+                    {
+                        <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="LogInForm"><i class="fas fa-sign-out-alt" title="Log Out"></i></a>
+                        <a class="nav-link text-warning" href="#">Welcome @Model.User.Name</a>
+                    }
+                }
             </div>
         </nav>
     </header>
     @*<div class="container">*@
-        <partial name="_CookieConsentPartial" />
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <partial name="_CookieConsentPartial" />
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
     @*</div>*@
 
     <footer class="border-top footer text-muted">

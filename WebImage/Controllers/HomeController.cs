@@ -52,7 +52,7 @@ namespace WebImage.Controllers
                      Content = x.Content,
                      Extension = x.Extension,
                      IsPrivate = x.IsPrivate,
-                     IsSelected = true,
+                     IsSelected = false,
                      LengthKB = x.LengthKB,
                      LengthMB = x.LengthMB,
                      Name = x.Name,
@@ -71,6 +71,32 @@ namespace WebImage.Controllers
         public IActionResult ImageLayout()
         {
             return View();
+        }
+
+
+        public IActionResult LogInForm()
+        {
+            return View();
+        }
+
+        public IActionResult SignUp()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult LogIn(string username, string password)
+        {
+            var user = ijpContext.User.FirstOrDefault(x => x.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase) && x.Pwd.Equals(password, StringComparison.InvariantCulture));
+
+            if (user != null)
+            {
+                ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
+                myFiles.User = user;
+                return View("Index", myFiles);
+            }
+
+            return View("LogInForm");
         }
 
 

@@ -75,33 +75,3 @@ body {
     border: 0px solid #FDE100;
 }
 
-.card {
-    /*color: #2671E0;
-    color: #7A7772;*/
-    border: 0px solid #3F69D1;
-    background-color: #343a40 !important;
-    color: #ffc107;
-}
-
-.card .fas,
-.card .far {
-    font-size: 80px;
-    text-align: center;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    opacity: 0.7;
-    /*background-color: #52B5EF;*/
-    background-color: #343a40 !important;
-}
-
-
-.card .fas:hover,
-.card .far:hover {
-    /*color: black;*/
-    color: #FDE100;
-}
-
-
-.card-title {
-font-size:1.75rem;
-}

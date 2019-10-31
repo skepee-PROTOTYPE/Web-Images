@@ -12,7 +12,7 @@ namespace WebImage
 
         public DbSet<IjpFile> File { get; set; }
         public DbSet<IjpCategory> Category { get; set; }
-
+        public DbSet<IjpUser> User { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelbuilder)
@@ -23,11 +23,11 @@ namespace WebImage
             modelbuilder.Entity<IjpCategory>().ToTable("Category");
             modelbuilder.Entity<IjpCategory>().HasKey(x => x.CategoryId);
 
+            modelbuilder.Entity<IjpUser>().ToTable("User");
+            modelbuilder.Entity<IjpUser>().HasKey(x => x.UserId);
+
             base.OnModelCreating(modelbuilder);
-
-
         }
-
 
     }
 }

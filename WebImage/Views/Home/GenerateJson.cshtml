@@ -8,9 +8,9 @@
 }
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
+@*<link href="~/css/home.css" rel="stylesheet" />*@
 
 <style>
-
     .list-group-item.active {
         background-color: #cce5ff;
         color: #000000;
@@ -326,15 +326,15 @@
             <input class="form-check-input" type="checkbox" id="imageEmbed" value="embed" checked>
             <label class="form-check-label" for="imageBase64">Embed</label>
         </div>
-    <div class="row">
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1">Profile: </span>
+        <div class="row">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">Profile: </span>
+                </div>
+                <input type="text" id="profile" value="" class="form-control" placeholder="name to identify your images list" aria-label="profile" aria-describedby="basic-addon1">
             </div>
-            <input type="text" id="profile" value="" class="form-control" placeholder="name to identify your images list" aria-label="profile" aria-describedby="basic-addon1">
         </div>
-    </div>
-}
+    }
     <div class="row">
         <div class="col-12 d-flex flex-row flex-wrap" id="dragtarget">
             @foreach (var file in selectedImageList)
@@ -370,7 +370,7 @@
             @Html.ActionLink("Check your list", "ImageLayout", "Home")
         </div>
     }
-    </div>
-    @*</form>*@
+</div>
+@*</form>*@
 
 
