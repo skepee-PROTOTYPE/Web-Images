@@ -43,6 +43,9 @@ html {
     min-height: 100%;
 }
 
+.container-fluid {
+    color: #ffc107;
+}
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
@@ -69,27 +72,36 @@ body {
     opacity: 0.7;
     color: #7A7772;
     font-family: Futura, "Franklin Gothic Medium";
-    border: 5px solid #FDE100;
+    border: 0px solid #FDE100;
 }
 
 .card {
-    /*color: #2671E0;*/
-    color: #7A7772;
-    border: 5px solid #3F69D1;
+    /*color: #2671E0;
+    color: #7A7772;*/
+    border: 0px solid #3F69D1;
+    background-color: #343a40 !important;
+    color: #ffc107;
 }
 
-    .card .fas,
-    .card .far {
-        font-size: 100px;
-        text-align: center;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        opacity: 0.7;
-        background-color: #52B5EF;
-    }
+.card .fas,
+.card .far {
+    font-size: 80px;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    opacity: 0.7;
+    /*background-color: #52B5EF;*/
+    background-color: #343a40 !important;
+}
 
 
-        .card .fas:hover,
-        .card .far:hover {
-            color: black;
-        }
+.card .fas:hover,
+.card .far:hover {
+    /*color: black;*/
+    color: #FDE100;
+}
+
+
+.card-title {
+font-size:1.75rem;
+}

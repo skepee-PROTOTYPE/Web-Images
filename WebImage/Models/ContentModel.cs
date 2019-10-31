@@ -32,7 +32,7 @@ namespace WebImage.Models
                 {
                     CategoryId = x.CategoryId,
                     Extension = x.Extension,
-                    IsPrivate = false,
+                    IsPrivate = x.IsPrivate,
                     IsSelected = false,
                     LengthKB = x.LengthKB,
                     LengthMB = x.LengthMB,
@@ -44,7 +44,7 @@ namespace WebImage.Models
             }
 
             Category = new List<IjpCategory>();
-            Category.AddRange(IjpContext.Category);
+            Category.AddRange(IjpContext.Category.OrderBy(x=>x.Name));
 
             
         }
