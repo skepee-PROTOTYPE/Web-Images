@@ -13,12 +13,12 @@ namespace WebImage.Context
     {
         private readonly IjpContext _IjpContext;
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IHostingEnvironment hostingEnv;
+        private readonly IWebHostEnvironment hostingEnv;
         private static string host;
 
         public List<IjpContext> files { get; set; }
 
-        public TestData(IHostingEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext ijpContext)
+        public TestData(IWebHostEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext ijpContext)
         {
             _IjpContext = ijpContext;
             hostingEnv = _hostingEnv;

@@ -12,11 +12,11 @@ namespace WebImage.Controllers
     public class FileUploadController : Controller
     {
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IHostingEnvironment hostingEnv;
+        private readonly IWebHostEnvironment hostingEnv;
         private readonly IjpContext ijpContext;
         private static string host;
 
-        public FileUploadController(IHostingEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext _ijpContext)
+        public FileUploadController(IWebHostEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext _ijpContext)
         {
             hostingEnv = _hostingEnv;
             httpContextAccessor = _httpContextAccessor;

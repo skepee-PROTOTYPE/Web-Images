@@ -15,11 +15,11 @@ namespace WebImage.Controllers
     {
         private readonly IjpContext ijpContext;
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IHostingEnvironment hostingEnv;
+        private readonly IWebHostEnvironment hostingEnv;
 
         private string Host { get; set; }
 
-        public HomeController(IHostingEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext _ijpContext)
+        public HomeController(IWebHostEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext _ijpContext)
         {
             hostingEnv = _hostingEnv;
             httpContextAccessor = _httpContextAccessor;
@@ -93,6 +93,7 @@ namespace WebImage.Controllers
             {
                 ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
                 TempData["user"] = user.Username;
+                username = user.Username;
                 myFiles.User= user;
                 return View("Index", myFiles);
             }

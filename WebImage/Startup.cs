@@ -1,14 +1,13 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace WebImage
 {
@@ -33,15 +32,15 @@ namespace WebImage
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddRazorPages();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMemoryCache();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2); 
             services.AddEntityFrameworkSqlServer();
             services.AddDbContext<IjpContext>(options => options.UseSqlServer(connString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             string cachePeriod = env.IsDevelopment() ? "600" : "604800";
 
@@ -58,7 +57,8 @@ namespace WebImage
                 app.UseHsts();
             }
 
-
+            app.UseRouting();
+            app.UseAuthorization();
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -71,17 +71,15 @@ namespace WebImage
                 }
             });
 
-
             app.UseHttpsRedirection();
             app.UseCookiePolicy();
-
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                //endpoints.MapRazorPages();
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-
         }
     }
 }

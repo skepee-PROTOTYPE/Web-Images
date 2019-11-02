@@ -16,8 +16,9 @@ namespace WebImage.Models
         public string OptionList { get; set; }
         public List<IjpCategory> Category { get; set; }
         public IjpUser User { get; set; }
+        //public static string userName { get; set; }
 
-        public ContentModel(string Host, IHostingEnvironment Env, IjpContext IjpContext)
+        public ContentModel(string Host, IWebHostEnvironment Env, IjpContext IjpContext)
         {
             _IjpContext = IjpContext;
             MyFiles = new List<FileModel>();
