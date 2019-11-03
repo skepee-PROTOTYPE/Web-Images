@@ -5,6 +5,17 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\**" />
+    <Compile Remove="Views\**" />
+    <Content Remove="Controllers\**" />
+    <Content Remove="Views\**" />
+    <EmbeddedResource Remove="Controllers\**" />
+    <EmbeddedResource Remove="Views\**" />
+    <None Remove="Controllers\**" />
+    <None Remove="Views\**" />
+  </ItemGroup>
   
   <ItemGroup>
     <Folder Include="wwwroot\imagefolder\" />
