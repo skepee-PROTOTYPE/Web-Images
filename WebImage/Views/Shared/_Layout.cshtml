@@ -1,9 +1,6 @@
-﻿@model ContentModel
-@{
-    var user = TempData["user"];
-    var a = "";
-    
-}
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
 <!DOCTYPE html>
 <html>
@@ -40,34 +37,37 @@
                         <li class="nav-item">
                             <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        @if (Model != null)
+                        @if (SignInManager.IsSignedIn(User))
                         {
-                            @if (Model.User != null)
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="GenerateJson">Json</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="ImageLayout">Layout</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-warning" asp-area="" asp-controller="FileUpload" asp-action="Index"><i class="fas fa-cloud-upload-alt" title="Upload"></i></a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="LogInForm"><i class="fas fa-sign-out-alt" title="Log Out"></i></a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-warning" href="#">Welcome @Model.User.Name</a>
-                                </li>
-                            }
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="GenerateJson">Json</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="ImageLayout">Layout</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" asp-area="" asp-controller="FileUpload" asp-action="Index"><i class="fas fa-cloud-upload-alt" title="Upload"></i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="LogInForm"><i class="fas fa-sign-out-alt" title="Log Out"></i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" href="#">Welcome @User.Identity.Name</a>
+                            </li>
                         }
                         else
                         {
-                            <li class="nav-item">
+                            @*<li class="nav-item">
                                 <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="SignUp"><i class="fas fa-user-plus" title="Sign up"></i></a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-warning" asp-area="" asp-controller="Home" asp-action="LogInForm"><i class="fas fa-sign-in-alt" title="Log In"></i></a>
+                            </li>*@
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" asp-area="Identity" asp-page="/Account/Register"><i class="fas fa-user-plus" title="Sign up"></i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" asp-area="Identity" asp-page="/Account/Login"><i class="fas fa-sign-in-alt" title="Log In"></i></a>
                             </li>
                         }
                     </ul>
