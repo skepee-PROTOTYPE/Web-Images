@@ -19,7 +19,7 @@ namespace WebImage.Pages
 
         [BindProperty]
         private string Host { get; set; }
-        [BindProperty]
+        //[BindProperty]
         public List<FileModel> MyFiles { get; set; }
         [BindProperty]
         public string ApiGetUrl { get; set; }
@@ -27,7 +27,6 @@ namespace WebImage.Pages
         public string TypeSelected { get; set; }
         [BindProperty]
         public List<IjpCategory> Category { get; set; }
-
 
         public JsonModel(IWebHostEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext _ijpContext)
         {
@@ -41,26 +40,49 @@ namespace WebImage.Pages
 
 
 
-        public void OnGet()
+        public async Task OnGet()
         {
-            ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
+            MyFiles = new List<FileModel>();
 
-            var mydata = FilterMyFiles(string.Empty);
-            mydata.MyJson.ForEach(x => myFiles.MyFiles.Add(
-                 new FileModel
-                 {
-                     CategoryId = x.CategoryId,
-                     Content = x.Content,
-                     Extension = x.Extension,
-                     IsPrivate = x.IsPrivate,
-                     IsSelected = false,
-                     LengthKB = x.LengthKB,
-                     LengthMB = x.LengthMB,
-                     Name = x.Name,
-                     Title = x.Title,
-                     Url = x.Url
-                 })
-            );
+            foreach (var x in ijpContext.File)
+            {
+                MyFiles.Add(new FileModel()
+                {
+                    CategoryId = x.CategoryId,
+                    Extension = x.Extension,
+                    IsPrivate = x.IsPrivate,
+                    IsSelected = false,
+                    LengthKB = x.LengthKB,
+                    LengthMB = x.LengthMB,
+                    Name = x.Name,
+                    Title = x.Title,
+                    Url = x.Url,
+                    Content = x.Content
+                });
+            }
+
+            Category = new List<IjpCategory>();
+            Category.AddRange(ijpContext.Category.OrderBy(x => x.Name));
+
+
+            //ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
+
+            //var mydata = FilterMyFiles(string.Empty);
+            //mydata.MyJson.ForEach(x => myFiles.MyFiles.Add(
+            //     new FileModel
+            //     {
+            //         CategoryId = x.CategoryId,
+            //         Content = x.Content,
+            //         Extension = x.Extension,
+            //         IsPrivate = x.IsPrivate,
+            //         IsSelected = false,
+            //         LengthKB = x.LengthKB,
+            //         LengthMB = x.LengthMB,
+            //         Name = x.Name,
+            //         Title = x.Title,
+            //         Url = x.Url
+            //     })
+            //);
 
         }
 
