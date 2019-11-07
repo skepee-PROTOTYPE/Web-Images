@@ -5,8 +5,8 @@
     ViewData["Title"] = "Generate Json";
     var user = TempData["user"];
 
-    var selectedImageList = Model.MyFiles.Where(x => x.IsSelected).ToList();
-    var unSelectedImageList = Model.MyFiles.Where(x => !x.IsSelected).ToList();
+    var selectedImageList = Model.ijpModel.MyFiles.Where(x => x.IsSelected).ToList();
+    var unSelectedImageList = Model.ijpModel.MyFiles.Where(x => !x.IsSelected).ToList();
 }
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -186,7 +186,7 @@
     }
 
     function AjaxJsonImages() {
-        var arrurl = "@Model.ApiGetUrl".split("/");
+        var arrurl = "@Model.ijpModel.ApiGetUrl".split("/");
         var urlnoparams = arrurl[arrurl.length - 1];
         var pars = btoa(atob(urlnoparams) + "|" + optionList());
 
@@ -259,8 +259,8 @@
     <div class="row d-flex justify-content-center">
         <div class=" btn-group" role="group" aria-label="image buttons">
             @{
-                string PublicSelected = (Model.TypeSelected == "Public") ? "btn-warning" : "btn-secondary";
-                string PrivateSelected = (Model.TypeSelected == "Private") ? "btn-warning" : "btn-secondary";
+                string PublicSelected = (Model.ijpModel.TypeSelected == "Public") ? "btn-warning" : "btn-secondary";
+                string PrivateSelected = (Model.ijpModel.TypeSelected == "Private") ? "btn-warning" : "btn-secondary";
             }
             <button type="button" id="btnPublic" class="btn @PublicSelected" data-toggle="collapse" data-target="#collapsePublic" aria-expanded="false" aria-controls="collapsePublic"><i class="fas fa-lock-open" title="Public photos"></i></button>
             <button type="button" id="btnPrivate" class="btn @PrivateSelected" data-toggle="collapse" data-target="#collapsePrivate" aria-expanded="false" aria-controls="collapsePrivate"><i class="fas fa-key" title="Private photos"></i></button>
@@ -270,7 +270,7 @@
                     <span class="sr-only">Toggle Dropdown</span>
                 </button>
                 <div class="ccc dropdown-menu">
-                    @foreach (var item in Model.Category)
+                    @foreach (var item in Model.ijpModel.Category)
                     {
                         <a class="category dropdown-item" id="@item.CategoryId" href="#">@item.Name</a>
                     }
@@ -285,10 +285,10 @@
         @{
             string ShowPublic = "";
             string ShowPrivate = "";
-            if (!string.IsNullOrEmpty(Model.TypeSelected))
+            if (!string.IsNullOrEmpty(Model.ijpModel.TypeSelected))
             {
-                ShowPublic = (Model.TypeSelected == "Public") ? "show" : "";
-                ShowPrivate = (Model.TypeSelected == "Private") ? "show" : "";
+                ShowPublic = (Model.ijpModel.TypeSelected == "Public") ? "show" : "";
+                ShowPrivate = (Model.ijpModel.TypeSelected == "Private") ? "show" : "";
             }
         }
         <div class="collapse @(ShowPublic)" id="collapsePublic">
@@ -354,7 +354,7 @@
         <div class="row">
             <div class="col-12 collapse" id="geturl">
                 <div class="alert alert-info" role="alert">
-                    @Model.ApiGetUrl
+                    @Model.ijpModel.ApiGetUrl
                 </div>
                 @*<button class="col-12 btn btn-outline-secondary" id="go">Go!</button>*@
                 <input type="text" readonly="readonly" id="urltext" />

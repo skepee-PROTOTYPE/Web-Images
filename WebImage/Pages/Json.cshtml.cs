@@ -17,16 +17,17 @@ namespace WebImage.Pages
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IWebHostEnvironment hostingEnv;
 
-        [BindProperty]
+        public ContentModel ijpModel { get; set; }
+        //[BindProperty]
         private string Host { get; set; }
         //[BindProperty]
-        public List<FileModel> MyFiles { get; set; }
-        [BindProperty]
-        public string ApiGetUrl { get; set; }
-        [BindProperty]
-        public string TypeSelected { get; set; }
-        [BindProperty]
-        public List<IjpCategory> Category { get; set; }
+        //public List<FileModel> MyFiles { get; set; }
+        //[BindProperty]
+        //public string ApiGetUrl { get; set; }
+        //[BindProperty]
+        //public string TypeSelected { get; set; }
+        //[BindProperty]
+        //public List<IjpCategory> Category { get; set; }
 
         public JsonModel(IWebHostEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext _ijpContext)
         {
@@ -42,30 +43,30 @@ namespace WebImage.Pages
 
         public async Task OnGet()
         {
-            MyFiles = new List<FileModel>();
+            //MyFiles = new List<FileModel>();
 
-            foreach (var x in ijpContext.File)
-            {
-                MyFiles.Add(new FileModel()
-                {
-                    CategoryId = x.CategoryId,
-                    Extension = x.Extension,
-                    IsPrivate = x.IsPrivate,
-                    IsSelected = false,
-                    LengthKB = x.LengthKB,
-                    LengthMB = x.LengthMB,
-                    Name = x.Name,
-                    Title = x.Title,
-                    Url = x.Url,
-                    Content = x.Content
-                });
-            }
+            //foreach (var x in ijpContext.File)
+            //{
+            //    MyFiles.Add(new FileModel()
+            //    {
+            //        CategoryId = x.CategoryId,
+            //        Extension = x.Extension,
+            //        IsPrivate = x.IsPrivate,
+            //        IsSelected = false,
+            //        LengthKB = x.LengthKB,
+            //        LengthMB = x.LengthMB,
+            //        Name = x.Name,
+            //        Title = x.Title,
+            //        Url = x.Url,
+            //        Content = x.Content
+            //    });
+            //}
 
-            Category = new List<IjpCategory>();
-            Category.AddRange(ijpContext.Category.OrderBy(x => x.Name));
+            //Category = new List<IjpCategory>();
+            //Category.AddRange(ijpContext.Category.OrderBy(x => x.Name));
 
 
-            //ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
+            ijpModel = new ContentModel(Host, hostingEnv, ijpContext);
 
             //var mydata = FilterMyFiles(string.Empty);
             //mydata.MyJson.ForEach(x => myFiles.MyFiles.Add(
