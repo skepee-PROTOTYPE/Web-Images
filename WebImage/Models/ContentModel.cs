@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,22 +9,26 @@ namespace WebImage.Models
 {
     public class ContentModel
     {
-        private readonly IjpContext _IjpContext;
+        private readonly IjpContext ijpContext;
+        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IWebHostEnvironment hostingEnv;
+
         public List<FileModel> MyFiles { get; set; }
         public string ApiGetUrl { get; set; }
         public string TypeSelected { get; set; }
-        //public string Profile { get; set; }
         public string OptionList { get; set; }
         public List<IjpCategory> Category { get; set; }
         public IjpUser User { get; set; }
-        //public static string userName { get; set; }
 
-        public ContentModel(string Host, IWebHostEnvironment Env, IjpContext IjpContext)
+        public ContentModel(IWebHostEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext _ijpContext)
         {
-            _IjpContext = IjpContext;
+            hostingEnv = _hostingEnv;
+            httpContextAccessor = _httpContextAccessor;
+            ijpContext = _ijpContext;
+
             MyFiles = new List<FileModel>();
 
-            foreach (var x in _IjpContext.File)
+            foreach (var x in ijpContext.File)
             {
                 MyFiles.Add(new FileModel()
                 {
@@ -41,9 +46,7 @@ namespace WebImage.Models
             }
 
             Category = new List<IjpCategory>();
-            Category.AddRange(IjpContext.Category.OrderBy(x=>x.Name));
-
-            
+            Category.AddRange(ijpContext.Category.OrderBy(x=>x.Name));          
         }
 
         public void AddToSelection(string MySelectedFiles)

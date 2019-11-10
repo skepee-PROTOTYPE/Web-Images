@@ -16,6 +16,11 @@
     <None Remove="Controllers\**" />
     <None Remove="Views\**" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\css\card.css" />
+    <Content Remove="wwwroot\css\login.css" />
+  </ItemGroup>
   
   <ItemGroup>
     <Folder Include="wwwroot\imagefolder\" />

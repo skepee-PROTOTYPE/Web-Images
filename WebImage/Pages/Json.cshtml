@@ -7,6 +7,10 @@
 
     var selectedImageList = Model.ijpModel.MyFiles.Where(x => x.IsSelected).ToList();
     var unSelectedImageList = Model.ijpModel.MyFiles.Where(x => !x.IsSelected).ToList();
+
+    string PublicSelected = (Model.ijpModel.TypeSelected == "Public") ? "btn-warning" : "btn-secondary";
+    string PrivateSelected = (Model.ijpModel.TypeSelected == "Private") ? "btn-warning" : "btn-secondary";
+
 }
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -256,57 +260,47 @@
 
 @*<form asp-controller="Home" asp-action="Register" method="post">*@
 <div class="container-fluid">
-    <div class="row d-flex justify-content-center">
-        <div class=" btn-group" role="group" aria-label="image buttons">
-            @{
-                string PublicSelected = (Model.ijpModel.TypeSelected == "Public") ? "btn-warning" : "btn-secondary";
-                string PrivateSelected = (Model.ijpModel.TypeSelected == "Private") ? "btn-warning" : "btn-secondary";
-            }
-            <button type="button" id="btnPublic" class="btn @PublicSelected" data-toggle="collapse" data-target="#collapsePublic" aria-expanded="false" aria-controls="collapsePublic"><i class="fas fa-lock-open" title="Public photos"></i></button>
-            <button type="button" id="btnPrivate" class="btn @PrivateSelected" data-toggle="collapse" data-target="#collapsePrivate" aria-expanded="false" aria-controls="collapsePrivate"><i class="fas fa-key" title="Private photos"></i></button>
-            <div class="btn-group">
-                <button type="button" class="btn btn-warning">Category</button>
-                <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <div class="ccc dropdown-menu">
-                    @foreach (var item in Model.ijpModel.Category)
-                    {
-                        <a class="category dropdown-item" id="@item.CategoryId" href="#">@item.Name</a>
-                    }
+    <div class="row">
+        <div class="col-12">
+            <div class=" btn-group" role="group" aria-label="image buttons">
+                <button type="button" id="btnPublic" class="btn @PublicSelected" data-toggle="collapse" data-target="#collapsePublic" aria-expanded="false" aria-controls="collapsePublic"><i class="fas fa-lock-open" title="Public photos"></i></button>
+                <button type="button" id="btnPrivate" class="btn @PrivateSelected" data-toggle="collapse" data-target="#collapsePrivate" aria-expanded="false" aria-controls="collapsePrivate"><i class="fas fa-key" title="Private photos"></i></button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-warning">Category</button>
+                    <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        @foreach (var item in Model.ijpModel.Category)
+                        {
+                            <a class="category dropdown-item" id="@item.CategoryId" href="#">@item.Name</a>
+                        }
+                    </div>
                 </div>
             </div>
-
         </div>
     </div>
     <br />
     <br />
-    <div class="row d-flex justify-content-center">
-        @{
-            string ShowPublic = "";
-            string ShowPrivate = "";
-            if (!string.IsNullOrEmpty(Model.ijpModel.TypeSelected))
-            {
-                ShowPublic = (Model.ijpModel.TypeSelected == "Public") ? "show" : "";
-                ShowPrivate = (Model.ijpModel.TypeSelected == "Private") ? "show" : "";
-            }
-        }
-        <div class="collapse @(ShowPublic)" id="collapsePublic">
-            <div class="row d-flex justify-content-center" role="alert">Public</div>
-            <div class="col-12 d-flex flex-row flex-wrap" id="sourcePublic">
-                @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
-                {
-                    <img class="box rounded border border-danger public" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
-                }
+    <div class="row">
+        <div class="col-12">
+            <div class="collapse @((Model.ijpModel.TypeSelected == "Public") ? "show" : "")" id="collapsePublic">
+                <div class="row d-flex justify-content-center" role="alert">Public</div>
+                <div class="col-12 d-flex flex-row flex-wrap" id="sourcePublic">
+                    @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
+                    {
+                        <img class="box rounded border border-danger public" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
+                    }
+                </div>
             </div>
-        </div>
-        <div class="collapse @(ShowPrivate)" id="collapsePrivate">
-            <div class="row d-flex justify-content-center" role="alert">Private</div>
-            <div class="col-12 d-flex flex-row flex-wrap" id="sourcePrivate">
-                @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
-                {
-                    <img class="box rounded border border-danger private" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
-                }
+            <div class="collapse @((Model.ijpModel.TypeSelected == "Private") ? "show" : "")" id="collapsePrivate">
+                <div class="row d-flex justify-content-center" role="alert">Private</div>
+                <div class="col-12 d-flex flex-row flex-wrap" id="sourcePrivate">
+                    @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
+                    {
+                        <img class="box rounded border border-danger private" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
+                    }
+                </div>
             </div>
         </div>
     </div>

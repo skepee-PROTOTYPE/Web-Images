@@ -4,22 +4,60 @@
     ViewData["Title"] = "Home page";
 }
 
-@*<link href="~/css/home.css" rel="stylesheet" />*@
+@*<div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">Image Json Portal</h1>
+            <p class="lead">Generate your Web API for images in a very simple way!</p>
+            <hr class="my-4">
+            <p>Upload your photos, select and click button! On the fly it generates your images API for your app.</p>
+        </div>
+    </div>*@
 
-<div class="jumbotron jumbotron-fluid">
-    <div class="container">
-        <h1 class="display-4">Image Json Portal</h1>
-        <p class="lead">Generate your Web API for images in a very simple way!</p>
-        <hr class="my-4">
-        <p>Upload your photos, select and click button! On the fly it generates your images API for your app.</p>
-        @*<a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>*@
+<header>
+    <div id="carouselIndex" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#carouselIndex" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselIndex" data-slide-to="1"></li>
+            <li data-target="#carouselIndex" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner" role="listbox">
+            <div class="carousel-item active" style="background-color: #ffae64">
+                <div class="carousel-caption d-none d-md-block">
+                    <i class="fas fa-file-import"></i>
+                    <h3>Photos</h3>
+                    <p>A new media provider.</p>
+                </div>
+            </div>
+            <div class="carousel-item" style="background-color: #cadecb">
+                <div class="carousel-caption d-none d-md-block">
+                    <h3>Repository</h3>
+                    <p>Save your photos in this new repository.</p>
+                </div>
+            </div>
+            <div class="carousel-item" style="background-color: #a6d9ff">
+                <div class="carousel-caption d-none d-md-block">
+                    <h3>Json gallery</h3>
+                    <p>Create your galleries.</p>
+                </div>
+            </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselIndex" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselIndex" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
     </div>
-</div>
+</header>
 
 <div class="container">
+    <h1 class="my-4">Welcome to the modern media provider</h1>
+
     <div class="row">
-        <div class="col-lg-4">
-            <div class="card" style="width: 18rem;">
+        <div class="col-lg-4 mb-4">
+            <div class="card">
                 <i class="fas fa-cloud-upload-alt"></i>
                 <div class="card-body">
                     <h5 class="card-title">Upload your Photos</h5>
@@ -27,8 +65,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="card" style="width: 18rem;">
+        <div class="col-lg-4 mb-4">
+            <div class="card">
                 <i class="far fa-bookmark"></i>
                 <div class="card-body">
                     <h5 class="card-title">Save your preferences</h5>
@@ -36,8 +74,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="card" style="width: 18rem;">
+        <div class="col-lg-4 mb-4">
+            <div class="card">
                 <i class="fas fa-share-alt"></i>
                 <div class="card-body">
                     <h5 class="card-title">Generate your API</h5>
@@ -47,4 +85,3 @@
         </div>
     </div>
 </div>
-
