@@ -45,6 +45,7 @@ html {
 
 .container-fluid {
     color: #ffc107;
+    margin-top:10px;
 }
 body {
     /* Margin bottom by footer height */

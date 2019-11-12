@@ -285,20 +285,20 @@
     <div class="row">
         <div class="col-12">
             <div class="collapse @((Model.ijpModel.TypeSelected == "Public") ? "show" : "")" id="collapsePublic">
-                <div class="row d-flex justify-content-center" role="alert">Public</div>
+                @*<div class="row d-flex justify-content-center" role="alert">Public</div>*@
                 <div class="col-12 d-flex flex-row flex-wrap" id="sourcePublic">
                     @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
                     {
-                        <img class="box rounded border border-danger public" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
+                        <img class="box rounded public" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
                     }
                 </div>
             </div>
             <div class="collapse @((Model.ijpModel.TypeSelected == "Private") ? "show" : "")" id="collapsePrivate">
-                <div class="row d-flex justify-content-center" role="alert">Private</div>
+                @*<div class="row d-flex justify-content-center" role="alert">Private</div>*@
                 <div class="col-12 d-flex flex-row flex-wrap" id="sourcePrivate">
                     @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
                     {
-                        <img class="box rounded border border-danger private" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
+                        <img class="box rounded private" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
                     }
                 </div>
             </div>
@@ -332,7 +332,7 @@
         <div class="col-12 d-flex flex-row flex-wrap" id="dragtarget">
             @foreach (var file in selectedImageList)
             {
-                <img class="box rounded border border-danger" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
+                <img class="box rounded" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
             }
         </div>
     </div>
