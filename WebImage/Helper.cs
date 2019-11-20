@@ -55,20 +55,20 @@ namespace WebImage
 
         public static string Encode(string selectedFiles)
         {
-            byte[] byt = System.Text.Encoding.ASCII.GetBytes(selectedFiles);
+            byte[] byt = Encoding.ASCII.GetBytes(selectedFiles);
             string selection = Convert.ToBase64String(byt);
 
             return selection;
         }
 
 
-        public static string DecodeImage(byte[] file)
-        {
-            var base64 = Convert.ToBase64String(file);
-            var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+        //public static string DecodeImage(byte[] file)
+        //{
+        //    var base64 = Convert.ToBase64String(file);
+        //    var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
 
-            return imgSrc;
-        }
+        //    return imgSrc;
+        //}
 
     }
 }

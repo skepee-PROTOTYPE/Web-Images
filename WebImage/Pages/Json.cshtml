@@ -2,6 +2,10 @@
 @model WebImage.Pages.JsonModel
 
 @{
+
+    if (String.IsNullOrEmpty(Model.ijpModel.TypeSelected))
+        Model.ijpModel.TypeSelected = "Public";
+
     ViewData["Title"] = "Generate Json";
     var user = TempData["user"];
 
@@ -12,8 +16,12 @@
     string PrivateSelected = (Model.ijpModel.TypeSelected == "Private") ? "btn-warning" : "btn-secondary";
 
 }
-
 <script src="~/lib/jquery/dist/jquery.js"></script>
+
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css" />
+@*<link href="~/css/compact-gallery.css" rel="stylesheet" />*@
+
 
 <style>
     .list-group-item.active {
@@ -285,20 +293,26 @@
     <div class="row">
         <div class="col-12">
             <div class="collapse @((Model.ijpModel.TypeSelected == "Public") ? "show" : "")" id="collapsePublic">
-                @*<div class="row d-flex justify-content-center" role="alert">Public</div>*@
-                <div class="col-12 d-flex flex-row flex-wrap" id="sourcePublic">
+                <div class="row no-gutters">
                     @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
                     {
-                        <img class="box rounded public" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
+                        <div class="col-md-6 col-lg-4 item zoom-on-hover">
+                            <a class="lightbox" href="@file.Path">
+                                <img class="img-fluid image" src="@file.Path">
+                            </a>
+                        </div>
                     }
                 </div>
             </div>
             <div class="collapse @((Model.ijpModel.TypeSelected == "Private") ? "show" : "")" id="collapsePrivate">
-                @*<div class="row d-flex justify-content-center" role="alert">Private</div>*@
-                <div class="col-12 d-flex flex-row flex-wrap" id="sourcePrivate">
+                <div class="row no-gutters">
                     @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
                     {
-                        <img class="box rounded private" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
+                        <div class="col-md-6 col-lg-4 item zoom-on-hover">
+                            <a class="lightbox" href="@file.Path">
+                                <img class="img-fluid image" src="@file.Path">
+                            </a>
+                        </div>
                     }
                 </div>
             </div>
@@ -332,7 +346,7 @@
         <div class="col-12 d-flex flex-row flex-wrap" id="dragtarget">
             @foreach (var file in selectedImageList)
             {
-                <img class="box rounded" src="@Helper.DecodeImage(file.Content)" alt="@file.Name" id="@file.Name">
+                <img class="box rounded" src="@file.Path" alt="@file.Name" id="@file.Name">
             }
         </div>
     </div>
@@ -357,13 +371,12 @@
         <div id="jsonData"></div>
         <br />
         <div class="row alert alert-info">
-            @*<a class="col-12 btn btn-info" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="imagelayout">
-                    ccc
-                </a>*@
             @Html.ActionLink("Check your list", "ImageLayout", "Home")
         </div>
     }
 </div>
 @*</form>*@
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
+<script>baguetteBox.run('.compact-gallery', { animation: 'slideIn' });</script>
 

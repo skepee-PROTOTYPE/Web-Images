@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using WebImage.Context;
 
@@ -41,12 +42,13 @@ namespace WebImage.Models
                     Name = x.Name,
                     Title = x.Title,
                     Url = x.Url,
-                    Content = x.Content
+                    Content = x.Content,
+                    Path = Path.Combine(".", "imagefolder", x.Name)
                 });
             }
 
             Category = new List<IjpCategory>();
-            Category.AddRange(ijpContext.Category.OrderBy(x=>x.Name));          
+            Category.AddRange(ijpContext.Category.OrderBy(x => x.Name));
         }
 
         public void AddToSelection(string MySelectedFiles)
@@ -77,6 +79,8 @@ namespace WebImage.Models
     public class FileModel : IjpFile
     {
         public bool IsSelected { get; set; }
+        public string Path { get; set; }
+
     }
 
 

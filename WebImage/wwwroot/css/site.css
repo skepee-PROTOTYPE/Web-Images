@@ -50,7 +50,7 @@ html {
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
-    background-color: #343a40 !important;
+    background-color: black; /*#343a40;*/
 }
 
 .footer {
