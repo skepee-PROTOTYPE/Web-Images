@@ -16,7 +16,7 @@ namespace WebImage.Context
         private readonly IWebHostEnvironment hostingEnv;
         private static string host;
 
-        public List<IjpContext> files { get; set; }
+        //public List<IjpContext> files { get; set; }
 
         public TestData(IWebHostEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext ijpContext)
         {
@@ -43,13 +43,13 @@ namespace WebImage.Context
                     {
                         Title = f.Name.CleanName(),
                         Name = f.Name.CleanName(),
-                        Extension = f.Extension,
+                        //Extension = f.Extension,
                         LengthKB = sizekb,
-                        LengthMB = sizeMb,
+                        //LengthMB = sizeMb,
                         CategoryId = 1,
-                        Content = Helper.byteFile(path + "/" + f.Name),
+                        //Content = Helper.byteFile(path + "/" + f.Name),
                         //Path = "/images/" + ((isPrivate) ? "private/" : "public/") + f.Name,
-                        Url = host + "/images/" + f.Name
+                        //Url = host + "/images/" + f.Name
                         //IsPrivate = isPrivate
                     });
                 }
@@ -63,7 +63,7 @@ namespace WebImage.Context
 
             foreach (var file in list)
             {
-                Helper.DownloadFile(file.Content, file.Name + file.Extension);
+               // Helper.DownloadFile(file.Content, file.Name + file.Extension);
             }
         }
     }

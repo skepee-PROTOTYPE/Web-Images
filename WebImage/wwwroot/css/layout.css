@@ -2,14 +2,16 @@
 
 body {
     padding-top: 56px;
-    background-color: black;/*#343a40;*/
+    background-color: black; /*#343a40;*/
     color: #ffc107;
+    background-color: #343a40;
 }
 
 .container {
-    max-width:1900px;
-    padding-left:0px;
-    padding-right:0px;
+    max-width: 1900px;
+    padding-left: 0px;
+    padding-right: 0px;
+    background-color: #343a40;
 }
 
 .carousel-item {

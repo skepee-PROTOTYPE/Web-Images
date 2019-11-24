@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WebImage.Context
 {
@@ -14,12 +10,15 @@ namespace WebImage.Context
         public int FileId { get; set; }
         public string Name { get; set; }
         public string Title { get; set; }
-        public string Extension { get; set; }
+        public string RawFormat { get; set; }
         public double LengthKB { get; set; }
-        public double LengthMB { get; set; }
-        public string Url { get; set; }
         public int CategoryId { get; set; }
-        public byte[] Content { get; set; }
         public bool IsPrivate { get; set; }
+        public bool IsLandscape { get; set; }
+        public string PixelFormat { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public int HorizontalResolution { get; set; }
+        public int VerticalResolution { get; set; }
     }
 }

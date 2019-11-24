@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using WebImage.Context;
@@ -29,20 +30,34 @@ namespace WebImage.Models
 
             MyFiles = new List<FileModel>();
 
+            //string ss = "";
             foreach (var x in ijpContext.File)
-            {
+            { 
+            //string path = Path.Combine(hostingEnv.WebRootPath, "imagefolder");
+
+            //foreach (var file in Directory.GetFiles(path))
+            //{
+                //FileInfo x = new FileInfo(file);
+
+                //using Bitmap b = new Bitmap(Path.Combine(hostingEnv.WebRootPath, "imagefolder", x.Name));
+
+                //ss += "('" + x.Name + "','" + x.Name + "','" + b.RawFormat + "'," + Math.Round(((double)x.Length) / 1024, 1) + ",null,0," + ((b.Width > b.Height) ? "1" : "0") + ",'" + b.PixelFormat + "'," + b.Width + "," + b.Height + "," + b.HorizontalResolution + "," + b.VerticalResolution + "),";
+
                 MyFiles.Add(new FileModel()
                 {
                     CategoryId = x.CategoryId,
-                    Extension = x.Extension,
+                    RawFormat = x.RawFormat,
                     IsPrivate = x.IsPrivate,
-                    IsSelected = false,
+                    IsLandscape = x.IsLandscape,
                     LengthKB = x.LengthKB,
-                    LengthMB = x.LengthMB,
-                    Name = x.Name,
-                    Title = x.Title,
-                    Url = x.Url,
-                    Content = x.Content,
+                    Name = x.Name.CleanName(),
+                    Title = x.Title.CleanName(),
+                    Width = x.Width,
+                    Height = x.Height,
+                    HorizontalResolution = x.HorizontalResolution,
+                    VerticalResolution = x.VerticalResolution,
+                    PixelFormat = x.PixelFormat,
+                    IsSelected = false,
                     Path = Path.Combine(".", "imagefolder", x.Name)
                 });
             }
@@ -80,6 +95,7 @@ namespace WebImage.Models
     {
         public bool IsSelected { get; set; }
         public string Path { get; set; }
+        public string Url { get; set; }
 
     }
 

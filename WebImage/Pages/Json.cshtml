@@ -20,8 +20,8 @@
 
 <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css" />
-@*<link href="~/css/compact-gallery.css" rel="stylesheet" />*@
-
+<link href="~/css/compact-gallery.css" rel="stylesheet" />
+<link href="~/css/layout.css" rel="stylesheet" />
 
 <style>
     .list-group-item.active {
@@ -267,116 +267,131 @@
 </script>
 
 @*<form asp-controller="Home" asp-action="Register" method="post">*@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class=" btn-group" role="group" aria-label="image buttons">
-                <button type="button" id="btnPublic" class="btn @PublicSelected" data-toggle="collapse" data-target="#collapsePublic" aria-expanded="false" aria-controls="collapsePublic"><i class="fas fa-lock-open" title="Public photos"></i></button>
-                <button type="button" id="btnPrivate" class="btn @PrivateSelected" data-toggle="collapse" data-target="#collapsePrivate" aria-expanded="false" aria-controls="collapsePrivate"><i class="fas fa-key" title="Private photos"></i></button>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-warning">Category</button>
-                    <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <div class="dropdown-menu">
-                        @foreach (var item in Model.ijpModel.Category)
+<section class="gallery-block compact-gallery">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class=" btn-group" role="group" aria-label="image buttons">
+                    <button type="button" id="btnPublic" class="btn @PublicSelected" data-toggle="collapse" data-target="#collapsePublic" aria-expanded="false" aria-controls="collapsePublic"><i class="fas fa-lock-open" title="Public photos"></i></button>
+                    <button type="button" id="btnPrivate" class="btn @PrivateSelected" data-toggle="collapse" data-target="#collapsePrivate" aria-expanded="false" aria-controls="collapsePrivate"><i class="fas fa-key" title="Private photos"></i></button>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-warning">Category</button>
+                        <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            @foreach (var item in Model.ijpModel.Category)
+                            {
+                                <a class="category dropdown-item" id="@item.CategoryId" href="#">@item.Name</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <br />
+        <div class="row">
+            <div class="col-12">
+                <div class="collapse @((Model.ijpModel.TypeSelected == "Public") ? "show" : "")" id="collapsePublic">
+                    <div class="row no-gutters">
+                        @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
                         {
-                            <a class="category dropdown-item" id="@item.CategoryId" href="#">@item.Name</a>
+                            <div class="col-md-6 col-lg-4 item zoom-on-hover">
+                                <a class="lightbox" href="@file.Path">
+                                    <img class="img-fluid image" src="@file.Path">
+                                    <span class="description">
+                                        <span class="description-heading">@file.Title</span>
+                                        <span class="description-body"><strong>Length:</strong> @file.LengthKB&nbsp;KB</span>
+                                        <span class="description-body"><strong>Resolution (H, V):</strong> @file.HorizontalResolution x @file.VerticalResolution</span>
+                                        <span class="description-body"><strong>Size (H, V):</strong> @file.Width x @file.Height</span>
+                                        <span class="description-body"><strong>Format:</strong> @file.RawFormat (@file.PixelFormat)</span>
+
+                                    </span>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="collapse @((Model.ijpModel.TypeSelected == "Private") ? "show" : "")" id="collapsePrivate">
+                    <div class="row no-gutters">
+                        @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
+                        {
+                            <div class="col-md-6 col-lg-4 item zoom-on-hover">
+                                <a class="lightbox" href="@file.Path">
+                                    <img class="img-fluid image" src="@file.Path">
+                                    <span class="description">
+                                        <span class="description-heading">@file.Title</span>
+                                        <span class="description-body">@file.LengthKB&nbsp;KB</span>
+                                    </span>
+                                </a>
+                            </div>
                         }
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <br />
-    <br />
-    <div class="row">
-        <div class="col-12">
-            <div class="collapse @((Model.ijpModel.TypeSelected == "Public") ? "show" : "")" id="collapsePublic">
-                <div class="row no-gutters">
-                    @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
-                    {
-                        <div class="col-md-6 col-lg-4 item zoom-on-hover">
-                            <a class="lightbox" href="@file.Path">
-                                <img class="img-fluid image" src="@file.Path">
-                            </a>
-                        </div>
-                    }
-                </div>
-            </div>
-            <div class="collapse @((Model.ijpModel.TypeSelected == "Private") ? "show" : "")" id="collapsePrivate">
-                <div class="row no-gutters">
-                    @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
-                    {
-                        <div class="col-md-6 col-lg-4 item zoom-on-hover">
-                            <a class="lightbox" href="@file.Path">
-                                <img class="img-fluid image" src="@file.Path">
-                            </a>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-    <br />
-    <br />
-    @if (selectedImageList.Any())
-    {
-        <div class="row">
-            Insert image as:&nbsp;&nbsp;&nbsp;
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="imageUrl" value="url" checked>
-            <label class="form-check-label" for="imageUrl">Url</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="imageEmbed" value="embed" checked>
-            <label class="form-check-label" for="imageBase64">Embed</label>
-        </div>
-        <div class="row">
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">Profile: </span>
-                </div>
-                <input type="text" id="profile" value="" class="form-control" placeholder="name to identify your images list" aria-label="profile" aria-describedby="basic-addon1">
-            </div>
-        </div>
-    }
-    <div class="row">
-        <div class="col-12 d-flex flex-row flex-wrap" id="dragtarget">
-            @foreach (var file in selectedImageList)
-            {
-                <img class="box rounded" src="@file.Path" alt="@file.Name" id="@file.Name">
-            }
-        </div>
-    </div>
-    @if (selectedImageList.Any())
-    {
         <br />
-        <div class="row">
-            <a class="col-12 btn btn-info" id="go" data-toggle="collapse" href="#geturl" role="button" aria-expanded="false" aria-controls="geturl">
-                Generate Url
-            </a>
-        </div>
         <br />
-        <div class="row">
-            <div class="col-12 collapse" id="geturl">
-                <div class="alert alert-info" role="alert">
-                    @Model.ijpModel.ApiGetUrl
+        @if (selectedImageList.Any())
+        {
+            <div class="row">
+                Insert image as:&nbsp;&nbsp;&nbsp;
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="imageUrl" value="url" checked>
+                <label class="form-check-label" for="imageUrl">Url</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="imageEmbed" value="embed" checked>
+                <label class="form-check-label" for="imageBase64">Embed</label>
+            </div>
+            <div class="row">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Profile: </span>
+                    </div>
+                    <input type="text" id="profile" value="" class="form-control" placeholder="name to identify your images list" aria-label="profile" aria-describedby="basic-addon1">
                 </div>
-                @*<button class="col-12 btn btn-outline-secondary" id="go">Go!</button>*@
-                <input type="text" readonly="readonly" id="urltext" />
+            </div>
+        }
+        <div class="row">
+            <div class="col-12 d-flex flex-row flex-wrap" id="dragtarget">
+                @foreach (var file in selectedImageList)
+                {
+                    <img class="box rounded" src="@file.Path" alt="@file.Name" id="@file.Name">
+                }
             </div>
         </div>
-        <div id="jsonData"></div>
-        <br />
-        <div class="row alert alert-info">
-            @Html.ActionLink("Check your list", "ImageLayout", "Home")
-        </div>
-    }
-</div>
-@*</form>*@
+        @if (selectedImageList.Any())
+        {
+            <br />
+            <div class="row">
+                <a class="col-12 btn btn-info" id="go" data-toggle="collapse" href="#geturl" role="button" aria-expanded="false" aria-controls="geturl">
+                    Generate Url
+                </a>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-12 collapse" id="geturl">
+                    <div class="alert alert-info" role="alert">
+                        @Model.ijpModel.ApiGetUrl
+                    </div>
+                    @*<button class="col-12 btn btn-outline-secondary" id="go">Go!</button>*@
+                    <input type="text" readonly="readonly" id="urltext" />
+                </div>
+            </div>
+            <div id="jsonData"></div>
+            <br />
+            <div class="row alert alert-info">
+                @Html.ActionLink("Check your list", "ImageLayout", "Home")
+            </div>
+        }
+    </div>
+    </section>
+    @*</form>*@
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-<script>baguetteBox.run('.compact-gallery', { animation: 'slideIn' });</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
+    <script>baguetteBox.run('.compact-gallery', { animation: 'slideIn' });</script>
 
