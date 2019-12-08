@@ -20,6 +20,17 @@
     }
 </style>
 
+<div class="collapse" id="selectiongallery">
+    <div class="card card-body">
+        <ul class="list-group">
+            @foreach (var item in selectedImageList)
+            {
+                <li class="list-group-item"><img src="@item.Path" style="height:100px;width:100px" /></li>
+            }
+        </ul>
+    </div>
+</div>
+
 @foreach (var image in unSelectedImageList.Where(x => !x.IsPrivate))
 {
     <div id="caption_@image.Name" style="display:none">
@@ -42,21 +53,6 @@
         </a>
     }
 </div>
-
-
-<div class="collapse" id="selectiongallery">
-    <div class="card card-body">
-        <ul class="list-group">
-            @foreach (var item in selectedImageList)
-            {
-                <li class="list-group-item"><img src="@item.Path" style="height:100px;width:100px"/></li>
-            }
-
-        </ul>
-
-    </div>
-</div>
-
 
 <script>
     var $lg = $('#gallery');

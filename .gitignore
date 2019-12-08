@@ -4,6 +4,7 @@
 
 /WebImage/bin
 /WebImage/obj
+/WebImage/node_modules
 /.vs
 *.[Pp]ublish.xml
 *.azurePubxml
