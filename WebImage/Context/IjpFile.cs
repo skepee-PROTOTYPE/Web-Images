@@ -18,7 +18,7 @@ namespace WebImage.Context
         public string PixelFormat { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
-        public int HorizontalResolution { get; set; }
-        public int VerticalResolution { get; set; }
+        public float HorizontalResolution { get; set; }
+        public float VerticalResolution { get; set; }
     }
 }

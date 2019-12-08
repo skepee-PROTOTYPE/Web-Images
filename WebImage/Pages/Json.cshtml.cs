@@ -28,5 +28,7 @@ namespace WebImage.Pages
         {
             ijpModel = new ContentModel(hostingEnv, httpContextAccessor, ijpContext);
         }
+
+
     }
 }

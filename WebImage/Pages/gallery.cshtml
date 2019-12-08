@@ -1,0 +1,71 @@
+﻿@page
+@model WebImage.Pages.GalleryModel
+@{
+
+    var selectedImageList = Model.ijpModel.MyFiles.Where(x => x.IsSelected).ToList();
+    var unSelectedImageList = Model.ijpModel.MyFiles.Where(x => !x.IsSelected).ToList();
+
+    string PublicSelected = (Model.ijpModel.TypeSelected == "Public") ? "btn-warning" : "btn-secondary";
+    string PrivateSelected = (Model.ijpModel.TypeSelected == "Private") ? "btn-warning" : "btn-secondary";
+
+}
+<script src="~/vendor/jquery/dist/jquery.js"></script>
+<script src="~/vendor/lightgallery/dist/js/lightgallery-all.js"></script>
+<link href="~/vendor/lightgallery/dist/css/lightgallery.css" rel="stylesheet" />
+<link href="~/vendor/lightgallery/dist/css/lg-transitions.css" rel="stylesheet" />
+
+<style>
+    .lg-sub-html {
+        text-align: left;
+    }
+</style>
+
+@foreach (var image in unSelectedImageList.Where(x => !x.IsPrivate))
+{
+    <div id="caption_@image.Name" style="display:none">
+        <h4>@image.Title</h4>
+        <p><strong>Format: </strong>@image.RawFormat</p>
+        <p><strong>Landscape: </strong>@image.IsLandscape</p>
+        <p><strong>Pixel Format: </strong>@image.PixelFormat</p>
+        <p><strong>Size: </strong>@image.Width X @image.Height</p>
+        <p><strong>Resolution: </strong>@image.HorizontalResolution X @image.VerticalResolution</p>
+        <p><strong>Url: </strong>@image.Url</p>
+    </div>
+}
+
+
+<div id="gallery">
+    @foreach (var image in unSelectedImageList.Where(x => !x.IsPrivate))
+    {
+        <a href="@image.Path" data-sub-html="#caption_@image.Name">
+            <img src="@image.Thumb" />
+        </a>
+    }
+</div>
+
+
+<div class="collapse" id="selectiongallery">
+    <div class="card card-body">
+        <ul class="list-group">
+            @foreach (var item in selectedImageList)
+            {
+                <li class="list-group-item"><img src="@item.Path" style="height:100px;width:100px"/></li>
+            }
+
+        </ul>
+
+    </div>
+</div>
+
+
+<script>
+    var $lg = $('#gallery');
+    $lg.lightGallery();
+
+    $lg.on('onCloseAfter.lg', function (event) {
+        var bookmark = $lg.data('lightGallery').s.bookmark;
+        console.log(bookmark);
+        window.location.href = '@Url.Page("Gallery")?bookmark=' + bookmark;
+    });
+</script>
+

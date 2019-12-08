@@ -214,7 +214,7 @@
         });
     }
 
-        $(".category").click()
+        $(".select").click()
         {
           console.log($(this).attr("id"));
 
@@ -298,22 +298,24 @@
                     <div class="row no-gutters">
                         @foreach (var file in unSelectedImageList.Where(x => !x.IsPrivate))
                         {
-                            <div class="col-md-6 col-lg-4 item zoom-on-hover">
-                                <a class="lightbox" href="@file.Path">
-                                    <img class="img-fluid image" src="@file.Path">
-                                    <span class="description">
-                                        <span class="description-heading">@file.Title</span>
-                                        <span class="description-body"><strong>Length:</strong> @file.LengthKB&nbsp;KB</span>
-                                        <span class="description-body"><strong>Resolution (H, V):</strong> @file.HorizontalResolution x @file.VerticalResolution</span>
-                                        <span class="description-body"><strong>Size (H, V):</strong> @file.Width x @file.Height</span>
-                                        <span class="description-body"><strong>Format:</strong> @file.RawFormat (@file.PixelFormat)</span>
-
-                                    </span>
-                                </a>
-                            </div>
-                        }
+                        <div class="col-md-6 col-lg-4 item zoom-on-hover">
+                            <a class="lightbox" href="@file.Path">
+                                <img class="img-fluid image" src="@file.Path">
+                                <span class="description">
+                                    <span class="description-heading">@file.Title</span>
+                                    <span class="description-body">Length: @file.LengthKB&nbsp;KB</span>
+                                    <span class="description-body">Resolution: @file.HorizontalResolution (W) x @file.VerticalResolution (H)</span>
+                                    <span class="description-body">Size: @file.Width (W) x @file.Height (H)</span>
+                                    <span class="description-body">Format: @file.RawFormat (@file.PixelFormat)</span>
+                                </span>
+                            </a>
+                        </div>
+                        @*<div class="col-md-2 col-lg-1">
+                            <button class="btn btn-outline-secondary select">select</button>
+                        </div>*@
+                            }
+                        </div>
                     </div>
-                </div>
                 <div class="collapse @((Model.ijpModel.TypeSelected == "Private") ? "show" : "")" id="collapsePrivate">
                     <div class="row no-gutters">
                         @foreach (var file in unSelectedImageList.Where(x => x.IsPrivate))
@@ -327,7 +329,7 @@
                                     </span>
                                 </a>
                             </div>
-                        }
+                        }           
                     </div>
                 </div>
             </div>
@@ -393,5 +395,5 @@
     @*</form>*@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-    <script>baguetteBox.run('.compact-gallery', { animation: 'slideIn' });</script>
+    <script>baguetteBox.run('.compact-gallery', { animation: 'fadeIn' });</script>
 
