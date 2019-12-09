@@ -18,6 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\Json.cshtml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Pages\Json.cshtml" />
     <Content Remove="wwwroot\css\card.css" />
     <Content Remove="wwwroot\css\login.css" />
   </ItemGroup>

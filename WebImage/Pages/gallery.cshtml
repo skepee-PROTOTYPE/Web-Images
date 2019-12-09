@@ -21,19 +21,50 @@
 </style>
 
 <div class="collapse" id="selectiongallery">
-    <div class="card card-body">
-        <ul class="list-group">
-            @foreach (var item in selectedImageList)
-            {
-                <li class="list-group-item"><img src="@item.Path" style="height:100px;width:100px" /></li>
-            }
-        </ul>
+    <div class="row">
+        <div class="col-6">
+            <div class="card card-body">
+                <ul class="list-group">
+                    @foreach (var item in selectedImageList)
+                    {
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-6">
+                                    <img src="@item.Path" style="height:100px;width:100px" />
+                                </div>
+                                <div class="col-6" style="color:black">
+                                    @item.Title
+                                    <ul style="list-style-type:none;">
+                                        <li><strong>Format: </strong>@item.RawFormat</li>
+                                        <li><strong>Landscape: </strong>@item.IsLandscape</li>
+                                        <li><strong>Pixel Format: </strong>@item.PixelFormat</li>
+                                        <li><strong>Size: </strong>@item.Width X @item.Height</li>
+                                        <li><strong>Resolution: </strong>@item.HorizontalResolution X @item.VerticalResolution</li>
+                                        <li><strong>Url: </strong>@item.Url</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+       <div class="col-6">
+
+
+
+
+
+       </div>
+
+
     </div>
-</div>
+
+    </div>
 
 @foreach (var image in unSelectedImageList.Where(x => !x.IsPrivate))
 {
-    <div id="caption_@image.Name" style="display:none">
+    <div id="caption_@image.Name.Replace(@image.RawFormat,"")" style="display:none">
         <h4>@image.Title</h4>
         <p><strong>Format: </strong>@image.RawFormat</p>
         <p><strong>Landscape: </strong>@image.IsLandscape</p>
@@ -48,7 +79,7 @@
 <div id="gallery">
     @foreach (var image in unSelectedImageList.Where(x => !x.IsPrivate))
     {
-        <a href="@image.Path" data-sub-html="#caption_@image.Name">
+        <a href="@image.Path" data-sub-html="#caption_@image.Name.Replace(@image.RawFormat,"")">
             <img src="@image.Thumb" />
         </a>
     }
@@ -60,8 +91,9 @@
 
     $lg.on('onCloseAfter.lg', function (event) {
         var bookmark = $lg.data('lightGallery').s.bookmark;
-        console.log(bookmark);
-        window.location.href = '@Url.Page("Gallery")?bookmark=' + bookmark;
+    
+        if (bookmark.length>0)
+            window.location.href = '@Url.Page("Gallery")?bookmark=' + bookmark;
     });
 </script>
 
