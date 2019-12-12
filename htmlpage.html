@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+    <style>
+        body {
+            padding: 3rem;
+            font-size: 16px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 30rem;
+            font-family: "Lucida Console", Monaco, monospace;
+            font-size: 0.8rem;
+            line-height: 1.2;
+        }
+    </style>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <script>
+
+		$(document).ready(function() {
+        var myData = {
+            "address": {
+                "House_Number": 505,
+                "Street_Direction": "",
+                "Street_Name": "Claremont",
+                "Street_Type": "Street",
+                "Apt": "15L",
+                "Burough": "Brooklyn",
+                "State": "NY",
+                "Zip": "10451",
+                "Phone": "718-777-7777"
+            },
+            "casehead": 0,
+            "adults": [{
+                "Last_Name": "Foo",
+                "First_Name": "A",
+                "Sex": "M",
+                "Date_Of_Birth": "01011980"
+            }],
+            "children": []
+        };
+
+        var textedJson = JSON.stringify(myData, undefined, 4);
+		//var textedJson = myData;
+		console.log(textedJson);
+        $('#myTextarea').text(textedJson);
+
+		});
+
+    </script>
+
+
+</head>
+<body>
+    <textarea name="" id="myTextarea" cols="30" rows="10"></textarea>
+</body>
+</html>
