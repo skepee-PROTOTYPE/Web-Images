@@ -111,12 +111,12 @@ namespace WebImage.Models
 
     public class MyData
     {
-        public List<IjpFile> MyJson { get; set; }
+        public List<FileModel> MyJson { get; set; }
         public string Profile { get; set; }
 
         public MyData()
         {
-            MyJson = new List<IjpFile>();
+            MyJson = new List<FileModel>();
         }
     }
 

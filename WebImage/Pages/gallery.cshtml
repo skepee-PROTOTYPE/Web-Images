@@ -29,12 +29,12 @@
                     {
                         <li class="list-group-item">
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-3">
                                     <img src="@item.Path" style="height:100px;width:100px" />
                                 </div>
-                                <div class="col-6" style="color:black">
+                                <div class="col-9" style="color:black">
                                     @item.Title
-                                    <ul style="list-style-type:none;">
+                                    <ul style="list-style-type:none; padding-left: 0;">
                                         <li><strong>Format: </strong>@item.RawFormat</li>
                                         <li><strong>Landscape: </strong>@item.IsLandscape</li>
                                         <li><strong>Pixel Format: </strong>@item.PixelFormat</li>
@@ -49,13 +49,9 @@
                 </ul>
             </div>
         </div>
-       <div class="col-6">
-
-
-
-
-
-       </div>
+        <div class="col-6">
+           @Model.x
+        </div>
 
 
     </div>
