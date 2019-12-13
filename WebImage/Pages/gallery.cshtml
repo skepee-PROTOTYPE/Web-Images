@@ -14,9 +14,32 @@
 <link href="~/vendor/lightgallery/dist/css/lightgallery.css" rel="stylesheet" />
 <link href="~/vendor/lightgallery/dist/css/lg-transitions.css" rel="stylesheet" />
 
+
+<script>
+    var xx;
+
+    $(document).ready(function () {
+        xx = JSON.stringify(@Model.x);
+        console.log(xx);
+        $('#myTextarea').text(xx);
+    });
+
+
+
+</script>
+
+
 <style>
     .lg-sub-html {
         text-align: left;
+    }
+
+    .jsonarea {
+        width: 100%;
+        min-height: 30rem;
+        font-family: "Lucida Console", Monaco, monospace;
+        font-size: 0.8rem;
+        line-height: 1.2;
     }
 </style>
 
@@ -49,14 +72,14 @@
                 </ul>
             </div>
         </div>
-        <div class="col-6">
-           @Model.x
+        <div class="col-6 jsonarea">
+            <textarea name="" id="myTextarea" cols="30" rows="10"></textarea>
         </div>
 
 
     </div>
 
-    </div>
+</div>
 
 @foreach (var image in unSelectedImageList.Where(x => !x.IsPrivate))
 {
@@ -87,7 +110,7 @@
 
     $lg.on('onCloseAfter.lg', function (event) {
         var bookmark = $lg.data('lightGallery').s.bookmark;
-    
+
         if (bookmark.length>0)
             window.location.href = '@Url.Page("Gallery")?bookmark=' + bookmark;
     });

@@ -52,7 +52,7 @@ namespace WebImage.Pages
                 {
                     MyData = new MyData
                     {
-                        MyJson = ijpModel.MyFiles.Where(x => x.IsSelected).ToList()
+                        MyJson = ijpModel.MyFiles.Where(x => x.IsSelected).ToList()                        
                     }
                 };
                 x = JsonSerializer.Serialize(ImageJson);
