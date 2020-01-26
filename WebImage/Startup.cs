@@ -41,7 +41,7 @@ namespace WebImage
             services.AddDbContext<IjpContext>(options => options.UseSqlServer(connString));
             services.AddDbContext<IjpDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<IjpDbContext>();
-            //services.AddRazorPages();
+            services.AddMvc(option=>option.EnableEndpointRouting=false);
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -128,6 +128,8 @@ namespace WebImage
                 //    name: "default",
                 //    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.UseMvcWithDefaultRoute();
         }
     }
 }

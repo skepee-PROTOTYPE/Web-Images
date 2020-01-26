@@ -25,13 +25,13 @@ namespace WebImage
 
         public static double KB(this long length)
         {
-            var sizekb = Math.Round(((double)length) / 1024, 1);
+            var sizekb = Math.Round(((double)length) / 1024, 2);
             return sizekb;
         }
 
         public static double MB(this long length)
         {
-            var sizeMb = Math.Round(length.KB() / 1024, 2);
+            var sizeMb = Math.Round(length.KB() / 1024, 4);
             return sizeMb;
         }
 

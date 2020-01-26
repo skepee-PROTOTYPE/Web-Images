@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WebImage.Context;
 using WebImage.Models;
 
 namespace WebImage.Controllers
 {
+
+    [Produces("application/json")]
     public class HomeController : Controller
     {
         private readonly IjpContext ijpContext;
@@ -33,190 +31,31 @@ namespace WebImage.Controllers
             Host = request.Host.ToString();
         }
 
-        //[ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client, NoStore = false)]
-        public IActionResult GenerateJson()
-        {
-            ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
-            return View(myFiles);
-        }
-
-        public IActionResult ClientCarousel(string pars)
-        {
-            ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
-
-            var mydata = FilterMyFiles(pars);
-            mydata.MyJson.ForEach(x => myFiles.MyFiles.Add(
-                 new FileModel
-                 {
-                     CategoryId = x.CategoryId,
-                     Content = x.Content,
-                     Extension = x.Extension,
-                     IsPrivate = x.IsPrivate,
-                     IsSelected = false,
-                     LengthKB = x.LengthKB,
-                     LengthMB = x.LengthMB,
-                     Name = x.Name,
-                     Title = x.Title,
-                     Url = x.Url
-                 })
-            );
-            return View("ClientCarousel", myFiles);
-        }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult ImageLayout()
-        {
-            return View();
-        }
-
-
-        public IActionResult LogInForm()
-        {
-            return View();
-        }
-
-        public IActionResult SignUp()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult LogIn(string username, string password)
-        {
-            var user = ijpContext.User.FirstOrDefault(x => x.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase) && x.Pwd.Equals(password, StringComparison.InvariantCulture));
-
-            if (user != null)
-            {
-                ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
-                TempData["user"] = user.Username;
-                username = user.Username;
-                myFiles.User= user;
-                return View("Index", myFiles);
-            }
-
-            return View("LogInForm");
-        }
-
-
-        public IActionResult RemoveFromSelectionList(string pars)
-        {
-            ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
-            if (!string.IsNullOrEmpty(pars))
-            {
-                string decpars = Helper.Decode(pars);
-
-                string SelectedFiles = decpars.Split("|")[0];
-                string decSelectedFiles = decpars.Split("|")[1];
-                myFiles.TypeSelected = decpars.Split("|")[2];
-                //myFiles.Profile = decpars.Split("|")[3];
-
-                myFiles.AddToSelection(SelectedFiles);
-                myFiles.RemoveFromSelection(decSelectedFiles);
-
-                var sel2 = string.Join(",", SelectedFiles.Split(',').Where(x => (!x.Equals(decSelectedFiles))));
-                var pars2 = Helper.Encode(sel2 + "|" + myFiles.TypeSelected);
-
-                myFiles.ApiGetUrl = Request.Scheme + "://" + Request.Host + "/api/gallery/" + pars2;
-            }
-            return View("GenerateJson", myFiles);
-        }
-
-        public IActionResult AddToSelectionList(string pars)
-        {
-            ContentModel myFiles = new ContentModel(Host, hostingEnv, ijpContext);
-            if (!string.IsNullOrEmpty(pars))
-            {
-                string decpars = Helper.Decode(pars);
-
-                string decSelectedFiles = decpars.Split("|")[0];
-                myFiles.TypeSelected = decpars.Split("|")[1];
-                //myFiles.Profile = decpars.Split("|")[2];
-
-                myFiles.AddToSelection(decSelectedFiles);
-                myFiles.ApiGetUrl = Request.Scheme + "://" + Request.Host + "/api/gallery/" + pars;
-            }
-            return View("GenerateJson", myFiles);
-        }
-
-        public IActionResult Admin()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-
-        private MyData FilterMyFiles(string pars)
-        {
-            List<FileModel> files = new List<FileModel>();
-            string decodedString = Helper.Decode(pars);
-            ContentModel myfiles = new ContentModel(Host, hostingEnv, ijpContext);
-
-            if (!string.IsNullOrEmpty(decodedString))
-            {
-                string decSelectedFiles = decodedString.Split("|")[0];
-                //string TypeSelected = decodedString.Split("|")[1];
-                string Profile = decodedString.Split("|")[2];
-
-                string optionList = decodedString.Split("|")[3];
-                bool addUrl = Convert.ToBoolean(optionList.Split(",")[0]);
-                bool addEmbed = Convert.ToBoolean(optionList.Split(",")[1]);
-
-                files = myfiles.MyFiles.Where(x => decSelectedFiles.Split(",").Contains(x.Name)).ToList();
-
-                return new MyData()
-                {
-                    MyJson = files.Select(
-                    x => new IjpFile()
-                    {
-                        Url = (addUrl) ? x.Url : "",
-                        Title = x.Title,
-                        LengthKB = x.LengthKB,
-                        LengthMB = x.LengthMB,
-                        CategoryId = x.CategoryId,
-                        Content = (addEmbed) ? x.Content : null,
-                        Extension = x.Extension,
-                        IsPrivate = x.IsPrivate,
-                        Name = x.Name
-                    }).ToList(),
-
-                    Profile = Profile
-                };
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
         [HttpPost("/api/gallery")]
-        public JsonResult GetListSelection([FromBody] string pars)
+        public JsonResult GetListSelection(string imgs, string hc)
         {
-            DateTime StartDate = DateTime.Now;
-
-            var mydata = FilterMyFiles(pars);
-
-            return Json(new JsonData()
+            if (!string.IsNullOrEmpty(imgs))
             {
-                MyData = mydata,
+                DateTime StartDate = DateTime.Now;
 
-                Stat = new Statistics()
+                var IjpModel = new ContentModel(hostingEnv, httpContextAccessor, ijpContext, imgs, hc);
+                var mydata = IjpModel.GetFileInfoJson(imgs, hc);
+
+                return Json(new JsonData()
                 {
-                    Count = mydata.MyJson.Count(),
-                    TotalLengthKb = mydata.MyJson.Select(x => x.LengthKB).Sum(),
-                    TotalLengthMb = mydata.MyJson.Select(x => x.LengthMB).Sum(),
-                    ElapsedTime = (DateTime.Now - StartDate).TotalSeconds
-                }
-            });
+                    MyData = mydata,
+
+                    Stat = new Statistics()
+                    {
+                        Count = mydata.MyJson.Count(),
+                        TotalLengthKb = mydata.MyJson.Select(x => x.Length).Sum(),                        
+                        ElapsedTime = (DateTime.Now - StartDate).TotalMilliseconds
+                    }
+                }); ; ;
+            }
+            else
+                return Json(new JsonData());
         }
 
     }
