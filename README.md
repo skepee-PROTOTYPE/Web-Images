@@ -10,7 +10,7 @@ Like [flickr](https://www.flickr.com/) you can also simply hosts your images and
 
 [https://imagejsonportal.azurewebsites.net/](https://imagejsonportal.azurewebsites.net/)
 
-The image attributes used are:
+Image attributes:
 
 * Name (you cannot edit)
 * Title (you can edit!)
