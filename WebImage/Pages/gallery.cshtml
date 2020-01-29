@@ -47,13 +47,17 @@
         font-size:16px;
     }
 
+    .selectedimages {
+        height:500px;
+        overflow:auto;
+    }
 </style>
 
 <div class="collapse" id="selectiongallery">
     <div class="row">
-        <div class="col-3">
+        <div class="col-2">
             <div class="alert alert-dark header" role="alert">Your images</div>
-            <div class="card">
+            <div class="card selectedimages">
                 <ul class="list-group">
                     @foreach (var image in selectedImageList)
                     {
@@ -72,7 +76,7 @@
                 </ul>
             </div>
         </div>
-        <div class="col-3">
+        <div class="col-2">
             <div class="alert alert-dark header">Choose attributes</div>
             <div class="card">
                 <ul class="list-group">
@@ -133,13 +137,13 @@
                     <li class="list-group-item">
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="checkContent" @Model.IjpModel.AttributeChecked("content")>
-                            <label class="custom-control-label" for="checkContent">Content</label>
+                            <label class="custom-control-label" for="checkContent">Content (heavier)</label>
                         </div>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-8">
             <div class="alert alert-dark header">This is your API preview</div>
             <div class="card">
                 <textarea name="" id="jsonPreview" cols="100" rows="30"></textarea>
@@ -187,14 +191,21 @@
     var bookmark;
     var showhideattributelist = "@Model.IjpModel.HideAttributeList";
 
+    //by default the content will not be loaded
+   // if (showhideattributelist === "")
+    //    showhideattributelist = btoa(",content");
+
+
     var $lg = $('#gallery');
     $lg.lightGallery();
 
     $lg.on('onCloseAfter.lg', function (event) {
         bookmark = $lg.data('lightGallery').s.bookmark;
 
-        if (bookmark.length > 0)
-            window.location.href = '@Url.Page("Gallery")?bookmark=' + btoa(bookmark) + "&sh=" + btoa(showhideattributelist);
+        if (bookmark.length > 0) {
+            console.log(showhideattributelist);
+            window.location.href = '@Url.Page("Gallery")?bookmark=' + btoa(bookmark) + "&sh=" + btoa(",content");
+        }
     });
 
 
@@ -238,6 +249,7 @@
             window.location.href ='@Url.Page("Gallery")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",url");
         });
         $("#checkContent").click(function () {
+            //showhidecolumn($(this), ",content");
             window.location.href ='@Url.Page("Gallery")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",content");
         });
         $("#checkLength").click(function () {
@@ -245,15 +257,22 @@
         });
     });
 
-    function showhidecolumn(chk,column)
-    {
+    function showhidecolumn(chk, column) {
+        console.log(showhideattributelist);
+        console.log(column);
+
         var columns = atob(showhideattributelist);
         console.log(columns);
-
-        if (chk.prop("checked") == true)
-            columns=columns.replace(column,"");
-        else
+        if (chk.prop("checked") == true) {
+            var res = columns.replace(column, "");
+            columns = res;
+            console.log(res);
+        }
+        else {
+            console.log("add");
             columns += column;
+        }
+        console.log(columns);
 
         console.log(columns);
         showhideattributelist = btoa(columns);

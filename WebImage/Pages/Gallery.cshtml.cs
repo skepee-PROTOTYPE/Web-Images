@@ -29,6 +29,11 @@ namespace WebImage.Pages
 
         public void OnGet(string bookmark, string sh)
         {
+            //by defaul not load content
+            //if (string.IsNullOrEmpty(sh))
+            //{
+            //    sh = Helper.Encode(",content");
+            //}
             IjpModel = new ContentModel(hostingEnv, httpContextAccessor, ijpContext,bookmark,sh);
             var mydata = IjpModel.GetFileInfoJson(bookmark, sh);
         }

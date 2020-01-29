@@ -2,7 +2,6 @@
 
 body {
     padding-top: 56px;
-    background-color: black; /*#343a40;*/
     color: #ffc107;
     background-color: #343a40;
 }
@@ -65,7 +64,7 @@ body {
     padding-top: 10px;
     padding-bottom: 10px;
     opacity: 0.7;
-    background-color: black; /*#343a40;*/
+    background-color: #343a40;
 }
 
 .card-title {
@@ -73,24 +72,15 @@ body {
 }
 
 
-/*.container {
-    height: 100%;
-    align-content: center;
-
-}*/
-
 .login {
     margin-top: 100px;
 }
 
 .card {
-    /*height: 370px;*/
     margin-top: auto;
     margin-bottom: auto;
-    /*width: 400px;*/
-    /*background-color: rgba(0,0,0,0.5) !important;*/
     border: 2px solid #ffc107;
-    background-color: black; /*#343a40;*/
+    background-color: #343a40;
     color: #ffc107;
 }
 
