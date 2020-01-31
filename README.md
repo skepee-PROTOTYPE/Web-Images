@@ -1,16 +1,25 @@
 # Images Json Portal
 
-Images Json Portal is a Web Api tool for images. As a hosting service you can freely upload your images and photos and it produces the API. After that you can use the API to show in your client. You can use them to create a gallery or a slider component for example.
+Images Json Portal is a Web Api generator for images. As a hosting service you can upload your images to produce API. You can choose which attributes to add in your Json (size, resolution, length, ...).
 
-Like [flickr](https://www.flickr.com/) you can find free pics on line but this app can expose in Json format a list of images of your choice and select what attributes you like to use.
+Your custom API can be used for galleries, sliders or wherever you need images and you do not need to save them locally. 
+You can decide to pick your images by using url or in binary format. The url makes the Json lighter in terms of data to send through but embedding images directly in your page can have in general a better performance.
+Try! It's time to use API!
 
-The project is slowing proceeding and at the moment the images are stored in local directory.
-[Click here](https://imagejsonportal.azurewebsites.net/)
+Like [flickr](https://www.flickr.com/) you can also simply hosts your images and use whenever you need.
 
-The image attributes used up to now are:
+[https://imagejsonportal.azurewebsites.net/](https://imagejsonportal.azurewebsites.net/)
 
-* Title
-* Length in KB
-* Length in MB
+Image attributes:
+
+* Name (you cannot edit)
+* Title (you can edit!)
+* Format
+* Length
+* Landscape
+* Pixel
+* Size
+* Resolution
 * Url
+* Content (binary)
 
