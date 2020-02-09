@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity;
 using System;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace WebImage
 {
@@ -70,11 +71,14 @@ namespace WebImage
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 
                 options.LoginPath = "/Identity/Account/Login";
+                options.LogoutPath = $"/Identity/Account/Logout";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
 
-
+            // using Microsoft.AspNetCore.Identity.UI.Services;
+            //TODO
+            //services.AddSingleton<IEmailSender, EmailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

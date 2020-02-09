@@ -19,10 +19,14 @@
 
   <ItemGroup>
     <Compile Remove="Pages\Json.cshtml.cs" />
+    <Compile Remove="Pages\Menu.cshtml.cs" />
+    <Compile Remove="Pages\MyGalleries0.cshtml.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Remove="Pages\Json.cshtml" />
+    <Content Remove="Pages\menu.cshtml" />
+    <Content Remove="Pages\MyGalleries0.cshtml" />
     <Content Remove="wwwroot\css\card.css" />
     <Content Remove="wwwroot\css\login.css" />
   </ItemGroup>

@@ -1,8 +1,7 @@
 ﻿@page
+
 @model WebImage.Pages.GalleryModel
 @{
-
-    var selectedImageList = Model.IjpModel.MyFiles.Where(x => x.IsSelected).ToList();
     var unSelectedImageList = Model.IjpModel.MyFiles.Where(x => !x.IsSelected).ToList();
 
     string PublicSelected = (Model.IjpModel.TypeSelected == "Public") ? "btn-warning" : "btn-secondary";
@@ -14,187 +13,43 @@
 <link href="~/vendor/lightgallery/dist/css/lightgallery.css" rel="stylesheet" />
 <link href="~/vendor/lightgallery/dist/css/lg-transitions.css" rel="stylesheet" />
 
-<style>
-
-    #jsonPreview {
-        width: 100%;
-        min-height: 30rem;
-        font-family: "Lucida Console", Monaco, monospace;
-        font-size: 0.8rem;
-        line-height: 1.2;
-    }
-
+@*<style>
     #selectiongallery {
         padding: 20px;
         font-size: 12px;
         height: auto;
         overflow: auto;
     }
-
-    .list-group-item {
-        background-color: #343a40;
-    }
-
-    .card-body {
-        padding: 0px;
-    }
-
-    .card-body input {
-        width: 100%;
-    }
-
-    .header {
-        font-size:16px;
-    }
-
-    .selectedimages {
-        height:500px;
-        overflow:auto;
-    }
 </style>
 
-<div class="collapse" id="selectiongallery">
-    <div class="row">
-        <div class="col-2">
-            <div class="alert alert-dark header" role="alert">Your images</div>
-            <div class="card selectedimages">
-                <ul class="list-group">
-                    @foreach (var image in selectedImageList)
-                    {
-                        <li class="list-group-item">
-                            @*<img class="img-thumbnail" src="@image.Thumb" />*@
-                            <div class="card">
-                                <img class="card-img-top" src="@image.Thumb" alt="@image.Name">
-                                <div class="card-body" style="display:@Model.IjpModel.DisplayInfo("title")">
-                                    <p class="card-text">
-                                        Title:<input type="text" class="card-text" value="@image.Title" />
-                                    </p>
-                                </div>
-                            </div>
-                        </li>
-                    }
-                </ul>
-            </div>
-        </div>
-        <div class="col-2">
-            <div class="alert alert-dark header">Choose attributes</div>
-            <div class="card">
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkName" @Model.IjpModel.AttributeChecked("name")>
-                            <label class="custom-control-label" for="checkName">Name</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkTitle" @Model.IjpModel.AttributeChecked("title")>
-                            <label class="custom-control-label" for="checkTitle">Title</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkFormat" @Model.IjpModel.AttributeChecked("format")>
-                            <label class="custom-control-label" for="checkFormat">Format</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkLength" @Model.IjpModel.AttributeChecked("length")>
-                            <label class="custom-control-label" for="checkLength">Length</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkLandscape" @Model.IjpModel.AttributeChecked("landscape")>
-                            <label class="custom-control-label" for="checkLandscape">Landscape</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkPixel" @Model.IjpModel.AttributeChecked("pixel")>
-                            <label class="custom-control-label" for="checkPixel">Pixel</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkSize" @Model.IjpModel.AttributeChecked("size")>
-                            <label class="custom-control-label" for="checkSize">Size</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkResolution" @Model.IjpModel.AttributeChecked("resolution")>
-                            <label class="custom-control-label" for="checkResolution">Resolution</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkUrl" @Model.IjpModel.AttributeChecked("url")>
-                            <label class="custom-control-label" for="checkUrl">Url</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkContent" @Model.IjpModel.AttributeChecked("content")>
-                            <label class="custom-control-label" for="checkContent">Content (heavier)</label>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="col-8">
-            <div class="alert alert-dark header">This is your API preview</div>
-            <div class="card">
-                <textarea name="" id="jsonPreview" cols="100" rows="30"></textarea>
-            </div>
-        </div>
-    </div>
-    <div class="row" style="margin-top:10px">
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text" style="width:100%">@Model.IjpModel.ApiUrl</span>
-            </div>
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button">Copy url</button>
-                <button class="btn btn-outline-secondary" asp-page-handler="SaveGallery" type="button">Save configuration</button>
-            </div>
-        </div>
-    </div>
-</div>
+    <div class="collapse" id="selectiongallery">
+        <partial name="MyGalleries" model="Model.IjpModel" />
+    </div>*@
 
-
-@foreach (var image in unSelectedImageList.Where(x => !x.IsPrivate))
-{
-    <div id="caption_@image.Name.Replace(@image.RawFormat, "")" style="display:none">
-        <h4>@image.Title</h4>
-        <p><strong>Format: </strong>@image.RawFormat</p>
-        <p><strong>Landscape: </strong>@image.IsLandscape</p>
-        <p><strong>Pixel Format: </strong>@image.PixelFormat</p>
-        <p><strong>Size: </strong>@image.Width X @image.Height</p>
-        <p><strong>Resolution: </strong>@image.HorizontalResolution X @image.VerticalResolution</p>
-        <p><strong>Url: </strong>@image.Url</p>
-    </div>
-}
-
-
-<div id="gallery">
     @foreach (var image in unSelectedImageList.Where(x => !x.IsPrivate))
     {
-        <a href="@image.Path" data-sub-html="#caption_@image.Name.Replace(@image.RawFormat, "")">
-            <img src="@image.Thumb" />
-        </a>
+        <div id="caption_@image.Name.Replace(@image.RawFormat, "")" style="display:none">
+            <h4>@image.Title</h4>
+            <p><strong>Format: </strong>@image.RawFormat</p>
+            <p><strong>Landscape: </strong>@image.IsLandscape</p>
+            <p><strong>Pixel Format: </strong>@image.PixelFormat</p>
+            <p><strong>Size: </strong>@image.Width X @image.Height</p>
+            <p><strong>Resolution: </strong>@image.HorizontalResolution X @image.VerticalResolution</p>
+            <p><strong>Url: </strong>@image.Url</p>
+        </div>
     }
-</div>
 
+    <div id="gallery">
+        @foreach (var image in unSelectedImageList.Where(x => !x.IsPrivate))
+        {
+            <a href="@image.Path" data-sub-html="#caption_@image.Name.Replace(@image.RawFormat, "")">
+                <img src="@image.Thumb" />
+            </a>
+        }
+    </div>
 <script>
     var bookmark;
     var showhideattributelist = "@Model.IjpModel.HideAttributeList";
-
-    //by default the content will not be loaded
-   // if (showhideattributelist === "")
-    //    showhideattributelist = btoa(",content");
-
 
     var $lg = $('#gallery');
     $lg.lightGallery();
@@ -203,81 +58,7 @@
         bookmark = $lg.data('lightGallery').s.bookmark;
 
         if (bookmark.length > 0) {
-            console.log(showhideattributelist);
-            window.location.href = '@Url.Page("Gallery")?bookmark=' + btoa(bookmark) + "&sh=" + btoa(",content");
+            window.location.href = '@Url.Page("MyGalleries")?bookmark=' + btoa(bookmark) + "&sh=" + btoa(",content") + "&newg=y";
         }
     });
-
-
-    $(document).ready(function () {
-
-        $.ajax({
-            type: 'POST',
-            url: "/api/gallery?imgs=@Model.IjpModel.Bookmark&hc=@Model.IjpModel.HideAttributeList",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                $('#jsonPreview').text(JSON.stringify(data, undefined, 2));
-            },
-            error: function (xhr) {
-                $('#jsonPreview').text('Request Status: ' + xhr.status + ' Status Text: ' + xhr.statusText + ' ' + xhr.responseText);
-            }
-        });
-
-        $("#checkFormat").click(function () {
-            window.location.href ='@Url.Page("Gallery")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",format");
-        });
-        $("#checkSize").click(function () {
-            window.location.href ='@Url.Page("Gallery")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",size");
-        });
-        $("#checkPixel").click(function () {
-            window.location.href ='@Url.Page("Gallery")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",pixel");
-        });
-        $("#checkLandscape").click(function () {
-            window.location.href ='@Url.Page("Gallery")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",landscape");
-        });
-        $("#checkResolution").click(function () {
-            window.location.href ='@Url.Page("Gallery")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",resolution");
-        });
-        $("#checkName").click(function () {
-            window.location.href ='@Url.Page("Gallery")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",name");
-        });
-        $("#checkTitle").click(function () {
-            window.location.href ='@Url.Page("Gallery")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",title");
-        });
-        $("#checkUrl").click(function () {
-            window.location.href ='@Url.Page("Gallery")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",url");
-        });
-        $("#checkContent").click(function () {
-            //showhidecolumn($(this), ",content");
-            window.location.href ='@Url.Page("Gallery")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",content");
-        });
-        $("#checkLength").click(function () {
-            window.location.href ='@Url.Page("Gallery")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",length");
-        });
-    });
-
-    function showhidecolumn(chk, column) {
-        console.log(showhideattributelist);
-        console.log(column);
-
-        var columns = atob(showhideattributelist);
-        console.log(columns);
-        if (chk.prop("checked") == true) {
-            var res = columns.replace(column, "");
-            columns = res;
-            console.log(res);
-        }
-        else {
-            console.log("add");
-            columns += column;
-        }
-        console.log(columns);
-
-        console.log(columns);
-        showhideattributelist = btoa(columns);
-        return showhideattributelist;
-    }
-
 </script>
-

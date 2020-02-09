@@ -13,7 +13,6 @@
     <link href="~/css/open-iconic-bootstrap.css" rel="stylesheet" />
     <link href="~/css/all.css" rel="stylesheet" />
     <link href="~/css/layout.css" rel="stylesheet">
-    @*<link href="~/css/login.css" rel="stylesheet" />*@
 </head>
 <body>
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -23,22 +22,19 @@
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            @*<a class="nav-link text-warning" asp-area="" asp-page="gallery">Json</a>*@
-            @*<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#selectiongallery" aria-expanded="false" aria-controls="selectiongallery">
-                Your Selection
-            </button>*@
-
             <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                 <partial name="_LoginPartial" />
                 <ul class="navbar-nav">
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="Gallery">Gallery</a>
+                            <a class="nav-link" asp-page="Gallery" asp-route-user="@User">Images</a>
                         </li>
-                        <li class="nav-item">
-                            @*<a class="nav-link" asp-area="" asp-page="Json">Json</a>*@
+                        @*<li class="nav-item">
                             <a class="nav-link" data-toggle="collapse" data-target="#selectiongallery" aria-expanded="false" aria-controls="selectiongallery">Your Selection</a>
+                        </li>*@
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="MyGalleries" asp-route-user="@User">My Galleries</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="ImageLayout">Layout</a>
@@ -50,8 +46,7 @@
                 </ul>
             </div>
         </div>
-    </nav>
-    <div class="container">
+    </nav>    <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Transactions;
 using WebImage.Context;
 
 namespace WebImage.Models
@@ -14,34 +16,63 @@ namespace WebImage.Models
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IWebHostEnvironment hostingEnv;
 
-        public List<FileModel> MyFiles { get; set; }
-        public string ApiGetUrl { get; set; }
-        public string TypeSelected { get; set; }
         public List<IjpCategory> Category { get; set; }
-        public IjpUser User { get; set; }
+        public List<IjpFile> FileContent { get; set; }
+        public List<MyGallery> MySavedGalleries { get; set; }
+        public List<FileModel> MyFiles { get; set; }
+        public string TypeSelected { get; set; }
         public string ApiUrl { get; set; }
         public string HideAttributeList { get; set; }
         public string Bookmark { get; set; }
+        //public string[] Descriptions { get; set; }
+        public string NewGalleryDescription { get; set; }
+        public string NewGalleryName { get; set; }
+
+        public List<string> MyGalleryNames { get; set; }
 
 
-        public ContentModel(IWebHostEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext _ijpContext, string imgs = "", string hc = "")
+        public ContentModel(IWebHostEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext _ijpContext, string imgs = "", string hc = "", string gallery = "")
         {
             hostingEnv = _hostingEnv;
             httpContextAccessor = _httpContextAccessor;
             ijpContext = _ijpContext;
 
+            MyGalleryNames = new List<string>();
             var request = httpContextAccessor.HttpContext.Request;
             string host = request.Host.ToString();
 
-            Bookmark = string.IsNullOrEmpty(imgs) ? "" : imgs;
-            HideAttributeList = string.IsNullOrEmpty(hc) ? "" : hc;
-            ApiUrl = request.Scheme + "://" + request.Host + "/api/gallery?imgs=" + Bookmark + "&hc="+ HideAttributeList;
+            MySavedGalleries = new List<MyGallery>();
+
+            foreach (var item in ijpContext.Gallery)
+            {
+                MySavedGalleries.Add(new MyGallery()
+                {
+                    Gallery = item,
+                    GalleryFile = ijpContext.GalleryFile.Where(x => x.GalleryId == item.GalleryId).ToList(),
+                    IsSelected = item.Name == gallery
+                });
+            }
+
+            if (string.IsNullOrEmpty(gallery))
+            {
+                Bookmark = string.IsNullOrEmpty(imgs) ? "" : imgs;
+                HideAttributeList = string.IsNullOrEmpty(hc) ? "" : hc;
+                ApiUrl = request.Scheme + "://" + request.Host + "/api/gallery?imgs=" + Bookmark + "&hc=" + HideAttributeList;
+            }
+            else
+            {
+                Bookmark = MySavedGalleries.FirstOrDefault(x => x.IsSelected).Gallery.Images;
+                HideAttributeList = MySavedGalleries.FirstOrDefault(x => x.IsSelected).Gallery.Columns;
+                ApiUrl = MySavedGalleries.FirstOrDefault(x => x.IsSelected).Gallery.Url;
+            }
 
             MyFiles = new List<FileModel>();
+
             foreach (var myimg in ijpContext.File)
             {
                 MyFiles.Add(new FileModel()
                 {
+                    FileId = myimg.FileId,
                     CategoryId = myimg.CategoryId,
                     RawFormat = myimg.RawFormat,
                     IsPrivate = myimg.IsPrivate,
@@ -51,10 +82,10 @@ namespace WebImage.Models
                     Title = myimg.Title,
                     Width = myimg.Width,
                     Height = myimg.Height,
-                    HorizontalResolution =myimg.HorizontalResolution,
+                    HorizontalResolution = myimg.HorizontalResolution,
                     VerticalResolution = myimg.VerticalResolution,
-                    PixelFormat =  myimg.PixelFormat,
-                    IsSelected = false,
+                    PixelFormat = myimg.PixelFormat,
+                    IsSelected = (string.IsNullOrEmpty(gallery)) ? false : MySavedGalleries.FirstOrDefault(z => z.IsSelected).IsImageInGallery(myimg.FileId) ? true : false,
                     Url = host + "/images/" + myimg.Name,
                     Path = Path.Combine(".", "imagefolder", myimg.Name),
                     Thumb = Path.Combine(".", "imagefolder", "Thumbs", Path.GetFileNameWithoutExtension(myimg.Name) + "_thumb" + Path.GetExtension(myimg.Name)),
@@ -64,6 +95,77 @@ namespace WebImage.Models
 
             Category = new List<IjpCategory>();
             Category.AddRange(ijpContext.Category.OrderBy(x => x.Name));
+
+            ijpContext.Gallery.OrderBy(a => a.Name).ToList().ForEach(x => this.MyGalleryNames.Add(new string(x.Name + " - " + x.Description + " (" + x.DateInsert.ToLocalTime() + ")")));
+
+        }
+
+        public void SaveGallery(int galleryId, string galleryName, string galleryDescription, string userId)
+        {
+            using TransactionScope scope = new TransactionScope();
+
+            if (galleryId==0)
+            {
+
+                if (!string.IsNullOrEmpty(this.Bookmark))
+                {
+                    var mygallery = new IjpGallery()
+                    {
+                        Name = galleryName,
+                        Description = galleryDescription,
+                        Url = this.ApiUrl,
+                        Columns = this.HideAttributeList,
+                        DateInsert = DateTime.Now,
+                        UserId = userId,
+                        Images=this.Bookmark
+                    };
+
+                    ijpContext.Gallery.Add(mygallery);
+                    ijpContext.SaveChanges();
+
+                    var images = Helper.Decode(this.Bookmark);
+
+                    foreach (string img in images.Split(','))
+                    {
+                        var file = ijpContext.File.FirstOrDefault(x => x.Name.Equals(img));
+
+                        if (file != null)
+                        {
+                            ijpContext.GalleryFile.Add(new IjpGalleryFile
+                            {
+                                FileId = file.FileId,
+                                GalleryId = mygallery.GalleryId,
+                                Description = "description of " + img
+                            });
+                        }
+                    }
+                    ijpContext.SaveChanges();
+                }
+            }
+            else
+            {
+                var mygallery = this.MySavedGalleries.FirstOrDefault(x => x.Gallery.GalleryId == galleryId);
+
+                if (mygallery != null)
+                {
+                    mygallery.Gallery.Name = galleryName;
+                    mygallery.Gallery.Description = galleryDescription;
+                    mygallery.Gallery.DateUpdate = DateTime.Now;
+                    mygallery.Gallery.UserId = userId;
+                    mygallery.Gallery.Url = this.ApiUrl;
+                    mygallery.Gallery.Columns = this.HideAttributeList;
+                    mygallery.Gallery.Images = this.Bookmark;
+                }
+
+
+
+
+
+                ijpContext.SaveChanges();
+            }
+
+
+            scope.Complete();
         }
 
 
@@ -117,7 +219,7 @@ namespace WebImage.Models
 
                 this.AddToSelection(selectedImages);
 
-                this.MyFiles.Where(a=>a.IsSelected).ToList().ForEach(x => myData.MyJson.Add(new MyJson()
+                this.MyFiles.Where(a => a.IsSelected).ToList().ForEach(x => myData.MyJson.Add(new MyJson()
                 {
                     Url = hidecolumn.Contains("url") ? "" : x.Url,
                     Name = hidecolumn.Contains("name") ? "" : x.Name,
