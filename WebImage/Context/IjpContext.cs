@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using WebImage.Context;
+using WebImage.Models;
 
-namespace WebImage
+namespace WebImage.DBContext
 {
     public class IjpContext : DbContext
     {
@@ -14,9 +16,7 @@ namespace WebImage
         public DbSet<IjpCategory> Category { get; set; }
         public DbSet<IjpGallery> Gallery {get;set;}
         public DbSet<IjpGalleryFile> GalleryFile { get; set; }
-
-
-
+        
         protected override void OnModelCreating(ModelBuilder modelbuilder)
         {
             modelbuilder.Entity<IjpFile>().ToTable("FileContent");

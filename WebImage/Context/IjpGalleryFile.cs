@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WebImage
+namespace WebImage.Context
 {
     [Table("GalleryFile")]
     public class IjpGalleryFile
@@ -11,6 +11,5 @@ namespace WebImage
         public int GalleryId { get; set; }
         public int FileId { get; set; }
         public string Description { get; set; }
-
     }
 }

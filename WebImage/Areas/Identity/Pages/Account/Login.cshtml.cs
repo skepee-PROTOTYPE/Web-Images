@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using WebImage.Models;
+using System.IO;
 
 namespace WebImage.Areas.Identity.Pages.Account
 {
@@ -87,7 +89,7 @@ namespace WebImage.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User logged in.");
                     //return LocalRedirect(returnUrl);
-                    return LocalRedirect("~/Gallery");
+                    return LocalRedirect("~/MyGalleries");
                 }
                 if (result.RequiresTwoFactor)
                 {

@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity;
 using System;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using WebImage.DBContext;
 
 namespace WebImage
 {

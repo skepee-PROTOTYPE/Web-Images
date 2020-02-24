@@ -20,5 +20,6 @@ namespace WebImage.Context
         public int? Height { get; set; }
         public double? HorizontalResolution { get; set; }
         public double? VerticalResolution { get; set; }
+        public string UserId { get; set; }
     }
 }

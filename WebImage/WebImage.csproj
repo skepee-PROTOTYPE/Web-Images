@@ -18,13 +18,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\ContentModel.cs" />
+    <Compile Remove="Models\SiteImages.cs" />
     <Compile Remove="Pages\Json.cshtml.cs" />
+    <Compile Remove="Pages\JsonPreview.cshtml.cs" />
     <Compile Remove="Pages\Menu.cshtml.cs" />
     <Compile Remove="Pages\MyGalleries0.cshtml.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Remove="Pages\Json.cshtml" />
+    <Content Remove="Pages\JsonPreview.cshtml" />
     <Content Remove="Pages\menu.cshtml" />
     <Content Remove="Pages\MyGalleries0.cshtml" />
     <Content Remove="wwwroot\css\card.css" />

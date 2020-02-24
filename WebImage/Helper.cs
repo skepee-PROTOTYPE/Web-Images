@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebImage.Models;
 
 namespace WebImage
 {
@@ -48,8 +49,13 @@ namespace WebImage
 
         public static string Decode(string selectedImages)
         {
-            byte[] data = Convert.FromBase64String(selectedImages);
-            string decodedString = Encoding.UTF8.GetString(data);
+            string decodedString = "";
+            if (!string.IsNullOrEmpty(selectedImages))
+            {
+                byte[] data = Convert.FromBase64String(selectedImages);
+                decodedString = Encoding.UTF8.GetString(data);
+            }
+
             return decodedString;
         }
 

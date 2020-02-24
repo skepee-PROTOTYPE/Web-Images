@@ -28,13 +28,13 @@
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="Gallery" asp-route-user="@User">Images</a>
+                            <a class="nav-link" asp-page="MyImages">My Images</a>
                         </li>
                         @*<li class="nav-item">
                             <a class="nav-link" data-toggle="collapse" data-target="#selectiongallery" aria-expanded="false" aria-controls="selectiongallery">Your Selection</a>
                         </li>*@
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="MyGalleries" asp-route-user="@User">My Galleries</a>
+                            <a class="nav-link" asp-page="MyGalleries">My Galleries</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="ImageLayout">Layout</a>

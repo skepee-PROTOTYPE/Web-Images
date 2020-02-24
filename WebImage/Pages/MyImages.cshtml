@@ -1,0 +1,45 @@
+﻿@page
+
+@model WebImage.Pages.GalleryModel
+@{
+    var myImages = Model.myImages.Images.ToList();
+}
+<script src="~/vendor/jquery/dist/jquery.js"></script>
+<script src="~/vendor/lightgallery/dist/js/lightgallery-all.js"></script>
+<link href="~/vendor/lightgallery/dist/css/lightgallery.css" rel="stylesheet" />
+<link href="~/vendor/lightgallery/dist/css/lg-transitions.css" rel="stylesheet" />
+
+@foreach (var image in myImages.Where(x => !x.IsPrivate))
+{
+    <div id="caption_@image.Name.Replace(@image.RawFormat, "")" style="display:none">
+        <h4>@image.Title</h4>
+        <p><strong>Format: </strong>@image.RawFormat</p>
+        <p><strong>Landscape: </strong>@image.IsLandscape</p>
+        <p><strong>Pixel Format: </strong>@image.PixelFormat</p>
+        <p><strong>Size: </strong>@image.Width X @image.Height</p>
+        <p><strong>Resolution: </strong>@image.HorizontalResolution X @image.VerticalResolution</p>
+        <p><strong>Url: </strong>@image.Url</p>
+    </div>
+}
+
+<div id="gallery">
+    @foreach (var image in myImages.Where(x => !x.IsPrivate))
+    {
+        <a href="@image.Path" data-sub-html="#caption_@image.Name.Replace(@image.RawFormat, "")">
+            <img src="@image.Thumb" />
+        </a>
+    }
+</div>
+
+<script>
+    var $lg = $('#gallery');
+    $lg.lightGallery();
+
+    $lg.on('onCloseAfter.lg', function (event) {
+        var bookmark = $lg.data('lightGallery').s.bookmark;
+
+        if (bookmark.length > 0) {
+           window.location.href = '@Url.Page("MyGalleries")?newg=' + btoa(bookmark);
+        }
+    });
+</script>

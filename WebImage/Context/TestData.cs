@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using WebImage.DBContext;
 using WebImage.Models;
 
 namespace WebImage.Context

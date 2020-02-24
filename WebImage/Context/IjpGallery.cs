@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WebImage
+namespace WebImage.Context
 {
     [Table("Gallery")]
     public class IjpGallery
@@ -15,6 +15,7 @@ namespace WebImage
         public string Url { get; set; }
         public string Columns { get; set; }
         public string Images { get; set; }
+        public bool Active { get; set; }
         public DateTime DateInsert { get; set; }
         public DateTime DateUpdate { get; set; }
     }

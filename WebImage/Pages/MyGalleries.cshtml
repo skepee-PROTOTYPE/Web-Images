@@ -2,19 +2,20 @@
 @model WebImage.Pages.MyGalleriesModel
 
 @{
-    var selectedImageList = Model.IjpModel.MyFiles.Where(x => x.IsSelected).ToList();
+    Models.ItemGallery selectedGallery = null;
+    var listmygalleries = Model.MyContainer.myGalleries.Gallery.OrderByDescending(x => x.Gallery.DateInsert).ToList();
 
-    var selectedGallery = Model.IjpModel.MySavedGalleries.FirstOrDefault(x => x.IsSelected);
-
-    string galleryname = Model.IjpModel.NewGalleryName;
-    string gallerydescription = Model.IjpModel.NewGalleryDescription;
-    int galleryId = 0;
-
-    if (selectedGallery != null)
+    if (listmygalleries.Any())
     {
-        galleryname = selectedGallery.Gallery.Name;
-        gallerydescription = selectedGallery.Gallery.Description;
-        galleryId = selectedGallery.Gallery.GalleryId;
+        if (listmygalleries.FirstOrDefault(x => x.IsSelected) == null)
+        {
+            listmygalleries.First().IsSelected = true;
+            selectedGallery = listmygalleries.First();
+        }
+        else
+        {
+            selectedGallery = listmygalleries.FirstOrDefault(x => x.IsSelected);
+        }
     }
 }
 
@@ -22,17 +23,10 @@
 <script src="~/vendor/lightgallery/dist/js/lightgallery-all.js"></script>
 <link href="~/vendor/lightgallery/dist/css/lightgallery.css" rel="stylesheet" />
 <link href="~/vendor/lightgallery/dist/css/lg-transitions.css" rel="stylesheet" />
-
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
 <style>
-    #jsonPreview {
-        width: 100%;
-        min-height: 30rem;
-        font-family: "Lucida Console", Monaco, monospace;
-        font-size: 0.8rem;
-        line-height: 1.2;
-    }
-
     .list-group-item {
         background-color: #343a40;
     }
@@ -45,6 +39,11 @@
             width: 100%;
         }
 
+    .card {
+        border-color: #8f8f8f;
+        padding: 10px;
+    }
+
     .header {
         font-size: 16px;
     }
@@ -53,186 +52,237 @@
         height: 500px;
         overflow: auto;
     }
+
+    .row {
+        margin-top: 10px;
+    }
+
+    span.input-group-text {
+        width: 100%;
+    }
+
+    .card.selected {
+        background-color: #70A1D7;
+    }
+
+    #galleryDetail {
+        margin-top: 50px;
+    }
+
+    .activeslow .toggle-group {
+        transition: left 0.7s;
+        -webkit-transition: left 0.7s;
+    }
+
+    .toggle-handle.btn.btn-default {
+        background-color: #DEE2D9;
+    }
 </style>
 
-
-
-@if (Model.IjpModel.MyGalleryNames.Count > 0)
+@if (listmygalleries.Count > 0)
 {
-    <div class="row" style="margin-top: 10px; margin-bottom: 10px; overflow: unset; ">
+    for (int i = 0; i < listmygalleries.Count; i += 4)
+    {
+        <div class="row" style="margin-top:10px">
+            @for (int j = 0; j < 4; j++)
+            {
+                if (i + j < listmygalleries.Count)
+                {
+                    var gallery = listmygalleries[i + j];
 
-        <div class="col-12">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Your Galleries
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    @foreach (string item in Model.IjpModel.MyGalleryNames)
-                    {
-                        <a class="dropdown-item" href="@Url.Page("MyGalleries")?gallery=@item.Split('-')[0].Trim()">@item</a>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
-@if (selectedImageList.Count > 0)
-{
-    <div class="row">
-        <div class="col-2">
-            <div class="alert alert-dark header" role="alert">Your images</div>
-            <div class="card selectedimages">
-                <ul class="list-group">
-                    @foreach (var image in selectedImageList)
-                    {
-                        <li class="list-group-item">
-                            <div class="card">
-                                <img class="card-img-top" src="@image.Thumb" alt="@image.Name">
-                                <div class="card-body">
-                                    <p class="card-text">
-                                        @{
-                                            var description = "";
-                                            if (selectedGallery != null)
-                                            {
-                                                description = selectedGallery.GetDescription(image.FileId);
-                                            }
-                                            else
-                                                description = image.Title;
-                                        }
-                                        Description:<input type="text" class="card-text" value="@description" />
-                                    </p>
-                                </div>
+                    <div class="col-3">
+                        <div class="card @(gallery.IsSelected?"selected":"")" style="width: 18rem;">
+                            <img class="card-img-top" src="@Model.MyContainer.myImages.GetImage(gallery.GalleryFile[0].FileId).Thumb" alt="@gallery.Gallery.Name">
+                            <div class="card-body">
+                                <h5 class="card-title">@gallery.Gallery.Name</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">Last update: @gallery.Gallery.DateUpdate.ToUniversalTime()</h6>
+                                <p class="card-text">@gallery.Gallery.Description</p>
+                                <a class="btn btn-outline-secondary" asp-page="MyGalleries" asp-route-galleryId="@gallery.Gallery.GalleryId">View</a>
                             </div>
-                        </li>
-                    }
-                </ul>
-            </div>
-        </div>
-        <div class="col-2">
-            <div class="alert alert-dark header">Choose attributes</div>
-            <div class="card">
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkName" @Model.IjpModel.AttributeChecked("name")>
-                            <label class="custom-control-label" for="checkName">Name</label>
                         </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkTitle" @Model.IjpModel.AttributeChecked("title")>
-                            <label class="custom-control-label" for="checkTitle">Title</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkFormat" @Model.IjpModel.AttributeChecked("format")>
-                            <label class="custom-control-label" for="checkFormat">Format</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkLength" @Model.IjpModel.AttributeChecked("length")>
-                            <label class="custom-control-label" for="checkLength">Length</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkLandscape" @Model.IjpModel.AttributeChecked("landscape")>
-                            <label class="custom-control-label" for="checkLandscape">Landscape</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkPixel" @Model.IjpModel.AttributeChecked("pixel")>
-                            <label class="custom-control-label" for="checkPixel">Pixel</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkSize" @Model.IjpModel.AttributeChecked("size")>
-                            <label class="custom-control-label" for="checkSize">Size</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkResolution" @Model.IjpModel.AttributeChecked("resolution")>
-                            <label class="custom-control-label" for="checkResolution">Resolution</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkUrl" @Model.IjpModel.AttributeChecked("url")>
-                            <label class="custom-control-label" for="checkUrl">Url</label>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkContent" @Model.IjpModel.AttributeChecked("content")>
-                            <label class="custom-control-label" for="checkContent">Content (heavier)</label>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="col-8">
-            <div class="alert alert-dark header">This is your API preview</div>
-            <div class="card">
-                <textarea name="" id="jsonPreview" cols="100" rows="30"></textarea>
-            </div>
-        </div>
-
-    </div>
-
-    <form asp-page-handler="SaveGallery" asp-route-bookmark="@Model.IjpModel.Bookmark" asp-route-sh="@Model.IjpModel.HideAttributeList" method="post">
-        <div class="row" style="margin-top:10px">
-            <div class="col-6">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="galleryname">Name</span>
                     </div>
-                    <input type="text" class="form-control" id="inputgalleryname" name="inputgalleryname" placeholder="Name" aria-label="Small" aria-describedby="galleryname" value="@galleryname">
-                    <input type="hidden" value="@galleryId" id="galleryid" name="galleryid" />
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="gallerydescription">Description</span>
-                    </div>
-                    <input type="text" class="form-control" id="inputgallerydescription" name="inputgallerydescription" placeholder="Description" aria-label="Small" aria-describedby="gallerydescription" value="@gallerydescription">
-                </div>
-            </div>
+                }
+            }
         </div>
-
-        <div class="row" style="margin-top:10px">
-            <div class="col-12">
-
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" style="width:100%">@Model.IjpModel.ApiUrl</span>
-                    </div>
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary">Copy url</button>
-                        <input type="submit" class="btn btn-outline-secondary" value="Save" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-
-
-
+    }
 }
 
+@if (selectedGallery != null)
+{
+    <div id="galleryDetail">
+        <div class="row">
+            <div class="col-1">
+                @{
+                    var ischecked = (selectedGallery.Gallery.Active) ? "checked" : "";
+                }
+                <input type="checkbox" id="toggleActive" name="toggleActive" data-toggle="toggle" data-onstyle="success" data-offstyle="danger" data-on="Active" data-off="Not Active" data-style="activeslow" @ischecked>
+            </div>
+            <div class="col-1">
+                <form asp-page-handler="RefreshGallery" method="post">
+                    <button class="btn btn-outline-light" id="btnrefresh" asp-page-handler="RefreshGallery">Refresh</button>
+                </form>
+            </div>
+            <div class="col-1">
+                <form asp-page-handler="RemoveGallery" method="post">
+                    <button class="btn btn-outline-light" asp-page-handler="RemoveGallery" asp-route-galleryId="@selectedGallery.Gallery.GalleryId">Remove</button>
+                </form>
+            </div>
+            <div class="col-9">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="gallerylastupdate">Url</span>
+                    </div>
+                    <input type="text" readonly="readonly" class="form-control" id="inputgalleryurl" name="inputgalleryurl" value="@selectedGallery.Gallery.Url">
+                </div>
+            </div>
+        </div>
+
+        <form asp-page-handler="SaveGallery" method="post">
+            <div class="row">
+                <div class="col-2">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="gallerylastupdate">Last update</span>
+                        </div>
+                        <input type="text" readonly="readonly" class="form-control" placeholder="Last Update" aria-label="Small" aria-describedby="gallerylastupdate" value="@selectedGallery.Gallery.DateUpdate.ToUniversalTime()">
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="galleryname">Name</span>
+                        </div>
+                        <input type="text" class="form-control" id="inputgalleryname" name="inputgalleryname" placeholder="Name" aria-label="Small" aria-describedby="galleryname" value="@selectedGallery.Gallery.Name">
+                        <input type="hidden" value="@selectedGallery.Gallery.GalleryId" id="galleryid" name="galleryid" />
+                        <input type="hidden" id="attrs" name="attrs" />
+                        <input type="hidden" id="images" name="images" value="@string.Join(",",selectedGallery.GalleryFile.Select(x=>x.FileId))" />
+                        <input type="hidden" id="descriptions" name="descriptions" />
+                    </div>
+                </div>
+                <div class="col-7">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="gallerydescription">Description</span>
+                        </div>
+                        <input type="text" class="form-control" id="inputgallerydescription" name="inputgallerydescription" placeholder="Description" aria-label="Small" aria-describedby="gallerydescription" value="@selectedGallery.Gallery.Description">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <button class="btn btn-outline-light" id="btnsave" asp-page-handler="SaveGallery">Save</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-2">
+                    <div class="card selectedimages">
+                        <ul class="list-group">
+                            @foreach (var item in selectedGallery.GalleryFile)
+                            {
+                                var image = Model.MyContainer.myImages.GetImage(item.FileId);
+
+                                <li class="list-group-item">
+                                    <div class="card">
+                                        <img class="card-img-top" src="@image.Thumb" alt="@image.Name">
+                                        <div class="card-body">
+                                            <p class="card-text">
+                                                Description:<input type="text" class="card-text imagedescriptions" value="@item.Description" id="Descr_@item.FileId" name="Descr_@item.FileId" />
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="name" @Model.MyContainer.myGalleries.AttributeChecked(selectedGallery.Gallery.Columns, "name")>
+                                    <label class="custom-control-label" for="name">Name</label>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="title" @Model.MyContainer.myGalleries.AttributeChecked(selectedGallery.Gallery.Columns, "title")>
+                                    <label class="custom-control-label" for="title">Title</label>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="format" @Model.MyContainer.myGalleries.AttributeChecked(selectedGallery.Gallery.Columns, "format")>
+                                    <label class="custom-control-label" for="format">Format</label>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="length" @Model.MyContainer.myGalleries.AttributeChecked(selectedGallery.Gallery.Columns, "length")>
+                                    <label class="custom-control-label" for="length">Length</label>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="landscape" @Model.MyContainer.myGalleries.AttributeChecked(selectedGallery.Gallery.Columns, "landscape")>
+                                    <label class="custom-control-label" for="landscape">Landscape</label>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="pixel" @Model.MyContainer.myGalleries.AttributeChecked(selectedGallery.Gallery.Columns, "pixel")>
+                                    <label class="custom-control-label" for="pixel">Pixel</label>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="size" @Model.MyContainer.myGalleries.AttributeChecked(selectedGallery.Gallery.Columns, "size")>
+                                    <label class="custom-control-label" for="size">Size</label>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="resolution" @Model.MyContainer.myGalleries.AttributeChecked(selectedGallery.Gallery.Columns, "resolution")>
+                                    <label class="custom-control-label" for="resolution">Resolution</label>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="url" @Model.MyContainer.myGalleries.AttributeChecked(selectedGallery.Gallery.Columns, "url")>
+                                    <label class="custom-control-label" for="url">Url</label>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="content" @Model.MyContainer.myGalleries.AttributeChecked(selectedGallery.Gallery.Columns, "content")>
+                                    <label class="custom-control-label" for="content">Content (heavier)</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card">
+                        <textarea readonly="readonly" name="jsonPreview" id="jsonPreview" cols="100" rows="30"></textarea>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+}
 
 <script>
     $(document).ready(function () {
 
+        $("#attrs").val(attrs());
+        $("#descriptions").val(descrs());
+
+
         $.ajax({
             type: 'POST',
-            url: "/api/gallery?imgs=@Model.IjpModel.Bookmark&hc=@Model.IjpModel.HideAttributeList",
+            url: "/api/gallery/@selectedGallery.Gallery.GalleryId",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
@@ -243,47 +293,52 @@
             }
         });
 
-        $("#checkFormat").click(function () {
-            window.location.href ='@Url.Page("MyGalleries")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",format");
+        $("#btnrefresh").click(function () {
+             $("#descriptions").val(descrs());
+             $("#attrs").val(attrs());
+            //var attributes = hideAttrs("name") + hideAttrs("title") + hideAttrs("format") + hideAttrs("length") + hideAttrs("landscape") +  hideAttrs("pixel") + hideAttrs("size") + hideAttrs("resolution") + hideAttrs("url") + hideAttrs("content");
+
+            //window.location.href = '@Url.Page("MyGalleries")?galleryId=@selectedGallery.Gallery.GalleryId&attr=' + btoa(attributes.substr(0, attributes.length - 1)) + "&descrs=" + descrs();
         });
-        $("#checkSize").click(function () {
-            window.location.href ='@Url.Page("MyGalleries")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",size");
+
+        $("#btnsave").click(function () {
+            $("#attrs").val(attrs());
+            $("#descriptions").val(descrs());
         });
-        $("#checkPixel").click(function () {
-            window.location.href ='@Url.Page("MyGalleries")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",pixel");
+
+
+        $(".custom-control-input").click(function () {
+            $("#attrs").val(attrs());
         });
-        $("#checkLandscape").click(function () {
-            window.location.href ='@Url.Page("MyGalleries")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",landscape");
-        });
-        $("#checkResolution").click(function () {
-            window.location.href ='@Url.Page("MyGalleries")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",resolution");
-        });
-        $("#checkName").click(function () {
-            window.location.href ='@Url.Page("MyGalleries")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",name");
-        });
-        $("#checkTitle").click(function () {
-            window.location.href ='@Url.Page("MyGalleries")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",title");
-        });
-        $("#checkUrl").click(function () {
-            window.location.href ='@Url.Page("MyGalleries")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",url");
-        });
-        $("#checkContent").click(function () {
-            window.location.href ='@Url.Page("MyGalleries")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",content");
-        });
-        $("#checkLength").click(function () {
-            window.location.href ='@Url.Page("MyGalleries")?bookmark=@Model.IjpModel.Bookmark&sh=' + showhidecolumn($(this),",length");
-        });
+
     });
 
-    function showhidecolumn(chk, column) {
-        var columns = atob(showhideattributelist);
-        if (chk.prop("checked") == true)
-            columns = columns.replace(column, "");
-        else
-            columns += column;
 
-        showhideattributelist = btoa(columns);
-        return showhideattributelist;
+    function descrs()
+    {
+        var descriptions = "";
+        $(".imagedescriptions").each(function () {
+            descriptions += $(this).val() + "-" + $(this).attr("id").replace("Descr_","") + ",";
+        });
+
+        if (descriptions.length>0)
+            descriptions = descriptions.substr(0, descriptions.length - 1);
+
+        return descriptions;
+    }
+
+
+    function attrs() {
+        var attributes = hideAttrs("name") + hideAttrs("title") + hideAttrs("format") + hideAttrs("length") + hideAttrs("landscape") + hideAttrs("pixel") + hideAttrs("size") + hideAttrs("resolution") + hideAttrs("url") + hideAttrs("content");
+        return attributes;
+    }
+
+    function hideAttrs(id)
+    {
+        if ($("#" + id).prop("checked") == true)
+            return "";
+        else
+            return id  + ",";
     }
 
 </script>

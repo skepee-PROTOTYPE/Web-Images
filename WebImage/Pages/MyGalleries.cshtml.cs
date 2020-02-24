@@ -1,76 +1,125 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using WebImage.DBContext;
 using WebImage.Models;
 
 namespace WebImage.Pages
 {
     public class MyGalleriesModel : PageModel
     {
+        private UserManager<IdentityUser> userManager { get; set; }
         private readonly IjpContext ijpContext;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IWebHostEnvironment hostingEnv;
-        private UserManager<IdentityUser> userManager { get; set; }
-        public ContentModel IjpModel { get; set; }
 
-        public MyGalleriesModel(IWebHostEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext _ijpContext, UserManager<IdentityUser> _userManager)
+        public MyContainer MyContainer { get; set; }
+        private string Host { get; set; }
+
+        public MyGalleriesModel(IWebHostEnvironment _hostingEnv, IHttpContextAccessor _httpContextAccessor, IjpContext _ijpContext,UserManager<IdentityUser> _userManager)
         {
             hostingEnv = _hostingEnv;
             httpContextAccessor = _httpContextAccessor;
             ijpContext = _ijpContext;
             userManager = _userManager;
 
+            MyContainer = new MyContainer(httpContextAccessor,ijpContext, hostingEnv);
+
+            var request = httpContextAccessor.HttpContext.Request;
+            Host = request.Host.ToString();
+        }
+
+        public void OnGet(int galleryId, string newg, string attr, string descrs)
+        {
             System.Security.Claims.ClaimsPrincipal currentUser = this.User;
+
+            MyContainer.myImages.LoadMyImages(userManager.GetUserId(currentUser), Host,hostingEnv.WebRootPath);
+            MyContainer.myGalleries.LoadGallery(galleryId, userManager.GetUserId(currentUser));
+
+            if (!string.IsNullOrEmpty(newg))
+            {
+                ItemGallery mygallery = new ItemGallery();
+                mygallery.AddGallery("NoName_" + DateTime.Now.ToString("yyyyMMdd"), "NoDescription_" + DateTime.Now.ToString("yyyyMMdd"), newg);                
+                this.MyContainer.myGalleries.SaveGallery(mygallery, descrs, userManager.GetUserId(currentUser));
+            }
+
+            if (galleryId > 0 & !string.IsNullOrEmpty(attr))
+            {
+                MyContainer.myGalleries.Gallery.FirstOrDefault(x => x.Gallery.GalleryId == galleryId).Gallery.Columns = attr;
+            }
         }
 
-        public void OnGet(string bookmark, string sh, IdentityUser user, string gallery, string newg)
+        public RedirectToPageResult OnPostRemoveGallery(int galleryId)
         {
-            var user1 = new IdentityUser("skepee01@gmail.com");
-            var userid = "bcdccebd-9f08-4485-96c3-cdea50240a4a";
-
-            IjpModel = new ContentModel(hostingEnv, httpContextAccessor, ijpContext, bookmark, sh, gallery);
-            // if i am selecting new images, automatically i ll create an item in mysavedgallery
-            if (newg == "y")
-            {
-                IjpModel.SaveGallery(0, "unNamed_" + DateTime.Now.ToString("yyyyMMdd"), "", userid);
-            }
-
-            var mydata = IjpModel.GetFileInfoJson(bookmark, sh);
+            this.MyContainer.myGalleries.RemoveGallery(galleryId);
+            return new RedirectToPageResult("MyGalleries");
         }
 
-        public RedirectToPageResult OnPostSaveGallery(string bookmark, string sh)
+
+        private string GetRequestParam(string param)
         {
-            int galleryId = 0;
-            string gallery = "";
-            string descr = "";
-            if (Request.Form["inputgallerydescription"].Count == 1)
-            {
-                descr = Request.Form["inputgallerydescription"][0];
-            }
-
-            if (Request.Form["inputgalleryname"].Count == 1)
-            {
-                gallery = Request.Form["inputgalleryname"][0];
-            }
-
-            if (Request.Form["galleryid"].Count == 1)
-            {
-                galleryId = Int32.Parse(Request.Form["galleryid"][0]);
-            }
-
-            var user1 = new IdentityUser("skepee01@gmail.com");
-            IjpModel = new ContentModel(hostingEnv, httpContextAccessor, ijpContext, bookmark, sh);
-            var userid = "bcdccebd-9f08-4485-96c3-cdea50240a4a";
-            IjpModel.SaveGallery(galleryId, gallery, descr, userid);
-            return new RedirectToPageResult("Gallery");
+            if (Request.Form[param].Count == 1)
+                return Request.Form[param][0];
+            else
+                return string.Empty;
         }
 
+        public RedirectToPageResult OnPostRefreshGallery()
+        {
+            ItemGallery newgallery = new ItemGallery();
+            newgallery.Gallery.Columns = Helper.Encode(GetRequestParam("attrs"));
+            newgallery.Gallery.Url = GetRequestParam("inputgalleryurl");
+            newgallery.Gallery.Description = GetRequestParam("inputgallerydescription");
+            newgallery.Gallery.Name = GetRequestParam("inputgalleryname");
+            newgallery.Gallery.GalleryId = Convert.ToInt32(GetRequestParam("galleryid"));
+            newgallery.Gallery.Active = GetRequestParam("toggleActive") == "on" ? true : false;
+            newgallery.Gallery.Images = Helper.Encode(GetRequestParam("images"));
+
+            string description_ids = GetRequestParam("descriptions");
+
+            System.Security.Claims.ClaimsPrincipal currentUser = this.User;
+
+            MyContainer.myImages.LoadMyImages(userManager.GetUserId(currentUser), Host, hostingEnv.WebRootPath);
+            MyContainer.myGalleries.LoadGallery(newgallery.Gallery.GalleryId, userManager.GetUserId(currentUser));
+
+            //this.MyContainer.myGalleries.SaveGallery(newgallery, description_ids, userManager.GetUserId(currentUser));
+            return new RedirectToPageResult("MyGalleries");
+        }
+
+
+
+        public RedirectToPageResult OnPostSaveGallery()
+        {
+            ItemGallery newgallery = new ItemGallery();            
+            newgallery.Gallery.Columns = Helper.Encode(GetRequestParam("attrs"));
+            newgallery.Gallery.Url = GetRequestParam("inputgalleryurl");
+            newgallery.Gallery.Description = GetRequestParam("inputgallerydescription");
+            newgallery.Gallery.Name = GetRequestParam("inputgalleryname");
+            newgallery.Gallery.GalleryId = Convert.ToInt32(GetRequestParam("galleryid"));
+            newgallery.Gallery.Active = GetRequestParam("toggleActive") == "on" ? true : false;
+            newgallery.Gallery.Images = Helper.Encode(GetRequestParam("images"));
+            
+            string description_ids = GetRequestParam("descriptions");
+
+            System.Security.Claims.ClaimsPrincipal currentUser = this.User;
+            this.MyContainer.myGalleries.SaveGallery(newgallery, description_ids, userManager.GetUserId(currentUser));
+            return new RedirectToPageResult("MyGalleries");
+        }
+
+
+        public void SaveGallery(ItemGallery newgallery, string listImages, string columns, string userId)
+        {
+            MyContainer.myGalleries.LoadGallery(newgallery.Gallery.GalleryId,userId);
+            this.MyContainer.myGalleries.SaveGallery(newgallery, "", userId);
+        }
 
     }
 }
