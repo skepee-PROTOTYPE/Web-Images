@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Linq;
 using WebImage.DBContext;
 using WebImage.Models;
 
@@ -29,11 +30,12 @@ namespace WebImage.Pages
             myImages = new MyImages(_ijpContext);
         }
 
-        public void OnGet()
+        public void OnGet(bool isPrivate)
         {
             System.Security.Claims.ClaimsPrincipal currentUser = this.User;
 
             myImages.LoadMyImages(userManager.GetUserId(currentUser), Host, hostingEnv.WebRootPath);
+            myImages.Images = myImages.Images.Where(x => x.IsPrivate == isPrivate).ToList();
 
         }
     }

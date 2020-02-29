@@ -9,7 +9,7 @@
 <link href="~/vendor/lightgallery/dist/css/lightgallery.css" rel="stylesheet" />
 <link href="~/vendor/lightgallery/dist/css/lg-transitions.css" rel="stylesheet" />
 
-@foreach (var image in myImages.Where(x => !x.IsPrivate))
+@foreach (var image in myImages)
 {
     <div id="caption_@image.Name.Replace(@image.RawFormat, "")" style="display:none">
         <h4>@image.Title</h4>
@@ -23,7 +23,7 @@
 }
 
 <div id="gallery">
-    @foreach (var image in myImages.Where(x => !x.IsPrivate))
+    @foreach (var image in myImages)
     {
         <a href="@image.Path" data-sub-html="#caption_@image.Name.Replace(@image.RawFormat, "")">
             <img src="@image.Thumb" />
@@ -37,9 +37,10 @@
 
     $lg.on('onCloseAfter.lg', function (event) {
         var bookmark = $lg.data('lightGallery').s.bookmark;
+        var attributes = "content";
 
         if (bookmark.length > 0) {
-           window.location.href = '@Url.Page("MyGalleries")?newg=' + btoa(bookmark);
+           window.location.href = '@Url.Page("MyGalleries")?newg=' + btoa(bookmark)+ "&attr=" + btoa(attributes);
         }
     });
 </script>

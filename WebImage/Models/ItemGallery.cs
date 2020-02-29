@@ -17,12 +17,12 @@ namespace WebImage.Models
             JsonGallery = new JsonData();
         }
 
-        public void AddGallery(string name, string description, string images)
+        public void NewGallery(string name, string description, string images, string attr)
         {
-            Gallery.GalleryId = 0;
             Gallery.Name = name;
             Gallery.Description = description;
             Gallery.Images = images;
+            Gallery.Columns = attr;
             Gallery.Active = false;
         }
     }

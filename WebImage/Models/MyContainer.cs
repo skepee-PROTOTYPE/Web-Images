@@ -29,7 +29,7 @@ namespace WebImage.Models
         }
 
 
-        public JsonData GetFileInfoJson(string userId)
+        public JsonData GetFileInfoJson()
         {
             JsonData myData = new JsonData();
 

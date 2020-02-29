@@ -41,25 +41,19 @@ namespace WebImage.Controllers
         {
             if (id > 0)
             {
+                //TODO : for now... to be removed when the userid isassigned by identityserver
                 System.Security.Claims.ClaimsPrincipal currentUser = this.User;
 
                 DateTime StartDate = DateTime.Now;
 
                 var mycontainer = new MyContainer(httpContextAccessor, ijpContext, hostingEnv);
+                mycontainer.myGalleries.LoadGallery(id, null, Host);
 
-                mycontainer.myGalleries.Gallery.Add(
-                    new ItemGallery()
-                    {
-                        Gallery = ijpContext.Gallery.FirstOrDefault(x => x.GalleryId == id),
-                        GalleryFile = ijpContext.GalleryFile.Where(x => x.GalleryId == id).ToList(),
-                        IsSelected = true
-                    });
+                string userId = mycontainer.myGalleries.Gallery[0].Gallery.UserId; //userManager.GetUserId(currentUser)
 
-                mycontainer.myImages.LoadMyImages(userManager.GetUserId(currentUser), Host, hostingEnv.WebRootPath);
+                mycontainer.myImages.LoadMyImages(userId, Host, hostingEnv.WebRootPath);
 
-                mycontainer.GetFileInfoJson(userManager.GetUserId(currentUser));
-
-                var mydata = mycontainer.GetFileInfoJson(userManager.GetUserId(currentUser));
+                var mydata = mycontainer.GetFileInfoJson();
 
                 return Json(new JsonGallery()
                 {

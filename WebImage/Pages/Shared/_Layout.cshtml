@@ -28,7 +28,10 @@
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="MyImages">My Images</a>
+                            <a class="nav-link" asp-page="MyImages" asp-route-isPrivate="false">My Public</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="MyImages" asp-route-isPrivate="true">My Private</a>
                         </li>
                         @*<li class="nav-item">
                             <a class="nav-link" data-toggle="collapse" data-target="#selectiongallery" aria-expanded="false" aria-controls="selectiongallery">Your Selection</a>

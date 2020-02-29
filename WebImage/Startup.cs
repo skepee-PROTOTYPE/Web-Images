@@ -36,8 +36,8 @@ namespace WebImage
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddHttpContextAccessor();
             services.AddRazorPages();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMemoryCache();
             services.AddEntityFrameworkSqlServer();
             services.AddDbContext<IjpContext>(options => options.UseSqlServer(connString));

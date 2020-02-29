@@ -42,14 +42,15 @@ namespace WebImage.Pages
             System.Security.Claims.ClaimsPrincipal currentUser = this.User;
 
             MyContainer.myImages.LoadMyImages(userManager.GetUserId(currentUser), Host,hostingEnv.WebRootPath);
-            MyContainer.myGalleries.LoadGallery(galleryId, userManager.GetUserId(currentUser));
 
             if (!string.IsNullOrEmpty(newg))
             {
                 ItemGallery mygallery = new ItemGallery();
-                mygallery.AddGallery("NoName_" + DateTime.Now.ToString("yyyyMMdd"), "NoDescription_" + DateTime.Now.ToString("yyyyMMdd"), newg);                
-                this.MyContainer.myGalleries.SaveGallery(mygallery, descrs, userManager.GetUserId(currentUser));
+                mygallery.NewGallery("NoName_" + DateTime.Now.ToString("yyyyMMdd"), "NoDescription_" + DateTime.Now.ToString("yyyyMMdd"), newg, attr);                
+                this.MyContainer.myGalleries.SaveGallery(mygallery, descrs, userManager.GetUserId(currentUser), Host);
             }
+
+            MyContainer.myGalleries.LoadGallery(galleryId, userManager.GetUserId(currentUser), Host);
 
             if (galleryId > 0 & !string.IsNullOrEmpty(attr))
             {
@@ -57,7 +58,7 @@ namespace WebImage.Pages
             }
         }
 
-        public RedirectToPageResult OnPostRemoveGallery(int galleryId)
+        public RedirectToPageResult OnPostRemoveGallery(int galleryId)        
         {
             this.MyContainer.myGalleries.RemoveGallery(galleryId);
             return new RedirectToPageResult("MyGalleries");
@@ -88,7 +89,7 @@ namespace WebImage.Pages
             System.Security.Claims.ClaimsPrincipal currentUser = this.User;
 
             MyContainer.myImages.LoadMyImages(userManager.GetUserId(currentUser), Host, hostingEnv.WebRootPath);
-            MyContainer.myGalleries.LoadGallery(newgallery.Gallery.GalleryId, userManager.GetUserId(currentUser));
+            MyContainer.myGalleries.LoadGallery(newgallery.Gallery.GalleryId, userManager.GetUserId(currentUser),Host);
 
             //this.MyContainer.myGalleries.SaveGallery(newgallery, description_ids, userManager.GetUserId(currentUser));
             return new RedirectToPageResult("MyGalleries");
@@ -110,15 +111,15 @@ namespace WebImage.Pages
             string description_ids = GetRequestParam("descriptions");
 
             System.Security.Claims.ClaimsPrincipal currentUser = this.User;
-            this.MyContainer.myGalleries.SaveGallery(newgallery, description_ids, userManager.GetUserId(currentUser));
+            this.MyContainer.myGalleries.SaveGallery(newgallery, description_ids, userManager.GetUserId(currentUser),Host);
             return new RedirectToPageResult("MyGalleries");
         }
 
 
         public void SaveGallery(ItemGallery newgallery, string listImages, string columns, string userId)
         {
-            MyContainer.myGalleries.LoadGallery(newgallery.Gallery.GalleryId,userId);
-            this.MyContainer.myGalleries.SaveGallery(newgallery, "", userId);
+            MyContainer.myGalleries.LoadGallery(newgallery.Gallery.GalleryId,userId,Host);
+            this.MyContainer.myGalleries.SaveGallery(newgallery, "", userId,Host);
         }
 
     }

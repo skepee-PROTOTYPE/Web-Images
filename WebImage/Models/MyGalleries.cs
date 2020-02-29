@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Transactions;
 using WebImage.Context;
@@ -40,9 +41,19 @@ namespace WebImage.Models
             scope.Complete();
         }
 
-        public List<ItemGallery> LoadGallery(int galleryId, string userId)
+        public List<ItemGallery> LoadGallery(int galleryId, string userId, string host)
         {
-            foreach (var item in ijpContext.Gallery.Where(x => x.UserId == userId))
+            IEnumerable<IjpGallery> myGallery= new List<IjpGallery>();
+
+            if (galleryId > 0)
+                myGallery= ijpContext.Gallery.Where(x => x.GalleryId == galleryId);
+
+            //TODO : for now... to be removed when the userid isassigned by identityserver
+            if (!string.IsNullOrEmpty(userId))
+                myGallery = ijpContext.Gallery.Where(x => x.UserId == userId);
+
+
+            foreach (var item in myGallery)
             {
                 Gallery.Add(new ItemGallery()
                 {
@@ -50,13 +61,12 @@ namespace WebImage.Models
                     GalleryFile = ijpContext.GalleryFile.Where(x => x.GalleryId == item.GalleryId).ToList(),
                     IsSelected = (galleryId > 0) ? item.GalleryId == galleryId : false
                 });
-
             }
 
             return Gallery;
         }
 
-        public void SaveGallery(ItemGallery gallery, string description_ids, string userId)
+        public void SaveGallery(ItemGallery gallery, string description_ids, string userId,string host)
         {
             using TransactionScope scope = new TransactionScope();
 
@@ -68,7 +78,6 @@ namespace WebImage.Models
                     {
                         Name = gallery.Gallery.Name,
                         Description = gallery.Gallery.Description,
-                        Url = gallery.Gallery.Url,
                         Columns = gallery.Gallery.Columns,
                         DateInsert = DateTime.Now,
                         DateUpdate = DateTime.Now,
@@ -78,6 +87,7 @@ namespace WebImage.Models
 
                     ijpContext.Gallery.Add(mygallery);
                     ijpContext.SaveChanges();
+                    mygallery.Url = Path.Combine(host,"api","gallery",mygallery.GalleryId.ToString());
 
                     var images = Helper.Decode(gallery.Gallery.Images);
 
