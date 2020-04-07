@@ -37,6 +37,8 @@ namespace WebImage.Models
         public string Size { get; set; }
         public string Resolution { get; set; }
         public string Url { get; set; }
+        public string UrlThumb { get; set; }
+        public string UrlResized { get; set; }
         public byte[] Content { get; set; }
     }
 

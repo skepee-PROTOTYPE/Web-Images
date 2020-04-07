@@ -12,7 +12,6 @@ namespace WebImage.Context
         public string UserId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string Url { get; set; }
         public string Columns { get; set; }
         public string Images { get; set; }
         public bool Active { get; set; }

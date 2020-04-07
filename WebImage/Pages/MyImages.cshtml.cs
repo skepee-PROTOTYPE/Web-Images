@@ -11,32 +11,19 @@ namespace WebImage.Pages
     public class GalleryModel : PageModel
     {
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IWebHostEnvironment hostingEnv;
-        private readonly IjpContext ijpContext;
-        private readonly UserManager<IdentityUser> userManager;
         public MyImages myImages { get; set; }
-        string Host { get; set; }
 
-        public GalleryModel(UserManager<IdentityUser> _userManager, IjpContext _ijpContext, IHttpContextAccessor _httpContextAccessor, IWebHostEnvironment _hostingEnv)
+        public GalleryModel(IjpContext _ijpContext, IHttpContextAccessor _httpContextAccessor)
         {
             httpContextAccessor = _httpContextAccessor;
-            ijpContext = _ijpContext;
-            userManager = _userManager;
-            hostingEnv = _hostingEnv;
-
-            var request = httpContextAccessor.HttpContext.Request;
-            Host = request.Host.ToString();
-
-            myImages = new MyImages(_ijpContext);
+            string userId = httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("nameidentifier")).Value;
+            myImages = new MyImages(_ijpContext, userId);
         }
 
         public void OnGet(bool isPrivate)
         {
             System.Security.Claims.ClaimsPrincipal currentUser = this.User;
-
-            myImages.LoadMyImages(userManager.GetUserId(currentUser), Host, hostingEnv.WebRootPath);
             myImages.Images = myImages.Images.Where(x => x.IsPrivate == isPrivate).ToList();
-
         }
     }
 }

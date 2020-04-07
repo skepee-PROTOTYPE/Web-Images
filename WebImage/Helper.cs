@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -68,13 +69,25 @@ namespace WebImage
         }
 
 
-        //public static string DecodeImage(byte[] file)
-        //{
-        //    var base64 = Convert.ToBase64String(file);
-        //    var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+        public static string DecodeImage(byte[] file)
+        {
+            var base64 = Convert.ToBase64String(file);
+            var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
 
-        //    return imgSrc;
-        //}
+            return imgSrc;
+        }
 
+
+        public static string SaveResizedFile(Bitmap b,string file, int width, int height)
+        {
+            Bitmap resized = new Bitmap(b, new Size(width, height));
+            string filename = Path.Combine(Path.GetFileNameWithoutExtension(file) + "_" + width.ToString() + "_" + height.ToString() + Path.GetExtension(file));
+            string thumbName = Path.Combine(Path.GetDirectoryName(file), filename);
+
+            if (!File.Exists(thumbName))
+                resized.Save(thumbName);
+
+            return filename;
+        }
     }
 }

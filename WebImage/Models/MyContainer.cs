@@ -8,24 +8,15 @@ namespace WebImage.Models
     public class MyContainer
     {
         private readonly IjpContext ijpContext;
-        private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IWebHostEnvironment hostingEnv;
-        private string Host { get; set; }
 
         public MyGalleries myGalleries { get; set; }
         public MyImages myImages { get; set; }
 
-        public MyContainer(IHttpContextAccessor _httpContextAccessor, IjpContext _ijpContext, IWebHostEnvironment _hostingEnv)
+        public MyContainer(IjpContext _ijpContext, string userId)
         {
-            hostingEnv = _hostingEnv;
-            httpContextAccessor = _httpContextAccessor;
-            ijpContext = _ijpContext;
-
-            var request = httpContextAccessor.HttpContext.Request;
-            Host = request.Host.ToString();
-
+            ijpContext = _ijpContext;          
             myGalleries = new MyGalleries(ijpContext);
-            myImages = new MyImages(ijpContext);        
+            myImages = new MyImages(ijpContext, userId);
         }
 
 
@@ -44,6 +35,8 @@ namespace WebImage.Models
                     myData.MyJson.Add(new MyJson()
                     {
                         Url = hidecolumn.Contains("url") ? "" : image.Url,
+                        UrlResized = hidecolumn.Contains("url") ? "" : image.UrlResized,
+                        UrlThumb = hidecolumn.Contains("url") ? "" : image.UrlThumb,
                         Name = hidecolumn.Contains("name") ? "" : image.Name,
                         Title = hidecolumn.Contains("title") ? "" : image.Title,
                         Format = hidecolumn.Contains("format") ? "" : image.RawFormat,

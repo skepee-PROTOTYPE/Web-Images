@@ -102,7 +102,7 @@ namespace WebImage.Context
                         HorizontalResolution = b.HorizontalResolution,
                         VerticalResolution = b.VerticalResolution,
                         Path = Path.Combine(".", "imagefolder", f.Name),
-                        Thumb = Path.Combine(".", "imagefolder", "Thumbs", thumbName)
+                       // ThumbFileName = Path.Combine(".", "imagefolder", "Thumbs", thumbName)
                     });
 
                 }

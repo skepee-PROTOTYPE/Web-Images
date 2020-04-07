@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using WebImage.DBContext;
+using WebImage.Models;
 
 namespace WebImage
 {
@@ -27,7 +28,12 @@ namespace WebImage
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connString = Configuration.GetConnectionString("DefaultConnection");
+            Settings.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
+            Settings.ClientId = Configuration.GetSection("Azure").GetChildren().ElementAt(0).Value;
+            Settings.ClientSecret = Configuration.GetSection("Azure").GetChildren().ElementAt(1).Value;
+            Settings.Secrets = Configuration.GetSection("Azure").GetChildren().ElementAt(2).Value;
+            Settings.StorageAccount = Configuration.GetSection("Azure").GetChildren().ElementAt(3).Value;
+            Settings.TenantId = Configuration.GetSection("Azure").GetChildren().ElementAt(4).Value;
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -40,7 +46,7 @@ namespace WebImage
             services.AddRazorPages();
             services.AddMemoryCache();
             services.AddEntityFrameworkSqlServer();
-            services.AddDbContext<IjpContext>(options => options.UseSqlServer(connString));
+            services.AddDbContext<IjpContext>(options => options.UseSqlServer(Settings.ConnectionString));
             services.AddDbContext<IjpDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<IjpDbContext>();
             services.AddMvc(option=>option.EnableEndpointRouting=false);

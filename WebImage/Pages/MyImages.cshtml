@@ -1,6 +1,8 @@
 ﻿@page
 
+@inject UserManager<IdentityUser> UserManager
 @model WebImage.Pages.GalleryModel
+
 @{
     var myImages = Model.myImages.Images.ToList();
 }
@@ -25,8 +27,10 @@
 <div id="gallery">
     @foreach (var image in myImages)
     {
-        <a href="@image.Path" data-sub-html="#caption_@image.Name.Replace(@image.RawFormat, "")">
-            <img src="@image.Thumb" />
+        var url = await image.GetUrl(image.UserId, image.Name);
+        var urlthumb = await image.GetUrl(image.UserId, image.ThumbFileName);
+        <a href="@url" data-sub-html="#caption_@image.Name.Replace(@image.RawFormat, "")">
+            <img src="@urlthumb" />
         </a>
     }
 </div>

@@ -20,6 +20,8 @@ namespace WebImage.Context
         public int? Height { get; set; }
         public double? HorizontalResolution { get; set; }
         public double? VerticalResolution { get; set; }
+        public string ThumbFileName { get; set; }
+        public string ResizedFileName { get; set; }
         public string UserId { get; set; }
     }
 }

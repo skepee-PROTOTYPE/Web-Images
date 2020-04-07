@@ -57,7 +57,7 @@ body {
 }
 
 
-.card .fas,
+/*.card .fas,
 .card .far {
     font-size: 80px;
     text-align: center;
@@ -65,7 +65,7 @@ body {
     padding-bottom: 10px;
     opacity: 0.7;
     background-color: #343a40;
-}
+}*/
 
 .card-title {
     font-size: 1.75rem;

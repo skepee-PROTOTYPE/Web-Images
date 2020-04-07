@@ -41,12 +41,12 @@ namespace WebImage.Models
             scope.Complete();
         }
 
-        public List<ItemGallery> LoadGallery(int galleryId, string userId, string host)
+        public List<ItemGallery> LoadGallery(int galleryId, string userId)
         {
-            IEnumerable<IjpGallery> myGallery= new List<IjpGallery>();
+            IEnumerable<IjpGallery> myGallery = new List<IjpGallery>();
 
             if (galleryId > 0)
-                myGallery= ijpContext.Gallery.Where(x => x.GalleryId == galleryId);
+                myGallery = ijpContext.Gallery.Where(x => x.GalleryId == galleryId);
 
             //TODO : for now... to be removed when the userid isassigned by identityserver
             if (!string.IsNullOrEmpty(userId))
@@ -66,7 +66,7 @@ namespace WebImage.Models
             return Gallery;
         }
 
-        public void SaveGallery(ItemGallery gallery, string description_ids, string userId,string host)
+        public void SaveGallery(ItemGallery gallery, string description_ids, string userId)
         {
             using TransactionScope scope = new TransactionScope();
 
@@ -82,12 +82,11 @@ namespace WebImage.Models
                         DateInsert = DateTime.Now,
                         DateUpdate = DateTime.Now,
                         UserId = userId,
-                        Images = gallery.Gallery.Images
+                        Images = gallery.Gallery.Images                        
                     };
 
                     ijpContext.Gallery.Add(mygallery);
                     ijpContext.SaveChanges();
-                    mygallery.Url = Path.Combine(host,"api","gallery",mygallery.GalleryId.ToString());
 
                     var images = Helper.Decode(gallery.Gallery.Images);
 
@@ -118,7 +117,6 @@ namespace WebImage.Models
                     mygallery.Description = gallery.Gallery.Description;
                     mygallery.DateUpdate = DateTime.Now;
                     mygallery.UserId = userId;
-                    mygallery.Url = gallery.Gallery.Url;
                     mygallery.Columns = gallery.Gallery.Columns;
                     mygallery.Images = gallery.Gallery.Images;
                     mygallery.Active = gallery.Gallery.Active;
@@ -132,9 +130,9 @@ namespace WebImage.Models
                         foreach (string descrId in description_ids.Split(','))
                         {
                             var desc = descrId.Split("-")[0];
-                            int id = Convert.ToInt32(descrId.Split("-")[1]);
+                            int id = Convert.ToInt32(descrId.Split("|")[1]);
 
-                            galleryfile.FirstOrDefault(x => x.FileId == id).Description = desc;
+                            galleryfile.FirstOrDefault(x => x.FileId == id).Description = descrId.Split("|")[0];
                         }
                         ijpContext.SaveChanges();
                     }
