@@ -27,6 +27,13 @@ namespace WebImage.Models
         }
 
 
+        public void UpdatePrivateStatus(int fileId, bool isPrivate)
+        {
+            ijpContext.File.FirstOrDefault(x => x.FileId == fileId).IsPrivate = isPrivate;
+            ijpContext.SaveChanges();
+        }
+
+
         private void LoadMyImages(string userId)
         {
             foreach (var myimg in ijpContext.File.Where(x => x.UserId == userId))

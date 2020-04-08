@@ -9,7 +9,7 @@ using WebImage.Context;
 namespace WebImage.Models
 {
     public class FileModel : IjpFile
-    {        
+    {
         public string Url { get; set; }
         public string UrlResized { get; set; }
         public string UrlThumb { get; set; }
@@ -30,12 +30,11 @@ namespace WebImage.Models
             return byteImage;
         }
 
-
         public async Task<string> GetUrl(string containerName, string blobName)
         {
-            var url = await AzureStorage.BlobUrlAsync(containerName, blobName); 
+            var url = await AzureStorage.BlobUrlAsync(containerName, blobName);
             return url;
-       }
+        }
 
 
         public void Info(string myfile, string resized, string thumb, string userid)

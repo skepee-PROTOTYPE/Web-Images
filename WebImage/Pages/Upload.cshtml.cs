@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -19,7 +20,7 @@ namespace WebImage.Pages
         private IWebHostEnvironment environment;
         private readonly UserManager<IdentityUser> userManager;
         private readonly IjpContext ijpContext;
-        public MyImages myImages { get; set; }
+        public MyContainer MyContainer { get; set; }
 
         public UploadModel(IHttpContextAccessor _httpContextAccessor, IWebHostEnvironment _environment, UserManager<IdentityUser> _userManager, IjpContext _ijpContext)
         {
@@ -28,7 +29,7 @@ namespace WebImage.Pages
             environment = _environment;
             userManager = _userManager;
             string userId = httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("nameidentifier")).Value;
-            myImages = new MyImages(ijpContext, userId);
+            MyContainer = new MyContainer(ijpContext, userId);
         }
 
         [BindProperty]
@@ -64,6 +65,24 @@ namespace WebImage.Pages
                 System.IO.File.Delete(file.FileName);
             }
             Directory.Delete(Path.Combine(environment.WebRootPath, "imagefolder", user.Id),true);
+        }
+        private string GetRequestParam(string param)
+        {
+            if (Request.Form[param].Count == 1)
+                return Request.Form[param][0];
+            else
+                return string.Empty;
+        }
+
+
+        public RedirectToPageResult OnPostUpdatePrivateStatus()
+        {
+            var imageid = Convert.ToInt32(GetRequestParam("imageid"));
+
+            var isprivate = (GetRequestParam("isPrivate" + imageid)=="on"?true:false);
+
+            MyContainer.myImages.UpdatePrivateStatus(imageid, isprivate);
+            return new RedirectToPageResult("Upload");
         }
 
     }

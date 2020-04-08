@@ -1,26 +1,53 @@
 ﻿@page
 @model WebImage.Pages.UploadModel
 
+<style>
+    .card {
+        width: 100px;
+        height: 100px;
+    }
+
+
+    .listimages {
+        margin-top: 10px;
+    }
+</style>
+
 
 <form method="post" enctype="multipart/form-data">
     <input type="file" asp-for="Upload" multiple class="form-control" />
     <input type="submit" value="Upload" />
 </form>
 
-<ul>
-    @foreach (var image in Model.myImages.Images)
+<div class="listimages">
+    @foreach (var image in Model.MyContainer.myImages.Images)
     {
         var file = await image.DownloadImage(image.ThumbFileName, image.UserId);
+        var isprivate = (image.IsPrivate) ? true:false;
 
-        <li class="list-group-item">
+    <div class="row">
+        <div class="col-3">
             <div class="card">
                 <img class="card-img-top" src="@Helper.DecodeImage(file)" alt="@image.Name">
                 <div class="card-body">
-                    <p class="card-text">
-                        @*Description:<input type="text" class="card-text imagedescriptions" value="@image.Description" id="Descr_@item.FileId" name="Descr_@item.FileId" />*@
-                    </p>
+                    <p class="card-text"></p>
                 </div>
             </div>
-        </li>
+        </div>
+        <div class="col-3">
+            @image.Name
+        </div>
+        <div class="col-3">
+            <div class="custom-control custom-checkbox">
+                <form method="post">
+                    <input type="checkbox" class="custom-control-input" id="isPrivate @image.FileId" name="isPrivate @image.FileId" checked="@isprivate">
+                    <label class="custom-control-label" for="isPrivate @image.FileId">Private</label>
+                    <input type="hidden" value="@image.FileId" id="imageid" name="imageid" />
+                    <button class="btn btn-outline-secondary" asp-page-handler="UpdatePrivateStatus"><i title="Update" class="fas fa-cloud-upload-alt"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
     }
-</ul>
+
+</div>

@@ -106,7 +106,9 @@
                     <div class="card @(gallery.IsSelected ? "selected" : "")" style="width: 18rem;height:32rem">
                         @{
                             var coverimage = Model.MyContainer.myImages.GetImage(gallery.GalleryFile[0].FileId);
-                            var file = await coverimage.DownloadImage(coverimage.ThumbFileName, UserManager.GetUserId(User));
+                            var file = await coverimage.DownloadImage(coverimage.ThumbFileName, UserManager.GetUserId(User
+                                
+                                ));
                         }
 
                         <img class="card-img-top" src="@Helper.DecodeImage(file)" alt="@gallery.Gallery.Name">
