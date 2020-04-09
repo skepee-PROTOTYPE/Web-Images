@@ -16,14 +16,6 @@ namespace WebImage.Models
         public byte[]? Content { get; set; }
 
 
-        public async Task<byte[]> GetContent(string imagename, string userId)
-        {
-            var list = await AzureStorage.ListBlobsFlatListingAsync(userId, null);
-            var elem = list.Single(x => x.Key == imagename);
-            var value = elem.Value;
-            return value;
-        }
-
         public async Task<byte[]> DownloadImage(string blobReferenceKey, string container)
         {
             var byteImage = await AzureStorage.DownloadFileFromBlob(blobReferenceKey, container);
@@ -35,7 +27,6 @@ namespace WebImage.Models
             var url = await AzureStorage.BlobUrlAsync(containerName, blobName);
             return url;
         }
-
 
         public void Info(string myfile, string resized, string thumb, string userid)
         {

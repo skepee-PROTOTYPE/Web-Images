@@ -28,6 +28,7 @@ namespace WebImage.Pages
             ijpContext = _ijpContext;
             environment = _environment;
             userManager = _userManager;
+
             string userId = httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("nameidentifier")).Value;
             MyContainer = new MyContainer(ijpContext, userId);
         }
@@ -66,6 +67,8 @@ namespace WebImage.Pages
             }
             Directory.Delete(Path.Combine(environment.WebRootPath, "imagefolder", user.Id),true);
         }
+
+
         private string GetRequestParam(string param)
         {
             if (Request.Form[param].Count == 1)
@@ -79,7 +82,7 @@ namespace WebImage.Pages
         {
             var imageid = Convert.ToInt32(GetRequestParam("imageid"));
 
-            var isprivate = (GetRequestParam("isPrivate" + imageid)=="on"?true:false);
+            var isprivate = (GetRequestParam("isPrivate_" + imageid)=="on"?true:false);
 
             MyContainer.myImages.UpdatePrivateStatus(imageid, isprivate);
             return new RedirectToPageResult("Upload");

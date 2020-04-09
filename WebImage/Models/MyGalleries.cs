@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Transactions;
 using WebImage.Context;
@@ -11,13 +10,19 @@ namespace WebImage.Models
     public class MyGalleries
     {
         private readonly IjpContext ijpContext;
-        public List<ItemGallery> Gallery { get; set; }
+        public List<ItemGallery> ItemGalleries { get; set; }
 
-        public MyGalleries(IjpContext _ijpContext)
+        public MyGalleries(IjpContext _ijpContext, string userId)
         {
             ijpContext = _ijpContext;
-            Gallery = new List<ItemGallery>();
+            LoadGallery(userId);
         }
+
+        public MyGalleries()
+        {
+            ItemGalleries = new List<ItemGallery>();
+        }
+
 
         public string AttributeChecked(string columns, string columnName)
         {
@@ -41,33 +46,24 @@ namespace WebImage.Models
             scope.Complete();
         }
 
-        public List<ItemGallery> LoadGallery(int galleryId, string userId)
+        private void LoadGallery(string userId)
         {
-            IEnumerable<IjpGallery> myGallery = new List<IjpGallery>();
-
-            if (galleryId > 0)
-                myGallery = ijpContext.Gallery.Where(x => x.GalleryId == galleryId);
-
-            //TODO : for now... to be removed when the userid isassigned by identityserver
-            if (!string.IsNullOrEmpty(userId))
-                myGallery = ijpContext.Gallery.Where(x => x.UserId == userId);
-
+            ItemGalleries = new List<ItemGallery>();
+            List<IjpGallery> myGallery = ijpContext.Gallery.Where(x => x.UserId == userId).ToList();
 
             foreach (var item in myGallery)
             {
-                Gallery.Add(new ItemGallery()
+                ItemGalleries.Add(new ItemGallery()
                 {
                     Gallery = item,
-                    GalleryFile = ijpContext.GalleryFile.Where(x => x.GalleryId == item.GalleryId).ToList(),
-                    IsSelected = (galleryId > 0) ? item.GalleryId == galleryId : false
+                    GalleryFile = ijpContext.GalleryFile.Where(x => x.GalleryId == item.GalleryId).ToList()                    
                 });
             }
-
-            return Gallery;
         }
 
-        public void SaveGallery(ItemGallery gallery, string description_ids, string userId)
+        public int SaveGallery(ItemGallery gallery, string description_ids, string userId)
         {
+            int newId = 0;
             using TransactionScope scope = new TransactionScope();
 
             if (gallery.Gallery.GalleryId == 0)
@@ -87,12 +83,14 @@ namespace WebImage.Models
 
                     ijpContext.Gallery.Add(mygallery);
                     ijpContext.SaveChanges();
+                    newId = mygallery.GalleryId;
 
                     var images = Helper.Decode(gallery.Gallery.Images);
 
                     foreach (string img in images.Split(','))
                     {
-                        var file = ijpContext.File.FirstOrDefault(x => x.Name.Equals(img));
+                        var imagename = img.Split('/')[4].Split('?')[0];
+                        var file = ijpContext.File.FirstOrDefault(x => x.Name.Equals(imagename));
 
                         if (file != null)
                         {
@@ -100,7 +98,7 @@ namespace WebImage.Models
                             {
                                 FileId = file.FileId,
                                 GalleryId = mygallery.GalleryId,
-                                Description = "description of " + img
+                                Description = "description of " + imagename
                             });
                         }
                     }
@@ -110,6 +108,7 @@ namespace WebImage.Models
             else
             {
                 var mygallery = ijpContext.Gallery.FirstOrDefault(x => x.GalleryId == gallery.Gallery.GalleryId);
+                newId = mygallery.GalleryId;
 
                 if (mygallery != null)
                 {
@@ -140,6 +139,7 @@ namespace WebImage.Models
             }
 
             scope.Complete();
+            return newId;
         }
     };
 }

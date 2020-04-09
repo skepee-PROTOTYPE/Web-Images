@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.Linq;
+using WebImage.Context;
 using WebImage.DBContext;
 
 namespace WebImage.Models
@@ -8,15 +10,32 @@ namespace WebImage.Models
     public class MyContainer
     {
         private readonly IjpContext ijpContext;
-
         public MyGalleries myGalleries { get; set; }
         public MyImages myImages { get; set; }
 
         public MyContainer(IjpContext _ijpContext, string userId)
         {
-            ijpContext = _ijpContext;          
-            myGalleries = new MyGalleries(ijpContext);
+            ijpContext = _ijpContext;
+            myGalleries = new MyGalleries(ijpContext, userId);
             myImages = new MyImages(ijpContext, userId);
+        }
+
+        public MyGalleries GetMyGalleries(int imageId, string userId)
+        {
+            var myout = new MyGalleries();
+            var res = new MyGalleries(ijpContext, userId);
+
+            foreach (var gall in res.ItemGalleries)
+            {
+                var myItem = gall.GalleryFile.FirstOrDefault(x => x.FileId == imageId);
+
+                if (myItem != null)
+                {
+                    myout.ItemGalleries.Add(res.ItemGalleries.FirstOrDefault(x => x.Gallery.GalleryId == myItem.GalleryId));
+                }
+            }
+
+            return myout;
         }
 
 
@@ -24,9 +43,9 @@ namespace WebImage.Models
         {
             JsonData myData = new JsonData();
 
-            string hidecolumn = Helper.Decode(this.myGalleries.Gallery[0].Gallery.Columns);
+            string hidecolumn = Helper.Decode(this.myGalleries.ItemGalleries[0].Gallery.Columns);
 
-            foreach (var imageGallery in this.myGalleries.Gallery[0].GalleryFile)
+            foreach (var imageGallery in this.myGalleries.ItemGalleries[0].GalleryFile)
             {
                 var image = myImages.Images.FirstOrDefault(x => x.FileId == imageGallery.FileId);
 

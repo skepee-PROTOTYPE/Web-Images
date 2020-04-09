@@ -21,6 +21,7 @@
   <ItemGroup>
     <Compile Remove="Context\TestData.cs" />
     <Compile Remove="Models\ContentModel.cs" />
+    <Compile Remove="Models\Crypto.cs" />
     <Compile Remove="Models\SiteImages.cs" />
     <Compile Remove="Pages\Json.cshtml.cs" />
     <Compile Remove="Pages\JsonPreview.cshtml.cs" />

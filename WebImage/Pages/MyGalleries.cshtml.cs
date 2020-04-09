@@ -16,7 +16,7 @@ namespace WebImage.Pages
         private readonly IHttpContextAccessor httpContextAccessor;
 
         public MyContainer MyContainer { get; set; }
-        public string Host { get; set; }
+        public int GalleryIdSelected {get;set;}
 
         public MyGalleriesModel(IHttpContextAccessor _httpContextAccessor, IjpContext _ijpContext,UserManager<IdentityUser> _userManager)
         {
@@ -25,24 +25,22 @@ namespace WebImage.Pages
             userManager = _userManager;
             string userId=httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("nameidentifier")).Value;
 
-            MyContainer = new MyContainer(ijpContext,  userId);
-            
-            var request = httpContextAccessor.HttpContext.Request;
-            Host = request.Host.ToString();
+            MyContainer = new MyContainer(ijpContext,  userId);           
         }
 
         public void OnGet(int galleryId, string newg, string attr, string descrs)
         {
+            GalleryIdSelected = galleryId;
             System.Security.Claims.ClaimsPrincipal currentUser = this.User;
 
             if (!string.IsNullOrEmpty(newg))
             {
                 ItemGallery mygallery = new ItemGallery();
-                mygallery.NewGallery("NoName_" + DateTime.Now.ToString("yyyyMMdd"), "NoDescription_" + DateTime.Now.ToString("yyyyMMdd"), newg, attr);                
-                this.MyContainer.myGalleries.SaveGallery(mygallery, descrs, userManager.GetUserId(currentUser));
+                mygallery.NewGallery("NoName_" + DateTime.Now.ToString("yyyyMMdd"), "NoDescription_" + DateTime.Now.ToString("yyyyMMdd"), newg, attr);
+                GalleryIdSelected = this.MyContainer.myGalleries.SaveGallery(mygallery, descrs, userManager.GetUserId(currentUser));
+                MyContainer = new MyContainer(ijpContext, userManager.GetUserId(currentUser));
             }
 
-            MyContainer.myGalleries.LoadGallery(galleryId, userManager.GetUserId(currentUser));
         }
 
         public RedirectToPageResult OnPostRemoveGallery(int galleryId)        
@@ -72,16 +70,8 @@ namespace WebImage.Pages
             string description_ids = GetRequestParam("descriptions");
 
             System.Security.Claims.ClaimsPrincipal currentUser = this.User;
-            this.MyContainer.myGalleries.SaveGallery(newgallery, description_ids, userManager.GetUserId(currentUser));
+            GalleryIdSelected = this.MyContainer.myGalleries.SaveGallery(newgallery, description_ids, userManager.GetUserId(currentUser));
             return new RedirectToPageResult("MyGalleries");
         }
-
-
-        public void SaveGallery(ItemGallery newgallery, string userId)
-        {
-            MyContainer.myGalleries.LoadGallery(newgallery.Gallery.GalleryId,userId);
-            this.MyContainer.myGalleries.SaveGallery(newgallery, "", userId);
-        }
-
     }
 }

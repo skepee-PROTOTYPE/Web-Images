@@ -27,21 +27,26 @@ namespace WebImage.Controllers
             {
                 DateTime StartDate = DateTime.Now;
                 var mycontainer = new MyContainer(ijpContext, userId);
-                mycontainer.myGalleries.LoadGallery(id, userId);
+                var mygallery = mycontainer.myGalleries.ItemGalleries.Where(x=>x.Gallery.GalleryId==id).ToList();
 
-                var mydata = mycontainer.GetFileInfoJson();
-
-                return Json(new JsonGallery()
+                if (mygallery.Count() == 1 && mygallery[0].Gallery.Active)
                 {
-                    Data = mydata,
+                    var mydata = mycontainer.GetFileInfoJson();
 
-                    Stat = new JsonStats()
+                    return Json(new JsonGallery()
                     {
-                        Count = mydata.MyJson.Count(),
-                        TotalLengthKb = mydata.MyJson.Select(x => x.Length).Sum(),
-                        ElapsedTime = (DateTime.Now - StartDate).TotalMilliseconds
-                    }
-                }); 
+                        Data = mydata,
+
+                        Stat = new JsonStats()
+                        {
+                            Count = mydata.MyJson.Count(),
+                            TotalLengthKb = mydata.MyJson.Select(x => x.Length).Sum(),
+                            ElapsedTime = (DateTime.Now - StartDate).TotalMilliseconds
+                        }
+                    });
+                }
+                else
+                    return Json(new JsonGallery());
             }
             else
                 return Json(new JsonGallery());

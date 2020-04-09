@@ -11,6 +11,14 @@
 <link href="~/vendor/lightgallery/dist/css/lightgallery.css" rel="stylesheet" />
 <link href="~/vendor/lightgallery/dist/css/lg-transitions.css" rel="stylesheet" />
 
+<style>
+
+    .lg-sub-html {
+        text-align:left;    
+    }
+
+</style>
+
 @foreach (var image in myImages)
 {
     <div id="caption_@image.Name.Replace(@image.RawFormat, "")" style="display:none">

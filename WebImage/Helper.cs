@@ -11,43 +11,6 @@ namespace WebImage
 {
     public static class Helper
     {
-        public static byte[] byteFile(string varFilePath)
-        {
-            byte[] file;
-            using (var stream = new FileStream(varFilePath, FileMode.Open, FileAccess.Read))
-            {
-                using (var reader = new BinaryReader(stream))
-                {
-                    file = reader.ReadBytes((int)stream.Length);
-                }
-            }
-            return file;
-        }
-
-
-        public static double KB(this long length)
-        {
-            var sizekb = Math.Round(((double)length) / 1024, 2);
-            return sizekb;
-        }
-
-        public static double MB(this long length)
-        {
-            var sizeMb = Math.Round(length.KB() / 1024, 4);
-            return sizeMb;
-        }
-
-        public static string CleanName(this string name)
-        {
-            return name.Replace("@", "").Replace(".", "");
-        }
-
-        public static void DownloadFile(byte[] file, string name)
-        {
-            using (var fs = new FileStream(@"D:\images\" + name, FileMode.Create, FileAccess.Write))
-                fs.Write(file, 0, file.Length);
-        }
-
         public static string Decode(string selectedImages)
         {
             string decodedString = "";
