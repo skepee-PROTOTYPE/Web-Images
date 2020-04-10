@@ -28,22 +28,22 @@
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="MyImages" asp-route-isPrivate="false">My Public</a>
+                            <a class="nav-link" asp-page="MyImages" asp-route-isPrivate="false"><i class="fas fa-lock-open" title="Gallery of your public images"></i>&nbsp;Public</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="MyImages" asp-route-isPrivate="true">My Private</a>
+                            <a class="nav-link" asp-page="MyImages" asp-route-isPrivate="true"><i class="fas fa-lock"  title="Gallery of your private images"></i>&nbsp;Private</a>
                         </li>
                         @*<li class="nav-item">
                             <a class="nav-link" data-toggle="collapse" data-target="#selectiongallery" aria-expanded="false" aria-controls="selectiongallery">Your Selection</a>
                         </li>*@
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="MyGalleries">My Galleries</a>
+                            <a class="nav-link" asp-page="MyGalleries"><i class="fab fa-slideshare" title="Set your galleries"></i>&nbsp;Galleries</a>
                         </li>
                         @*<li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="ImageLayout">Layout</a>
                         </li>*@
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="Upload"><i class="fas fa-cloud-upload-alt" title="Upload"></i></a>
+                            <a class="nav-link" asp-page="Upload"><i class="fas fa-image" title="Set your images"></i>&nbsp;Images</a>
                         </li>
                     }
                 </ul>

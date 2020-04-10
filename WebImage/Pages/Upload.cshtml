@@ -9,15 +9,30 @@
 
 
     .listimages {
-        margin-top: 10px;
+        margin-top: 20px;
+    }
+
+    .upload {
+        margin-bottom:10px;
+    
     }
 </style>
 
-
-<form method="post" enctype="multipart/form-data">
-    <input type="file" asp-for="Upload" multiple class="form-control" />
-    <input type="submit" value="Upload" />
-</form>
+<div class="upload">
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" asp-for="Upload" multiple class="form-control" />
+        <input type="submit" value="Upload" />
+    </form>
+    <br/><br />
+    <div>
+        <span>For each image you upload, thre images will be saved with:</span>
+        <ul>
+            <li>original resolution</li>
+            <li>image thumb with 200x200 px dimension</li>
+            <li>image with half width and height</li>
+        </ul>
+    </div>
+</div>
 
 <div class="listimages">
     @foreach (var image in Model.MyContainer.myImages.Images)
@@ -53,7 +68,7 @@
                     var galleries = Model.MyContainer.GetMyGalleries(image.FileId, image.UserId);
                     foreach (var gal in galleries.ItemGalleries)
                     {
-                        <li class="list-group-item">@gal.Gallery.Name</li>
+                        <li class="list-group-item list-group-item-dark">@gal.Gallery.Name</li>
                     }
                 }
             </ul>

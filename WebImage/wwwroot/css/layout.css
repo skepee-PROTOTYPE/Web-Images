@@ -27,23 +27,9 @@ body {
   margin-bottom: 30px;
 }
 
-/*html, body {
-    background-image: url('http://getwallpapers.com/wallpaper/full/a/5/d/544750.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    height: 100%;
-    font-family: 'Numans', sans-serif;
-}*/
-
-
-/*.card {
-    border: 0px solid #3F69D1;
-    background-color: #343a40;
-    color: #ffc107;
-}*/
-
 .nav-item .nav-link,
 .nav-link .fas,
+.nav-link .fab, 
 .navbar-dark .navbar-brand {
     color: #ffc107;
 }
@@ -56,16 +42,6 @@ body {
     color: #FDE100;
 }
 
-
-/*.card .fas,
-.card .far {
-    font-size: 80px;
-    text-align: center;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    opacity: 0.7;
-    background-color: #343a40;
-}*/
 
 .card-title {
     font-size: 1.75rem;
