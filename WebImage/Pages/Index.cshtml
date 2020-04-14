@@ -13,6 +13,16 @@
         </div>
     </div>*@
 
+<style>
+    .frontpage {
+        font-size:6em;
+        text-align:center;   
+        padding-top:10px;
+    }
+
+</style>
+
+
 <header>
     <div id="carouselIndex" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
@@ -23,23 +33,26 @@
         <div class="carousel-inner" role="listbox">
             <div class="carousel-item active" style="background-color: #ffae64">
                 <div class="carousel-caption d-none d-md-block">
-                    <i class="fas fa-file-import"></i>
-                    <h3>Photos</h3>
+                    <h3>Image Repository</h3>
                     <p>A new media provider.</p>
-                </div>
-            </div>
-            <div class="carousel-item" style="background-color: #cadecb">
-                <div class="carousel-caption d-none d-md-block">
-                    <h3>Repository</h3>
-                    <p>Save your photos in this new repository.</p>
+                    <img src="~/img/upload.gif" style="width:400px; height:300px;" />
                 </div>
             </div>
             <div class="carousel-item" style="background-color: #a6d9ff">
                 <div class="carousel-caption d-none d-md-block">
-                    <h3>Json gallery</h3>
+                    <h3>Gallery generator</h3>
                     <p>Create your galleries.</p>
+                    <img src="~/img/gallery.gif" />
                 </div>
             </div>
+            <div class="carousel-item" style="background-color: #cadecb">
+                <div class="carousel-caption d-none d-md-block">
+                    <h3>Json API Resource for your webites.</h3>
+                    <p>API resource automatically generated for your websites</p>
+                    <img src="~/img/json.gif" />
+                </div>
+            </div>
+
         </div>
         <a class="carousel-control-prev" href="#carouselIndex" role="button" data-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -56,30 +69,48 @@
     <h1 class="my-4">Welcome to the modern media provider</h1>
 
     <div class="row">
-        <div class="col-lg-4 mb-4">
+        <div class="col-lg-3 mb-3">
             <div class="card">
-                <i class="fas fa-cloud-upload-alt"></i>
+                <i class="fas fa-cloud-upload-alt frontpage"></i>
                 <div class="card-body">
                     <h5 class="card-title">Upload your Photos</h5>
                     <p class="card-text">Create your space to upload public or private photos.</p>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 mb-4">
+        <div class="col-lg-3 mb-3">
             <div class="card">
-                <i class="far fa-bookmark"></i>
+                <i class="far fa-images frontpage"></i>
                 <div class="card-body">
-                    <h5 class="card-title">Save your preferences</h5>
-                    <p class="card-text">Create a profile of photos once for all with a set of preferences</p>
+                    <h5 class="card-title">Add images to your gallery</h5>
+                    <p class="card-text">Generate your gallery of images</p>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 mb-4">
+        @*<div class="col-lg-2 mb-2">
             <div class="card">
-                <i class="fas fa-share-alt"></i>
+                <i class="far fa-bookmark frontpage"></i>
                 <div class="card-body">
-                    <h5 class="card-title">Generate your API</h5>
-                    <p class="card-text">Generate your Web API resource to use in every app</p>
+                    <h5 class="card-title">Save your preferences</h5>
+                    <p class="card-text">Choose attributes to add in your API resource</p>
+                </div>
+            </div>
+        </div>*@
+        <div class="col-lg-3 mb-3">
+            <div class="card">
+                <i class="fas fa-share-alt frontpage"></i>
+                <div class="card-body">
+                    <h5 class="card-title">API automatically generated</h5>
+                    <p class="card-text">Your Web API resource ready to use in every app</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 mb-3">
+            <div class="card">
+                <i class="fas fa-laptop-code frontpage"></i>
+                <div class="card-body">
+                    <h5 class="card-title">Insert in your websites.</h5>
+                    <p class="card-text">Choose your web component gallery for your websited</p>
                 </div>
             </div>
         </div>
