@@ -39,13 +39,15 @@ namespace WebImage.Models
         }
 
 
-        public JsonData GetFileInfoJson()
+        public JsonData GetFileInfoJson(int galleryId)
         {
             JsonData myData = new JsonData();
 
-            string hidecolumn = Helper.Decode(this.myGalleries.ItemGalleries[0].Gallery.Columns);
+            var itemGallery = this.myGalleries.ItemGalleries.FirstOrDefault(x => x.Gallery.GalleryId == galleryId);
 
-            foreach (var imageGallery in this.myGalleries.ItemGalleries[0].GalleryFile)
+            string hidecolumn = Helper.Decode(itemGallery.Gallery.Columns);
+
+            foreach (var imageGallery in itemGallery.GalleryFile)
             {
                 var image = myImages.Images.FirstOrDefault(x => x.FileId == imageGallery.FileId);
 

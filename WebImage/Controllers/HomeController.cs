@@ -33,7 +33,7 @@ namespace WebImage.Controllers
 
                 if (mygallery.Count() == 1 && mygallery[0].Gallery.Active)
                 {
-                    var mydata = mycontainer.GetFileInfoJson();
+                    var mydata = mycontainer.GetFileInfoJson(id);
 
                     return Json(new JsonGallery()
                     {
