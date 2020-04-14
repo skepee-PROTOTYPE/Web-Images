@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebImage.DBContext;
@@ -20,7 +21,8 @@ namespace WebImage.Controllers
             userManager = _userManager;
         }
 
-        [HttpPost("/api/gallery/{id}/user/{userId}")]
+        //[EnableCors()]
+        [HttpGet("/api/gallery/{id}/user/{userId}")]
         public async Task<JsonResult> GetListSelection(int id, string userId)
         {
             if (id > 0)

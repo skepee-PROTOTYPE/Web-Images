@@ -268,7 +268,7 @@
                         @if (selectedGallery.Gallery.Active)
                         {
                             <div class="alert alert-primary" role="alert">
-                                API resource (HttpPost): <i class="fas fa-bolt"></i> <strong>@System.IO.Path.Combine(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host, "api", "gallery", selectedGallery.Gallery.GalleryId.ToString(), "user", selectedGallery.Gallery.UserId)</strong>
+                                API resource (HttpGet): <i class="fas fa-bolt"></i> <strong>@System.IO.Path.Combine(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host, "api", "gallery", selectedGallery.Gallery.GalleryId.ToString(), "user", selectedGallery.Gallery.UserId)</strong>
                             </div>
                             <textarea readonly="readonly" name="jsonPreview" id="jsonPreview" cols="100" rows="30"></textarea>
                         }
@@ -290,7 +290,7 @@
     $(document).ready(function () {
 
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             url: "/api/gallery/@selectedGallery.Gallery.GalleryId/user/@selectedGallery.Gallery.UserId",
             contentType: "application/json; charset=utf-8",
             dataType: "json",

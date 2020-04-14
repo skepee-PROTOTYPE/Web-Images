@@ -91,9 +91,9 @@ namespace WebImage
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            string cachePeriod = env.IsDevelopment() ? "600" : "604800";
+            //string cachePeriod = env.IsDevelopment() ? "600" : "604800";
 
-            var urlImage = Path.Combine(env.WebRootPath, "imagefolder");
+            //var urlImage = Path.Combine(env.WebRootPath, "imagefolder");
 
             if (env.IsDevelopment())
             {
@@ -109,16 +109,16 @@ namespace WebImage
             app.UseRouting();
             app.UseAuthorization();
             app.UseStaticFiles();
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(urlImage),
-                RequestPath = "/Images",
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(urlImage),
+            //    RequestPath = "/Images",
 
-                OnPrepareResponse = ctx =>
-                {
-                    ctx.Context.Response.Headers.Append("Cache-Control", $"public, max-age={cachePeriod}");
-                },
-            });
+            //    OnPrepareResponse = ctx =>
+            //    {
+            //        ctx.Context.Response.Headers.Append("Cache-Control", $"public, max-age={cachePeriod}");
+            //    },
+            //});
 
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -129,6 +129,7 @@ namespace WebImage
 
             app.UseHttpsRedirection();
             app.UseCookiePolicy();
+            //app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
 
