@@ -102,7 +102,7 @@
 
                     <form method="post">
                         <div class="col-3">
-                            <div class="card @(gallery.Gallery.GalleryId==selectedGallery.Gallery.GalleryId ? "selected" : "")" style="width: 18rem;height:32rem">
+                            <div class="card @(gallery.Gallery.GalleryId == selectedGallery.Gallery.GalleryId ? "selected" : "")" style="width: 18rem;height:32rem">
                                 @{
                                     var coverimage = Model.MyContainer.myImages.GetImage(gallery.GalleryFile[0].FileId);
                                     var file = await coverimage.DownloadImage(coverimage.ThumbFileName, UserManager.GetUserId(User));
@@ -303,9 +303,8 @@
             </a>
         </div>
     </div>
-}
 
-<script>
+    <script>
     $(document).ready(function () {
         $.ajax({
             type: 'GET',
@@ -314,20 +313,18 @@
             dataType: "json",
             success: function (data) {
                 $('#jsonPreview').text(JSON.stringify(data, undefined, 2));
-                carouselPreview(data.data.myJson);
-            },
+                    carouselPreview(data.data.myJson);
+                },
             error: function (xhr) {
                 $('#jsonPreview').text('Request Status: ' + xhr.status + ' Status Text: ' + xhr.statusText + ' ' + xhr.responseText);
-            }
-        });
+                }
+            });
 
         $("#btnsave").click(function () {
             $("#attrs").val(attrs());
             $("#descriptions").val(descrs());
+            });
         });
-
-    });
-
 
 
     function carouselPreview(jsondata)
@@ -378,5 +375,9 @@
             return id  + ",";
     }
 
-</script>
+    </script>
 
+
+
+
+}
